@@ -572,7 +572,7 @@ export default function Home({
 
                 {/* Features Section */}
                 <section className="py-10">
-                    <div className="container mx-auto px-18">
+                    <div className="container max-w-6xl mx-auto px-18">
                         <div className="grid grid-cols-2 sm:grid-cols-5 lg:grid-cols-10 gap-3 text-center">
 
                             {/* Item 1 */}

@@ -14,61 +14,6 @@ type User = {
     gender?: string;
 };
 
-const { user } = usePage<{ user: User }>().props;
-// const [isEditingName, setIsEditingName] = useState(false);
-// const [isEditingPhone, setIsEditingPhone] = useState(false);
-
-const profileForm = useForm({
-    name: user.name || '',
-    avatar: null as File | null,
-    phone: user.phone || '',
-    birth_date: user.birth_date || '',
-    gender: user.gender || '',
-});
-
-const passwordForm = useForm({
-    current_password: '',
-    password: '',
-    password_confirmation: '',
-});
-
-// const submitProfile = (e: FormEvent) => {
-//     e.preventDefault();
-//     profileForm.post('/user-profile', { forceFormData: true });
-// };
-
-// const submitPassword = (e: FormEvent) => {
-//     e.preventDefault();
-//     passwordForm.put('/user-profile/password');
-// };
-
-// const toggleEditName = () => {
-//     setIsEditingName(!isEditingName);
-//     if (!isEditingName) {
-//         profileForm.setData('name', user.name);
-//     }
-// };
-
-// const toggleEditPhone = () => {
-//     setIsEditingPhone(!isEditingPhone);
-//     if (!isEditingPhone) {
-//         profileForm.setData('phone', user.phone || '');
-//     }
-// };
-
-const [openMenu, setOpenMenu] = useState<Record<string, boolean>>({
-    'Kotak Masuk': true,
-    Pembelian: true,
-    'Profil Saya': true,
-});
-
-const toggleMenu = (menu: string) => {
-    setOpenMenu((prev) => ({
-        ...prev,
-        [menu]: !prev[menu],
-    }));
-};
-
 const ChevronIcon = ({ open }: { open: boolean }) => (
     <svg
         className={`h-4 w-4 transition-transform duration-200 ${
@@ -135,64 +80,7 @@ const SECTION_TABS = {
     pembelian: ['Menunggu Pembayaran', 'Daftar Transaksi'],
 } as const;
 
-type TabKey = (typeof SECTION_TABS)[keyof typeof SECTION_TABS][number];
-
-const { url } = usePage();
-
-const [activeSection, setActiveSection] = useState<SectionKey>('profil');
-
-const [activeTab, setActiveTab] = useState<TabKey>(SECTION_TABS.profil[0]);
-
-const changeSection = (section: SectionKey) => {
-    setActiveSection(section);
-    setActiveTab(SECTION_TABS[section][0]);
-};
-
-const containerRef = useRef<HTMLDivElement>(null);
-const tabRefs = useRef<Record<string, HTMLButtonElement | null>>({});
-
-const [indicator, setIndicator] = useState({
-    left: 0,
-    width: 0,
-});
-
-const isValidTab = (section: SectionKey, tab: string): tab is TabKey => {
-    return (SECTION_TABS[section] as readonly string[]).includes(tab);
-};
-
-useEffect(() => {
-    const params = new URLSearchParams(url.split('?')[1]);
-
-    const section = params.get('section') as SectionKey | null;
-    const tab = params.get('tab');
-
-    if (section && SECTION_TABS[section]) {
-        setActiveSection(section);
-
-        if (tab && isValidTab(section, tab)) {
-            setActiveTab(tab);
-        } else {
-            setActiveTab(SECTION_TABS[section][0]);
-        }
-    }
-}, [url]);
-
-useEffect(() => {
-    const activeEl = tabRefs.current[activeTab];
-    const containerEl = containerRef.current;
-
-    if (!activeEl || !containerEl) return;
-
-    const activeRect = activeEl.getBoundingClientRect();
-    const containerRect = containerEl.getBoundingClientRect();
-
-    setIndicator({
-        left: activeRect.left - containerRect.left,
-        width: activeRect.width,
-    });
-}, [activeTab, activeSection]);
-
-const TabBiodata = () => (
+const TabBiodata = ({ user }: { user: User }) => (
     <div className="grid grid-cols-1 gap-5 md:grid-cols-[260px_1fr]">
         {/* LEFT */}
         <div>
@@ -277,7 +165,7 @@ const TabBiodata = () => (
 
 const TabPembayaran = () => (
     <div className="grid grid-cols-1 gap-6 md:grid-cols-[260px_1fr]">
-        {/* LEFT MENU */}
+        {/* LEFT MENU */} 
         <div className="overflow-hidden rounded-xl border bg-white text-sm dark:border-[#3E3E3A] dark:bg-[#1A1A19]">
             {[
                 'GoPay',
@@ -357,6 +245,82 @@ const TabDaftarTransaksi = () => (
 );
 
 export default function UserProfile() {
+    const { user, url } = usePage<{ user: User }>().props;
+
+    const profileForm = useForm({
+        name: user.name || '',
+        avatar: null as File | null,
+        phone: user.phone || '',
+        birth_date: user.birth_date || '',
+        gender: user.gender || '',
+    });
+
+    const passwordForm = useForm({
+        current_password: '',
+        password: '',
+        password_confirmation: '',
+    });
+
+    const [openMenu, setOpenMenu] = useState<Record<string, boolean>>({
+        'Kotak Masuk': true,
+        Pembelian: true,
+        'Profil Saya': true,
+    });
+
+    const toggleMenu = (menu: string) => {
+        setOpenMenu((prev) => ({
+            ...prev,
+            [menu]: !prev[menu],
+        }));
+    };
+
+    type TabKey = (typeof SECTION_TABS)[keyof typeof SECTION_TABS][number];
+
+    const [activeSection, setActiveSection] = useState<SectionKey>('profil');
+    const [activeTab, setActiveTab] = useState<TabKey>(SECTION_TABS.profil[0]);
+
+    const containerRef = useRef<HTMLDivElement>(null);
+    const tabRefs = useRef<Record<string, HTMLButtonElement | null>>({});
+
+    const [indicator, setIndicator] = useState({
+        left: 0, 
+        width: 0,
+    });
+
+    const isValidTab = (section: SectionKey, tab: string): tab is TabKey => {
+        return (SECTION_TABS[section] as readonly string[]).includes(tab);
+    };
+
+    useEffect(() => {
+        const params = new URLSearchParams(url?.split('?')[1] || '');
+        const section = params.get('section') as SectionKey | null;
+        const tab = params.get('tab');
+
+        if (section && SECTION_TABS[section]) {
+            setActiveSection(section);
+            if (tab && isValidTab(section, tab)) {
+                setActiveTab(tab);
+            } else {
+                setActiveTab(SECTION_TABS[section][0]);
+            }
+        }
+    }, [url]);
+
+    useEffect(() => {
+        const activeEl = tabRefs.current[activeTab];
+        const containerEl = containerRef.current;
+
+        if (!activeEl || !containerEl) return;
+
+        const activeRect = activeEl.getBoundingClientRect();
+        const containerRect = containerEl.getBoundingClientRect();
+
+        setIndicator({
+            left: activeRect.left - containerRect.left,
+            width: activeRect.width,
+        });
+    }, [activeTab, activeSection]);
+
     return (
         <>
             <Head title="Profil - Ditoekoe" />
@@ -650,7 +614,7 @@ export default function UserProfile() {
                                             <>
                                                 {activeTab ===
                                                     'Biodata Diri' && (
-                                                    <TabBiodata />
+                                                    <TabBiodata user={user} />
                                                 )}
                                                 {activeTab ===
                                                     'Daftar Alamat' && (

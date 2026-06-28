@@ -1,7 +1,7 @@
-import { Link } from "@inertiajs/react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { useInitials } from "@/hooks/use-initials";
-import { type User } from "@/types";
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { useInitials } from '@/hooks/use-initials';
+import { type User } from '@/types';
+import { Link } from '@inertiajs/react';
 
 interface UserInfoProps {
     user: User;
@@ -12,15 +12,15 @@ export function UserInfo({ user, onLogout }: UserInfoProps) {
     const getInitials = useInitials();
 
     return (
-        <div className="relative group">
+        <div className="group relative">
             {/* CLICK → PROFILE */}
             <Link
                 href="/user-profile"
-                className="flex items-center gap-2.5"
+                className="flex items-center gap-2.5 py-2" // Tambah py-2 untuk memperluas hover area
             >
                 <Avatar className="h-8 w-8">
                     <AvatarImage
-                        src={user.avatar ?? "/images/login-illus.png"}
+                        src={user.avatar ?? '/images/login-illus.png'}
                         alt={user.name}
                         className="object-cover"
                     />
@@ -29,36 +29,42 @@ export function UserInfo({ user, onLogout }: UserInfoProps) {
                     </AvatarFallback>
                 </Avatar>
 
-                <span className="text-sm font-medium truncate max-w-[120px] dark:text-white">
+                <span className="max-w-[120px] truncate text-sm font-medium dark:text-white">
                     {user.name}
                 </span>
             </Link>
 
-            {/* DROPDOWN (HOVER) */}
-            <div
-                className="absolute right-0 mt-2 w-44 rounded-md border bg-white shadow-md opacity-0 invisible group-hover:opacity-100 group-hover:visible transition dark:bg-[#252523] dark:border-[#3E3E3A]"
-            >
-                <Link
-                    href="/profile"
-                    className="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-[#1A1A19] rounded-t-sm dark:text-white"
-                >
-                    Profil Saya
-                </Link>
+            {/* DROPDOWN (HOVER) - FIXED */}
+            <div className="invisible absolute top-full right-0 z-50 pt-2 opacity-0 transition-[opacity,visibility] delay-100 duration-200 group-hover:visible group-hover:opacity-100">
+                {/* Bridge element - menghubungkan trigger dan dropdown tanpa celah */}
+                <div className="absolute top-0 right-0 left-0 h-2 -translate-y-full" />
 
-                <Link
-                    href="/orders"
-                    className="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-[#1A1A19] dark:text-white"
-                >
-                    Pesanan
-                </Link>
+                <div className="w-44 rounded-md border bg-white shadow-md dark:border-[#3E3E3A] dark:bg-[#252523]">
+                    {/* Sesuai route */}
+                    <Link
+                        href="/user-profile"
+                        className="block rounded-t-sm px-4 py-2 text-sm hover:bg-gray-100 dark:text-white dark:hover:bg-[#1A1A19]"
+                    >
+                        Profil Saya
+                    </Link>
 
-                <button
-                    onClick={onLogout}
-                    className="w-full text-left px-4 py-2 text-sm text-red-600
-                    hover:bg-red-100/30 rounded-b-sm dark:text-red-400 dark:hover:bg-red-900/30"
-                >
-                    Logout
-                </button>
+                    {/* Sesuai route dengan section parameter */}
+                    <Link
+                        href="/user-profile"
+                        data={{ section: 'pembelian' }}
+                        className="block px-4 py-2 text-sm hover:bg-gray-100 dark:text-white dark:hover:bg-[#1A1A19]"
+                    >
+                        Pesanan Saya
+                    </Link>
+
+                    {/* Logout */}
+                    <button
+                        onClick={onLogout}
+                        className="w-full rounded-b-sm px-4 py-2 text-left text-sm text-red-600 hover:bg-red-100/30 dark:text-red-400 dark:hover:bg-red-900/30"
+                    >
+                        Logout
+                    </button>
+                </div>
             </div>
         </div>
     );

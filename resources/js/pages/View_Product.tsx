@@ -762,7 +762,7 @@ export default function ProductView({
                                         {/* Image */}
                                         <div className="relative h-44 w-full overflow-hidden rounded-t-xl">
                                             <img
-                                                src={p.image ?? '/images/placeholder.png'}
+                                                src={p.image || '/images/placeholder.png'}
                                                 alt={p.name ?? '-'}
                                                 className="w-full h-full object-cover"
                                             />
