@@ -58,6 +58,24 @@ class HandleInertiaRequests extends Middleware
             'cartCount' => fn () => $request->user()
                 ? Cart::where('user_id', $request->user()->id)->count()
                 : 0,
+            'cartItemsPreview' => fn () => $request->user()
+                ? Cart::with('product')
+                    ->where('user_id', $request->user()->id)
+                    ->latest() // Mengambil item terbaru
+                    ->limit(15) // Batasi 15 item untuk pratinjau
+                    ->get()
+                    ->map(function ($cartItem) {
+                        if (!$cartItem->product) return null;
+                        $product = $cartItem->product;
+                        $price = $product->discount_price ?? $product->price;
+                        return [
+                            'name' => $product->name,
+                            'slug' => $product->slug,
+                            'image' => $product->image_url, // Pastikan accessor ini ada di model Product
+                            'price_formatted' => 'Rp' . number_format($price, 0, ',', '.'),
+                        ];
+                    })->filter() // Menghapus item null jika produk tidak ditemukan
+                : [],
         ]);
     }
 }

@@ -20,7 +20,7 @@ export default function CartDropdown() {
         }, 30);
     };
 
-    const { cartCount = 0 } = usePage<SharedData>().props;
+    const { cartCount = 0, cartItemsPreview = [] } = usePage<SharedData>().props as unknown as { cartCount: number, cartItemsPreview: { slug: string, image: string, name: string, price_formatted: string }[] };
 
     return (
         <div
@@ -46,7 +46,7 @@ export default function CartDropdown() {
                 </svg>
                 {cartCount > 0 && (
                     <span
-                        className="absolute -top-0.5 -right-0.5 flex h-3.5 w-3.5 items-center justify-center rounded-full bg-red-600 text-[10px] font-bold text-white"
+                        className="absolute -top-0.5 -right-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-red-600 text-[9px] font-bold text-white"
                     >
                         {cartCount}
                     </span>
@@ -70,29 +70,42 @@ export default function CartDropdown() {
                         </Link>
                     </div>
 
-                    {/* EMPTY CART */}
-                    <div className="px-6 py-2 text-center">
-                        <img
-                            src="/images/nav/no-cart.webp"
-                            alt="Keranjang kosong"
-                            className="mx-auto w-36 mb-4"
-                        />
+                    {cartItemsPreview.length === 0 ? (
+                        /* EMPTY CART */
+                        <div className="px-6 py-2 text-center">
+                            <img
+                                src="/images/nav/no-cart.webp"
+                                alt="Keranjang kosong"
+                                className="mx-auto w-36 mb-4"
+                            />
+                            <h4 className="font-bold text-gray-900 text-base mb-1">
+                                Wah, keranjang belanjamu kosong
+                            </h4>
+                            <p className="text-gray-500 text-[13px] mb-4">
+                                Yuk, isi dengan barang-barang impianmu!
+                            </p>
+                            <Link
+                                href="/top-product"
+                                className="inline-block border border-green-600 mb-5 text-green-600 font-semibold text-sm px-6 py-1 rounded-sm hover:bg-green-50 transition"
+                            >
+                                Mulai Belanja
+                            </Link>
+                        </div>
+                    ) : (
+                        /* CART WITH ITEMS */
+                        <div className="max-h-[300px] overflow-y-auto">
+                            {cartItemsPreview.map((item, index) => (
+                                <Link key={index} href={`/product/${item.slug}`} className="flex items-center gap-3 px-4 py-3 border-b dark:border-[#252523] hover:bg-gray-50 dark:hover:bg-[#1A1A19]">
+                                    <img src={item.image} alt={item.name} className="w-12 h-12 object-cover rounded-md" />
+                                    <div className="flex-1">
+                                        <p className="text-sm line-clamp-2 leading-tight text-gray-800 dark:text-gray-200">{item.name}</p>
+                                        <p className="text-xs font-semibold text-green-600 mt-1">{item.price_formatted}</p>
+                                    </div>
+                                </Link>
+                            ))}
+                        </div>
+                    )}
 
-                        <h4 className="font-bold text-gray-900 text-base mb-1">
-                            Wah, keranjang belanjamu kosong
-                        </h4>
-
-                        <p className="text-gray-500 text-[13px] mb-4">
-                            Yuk, isi dengan barang-barang impianmu!
-                        </p>
-
-                        <Link
-                            href="/"
-                            className="inline-block border border-green-600 mb-5 text-green-600 font-semibold text-sm px-6 py-1 rounded-sm hover:bg-green-50 transition"
-                        >
-                            Mulai Belanja
-                        </Link>
-                    </div>
                 </div>
             )}
         </div>
