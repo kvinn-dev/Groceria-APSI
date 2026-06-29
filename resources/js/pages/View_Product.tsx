@@ -1,6 +1,7 @@
 import { Head, Link, router } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
 import NavMain from '@/components/nav-main';
+import { ToasterProvider } from '@/components/toaster-provider';
 import { NavFooter } from '@/components/nav-footer';
 import { type SharedData } from '@/types';
 
@@ -206,6 +207,7 @@ export default function ProductView({
     return (
         <>
             <Head title={`${product.name} - Ditoekoe`} />
+            <ToasterProvider />
             <div className="min-h-screen bg-white text-gray-900">
                 <NavMain />
 

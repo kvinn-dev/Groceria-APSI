@@ -323,7 +323,7 @@ export default function UserProfile() {
 
     return (
         <>
-            <Head title="Profil - Ditoekoe" />
+            <Head title="Profil" />
 
             <div className="min-h-screen bg-gray-50 text-gray-900 dark:bg-[#121212] dark:text-white">
                 {/* NAV */}

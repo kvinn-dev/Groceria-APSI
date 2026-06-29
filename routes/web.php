@@ -224,3 +224,11 @@ Route::prefix('api')->group(function () {
     Route::get('/flash-sale/products', [FlashSaleController::class, 'getProducts']);
     Route::get('/top-product/products', [TopProductController::class, 'getProducts']);
 });
+
+
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('/cart', [App\Http\Controllers\CartController::class, 'index'])->name('cart.index');
+    Route::post('/cart/add', [App\Http\Controllers\CartController::class, 'add'])->name('cart.add');
+    Route::patch('/cart/update/{cart}', [App\Http\Controllers\CartController::class, 'update'])->name('cart.update');
+    Route::delete('/cart/remove/{cart}', [App\Http\Controllers\CartController::class, 'remove'])->name('cart.remove');
+});
