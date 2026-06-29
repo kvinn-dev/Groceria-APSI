@@ -224,10 +224,10 @@ export default function FlashSale({
 
                         {/* CATEGORY FILTER */}
                         <div className="mb-7 relative pt-2">
-                            <div className="flex flex-wrap gap-1.5 ml-1 items-center relative">
+                            <div className="flex flex-wrap gap-2 ml-1.5 items-center relative">
                                 <button
                                     onClick={() => setActiveCategory('all')}
-                                    className={`px-5 py-1.5 rounded-full text-sm font-medium whitespace-nowrap transition ${activeCategory === 'all'
+                                    className={`px-4 py-1.5 rounded-full text-sm font-medium whitespace-nowrap transition ${activeCategory === 'all'
                                         ? 'bg-gradient-to-r from-green-500 to-green-600 text-white shadow-sm'
                                         : 'bg-gray-100 dark:bg-[#252523] text-gray-700 dark:text-gray-100 hover:bg-gray-200'
                                         }`}
@@ -239,7 +239,7 @@ export default function FlashSale({
                                     <button
                                         key={c.id}
                                         onClick={() => { setActiveCategory(c.slug); setOpenMore(false); }}
-                                        className={`px-5 py-1.5 rounded-full text-sm font-medium whitespace-nowrap transition ${activeCategory === c.slug
+                                        className={`px-4 py-1.5 rounded-full text-sm font-medium whitespace-nowrap transition ${activeCategory === c.slug
                                             ? 'bg-gradient-to-r from-green-500 to-green-600 text-white shadow-sm'
                                             : 'bg-gray-100 dark:bg-[#252523] text-gray-700 dark:text-gray-100 hover:bg-gray-200'
                                             }`}
