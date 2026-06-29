@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
  
+use App\Models\Cart;
 use Illuminate\Foundation\Inspiring;
 use Tighten\Ziggy\Ziggy;
 use Illuminate\Http\Request;
@@ -50,6 +51,13 @@ class HandleInertiaRequests extends Middleware
                 ...(new Ziggy)->toArray(),
                 'location' => $request->url(),
             ],
+            'flash' => [
+                'success' => fn () => $request->session()->get('success'),
+                'error' => fn () => $request->session()->get('error'),
+            ],
+            'cartCount' => fn () => $request->user()
+                ? Cart::where('user_id', $request->user()->id)->count()
+                : 0,
         ]);
     }
 }

@@ -1,5 +1,6 @@
 import { useRef, useState } from "react";
-import { Link } from "@inertiajs/react";
+import { Link, usePage } from "@inertiajs/react";
+import { type SharedData } from "@/types";
 
 export default function CartDropdown() {
     const [open, setOpen] = useState(false);
@@ -19,6 +20,8 @@ export default function CartDropdown() {
         }, 30);
     };
 
+    const { cartCount = 0 } = usePage<SharedData>().props;
+
     return (
         <div
             className="relative"
@@ -26,7 +29,7 @@ export default function CartDropdown() {
             onMouseLeave={handleMouseLeave}
         >
             {/* CART ICON */}
-            <Link href="/cart" className="w-9 h-9 flex items-center justify-center rounded-md">
+            <Link href="/cart" className="relative w-9 h-9 flex items-center justify-center rounded-md">
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
@@ -41,11 +44,18 @@ export default function CartDropdown() {
                         d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007Z"
                     />
                 </svg>
+                {cartCount > 0 && (
+                    <span
+                        className="absolute -top-0.5 -right-0.5 flex h-3.5 w-3.5 items-center justify-center rounded-full bg-red-600 text-[10px] font-bold text-white"
+                    >
+                        {cartCount}
+                    </span>
+                )}
             </Link>
 
             {/* DROPDOWN */}
             {open && (
-                <div className="absolute left-1/2 mt-4 w-[350px] -translate-x-1/2 bg-white dark:bg-[#1A1A19] border border-gray-200 dark:border-[#252523] rounded-b-sm shadow-xl z-50 overflow-hidden">
+                <div className="absolute left-1/2 mt-3.5 w-[350px] -translate-x-1/2 bg-white dark:bg-[#1A1A19] border border-gray-200 dark:border-[#252523] rounded-sm shadow-xl z-50 overflow-hidden">
 
                     {/* HEADER */}
                     <div className="flex items-center justify-between h-12 px-4 border-b shadow-md">

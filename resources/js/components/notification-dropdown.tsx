@@ -206,7 +206,7 @@ export default function NotificationDropdown() {
 
             {/* DROPDOWN */}
             {open && (
-                <div className="absolute left-1/2 mt-4 w-[280px] -translate-x-1/2 bg-white dark:bg-[#252523] rounded-b-sm border border-gray-200 dark:border-[#3E3E3A] shadow-xl z-50 overflow-hidden">
+                <div className="absolute left-1/2 mt-3.5 w-[280px] -translate-x-1/2 bg-white dark:bg-[#252523] rounded-sm border border-gray-200 dark:border-[#3E3E3A] shadow-xl z-50 overflow-hidden">
 
                     {/* HEADER */}
                     <div className="flex items-center justify-between h-12 px-4 border-b dark:border-[#3E3E3A] shadow-md">
