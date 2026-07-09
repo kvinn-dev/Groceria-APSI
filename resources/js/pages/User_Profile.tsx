@@ -117,7 +117,7 @@ const TabBiodata = ({ user }: { user: User }) => (
                 </button>
 
                 <button className="w-full rounded-sm border py-1.5 text-sm font-semibold hover:bg-gray-50 dark:border-[#3E3E3A] dark:hover:bg-[#252523]">
-                    PIN Ditoekoe
+                    PIN Groceria
                 </button>
 
                 <button className="w-full rounded-sm border py-1.5 text-sm font-semibold hover:bg-gray-50 dark:border-[#3E3E3A] dark:hover:bg-[#252523]">
@@ -245,7 +245,8 @@ const TabDaftarTransaksi = () => (
 );
 
 export default function UserProfile() {
-    const { user, url } = usePage<{ user: User }>().props;
+    const { props, url } = usePage<{ user: User }>();
+    const { user } = props;
 
     const profileForm = useForm({
         name: user.name || '',
@@ -395,7 +396,7 @@ export default function UserProfile() {
                                                 </span>
                                             </div>
                                             <div className="flex items-center justify-between">
-                                                <span>Ditoekoe Card</span>
+                                                <span>Groceria Card</span>
                                                 <span className="text-green-600">
                                                     Daftar
                                                 </span>

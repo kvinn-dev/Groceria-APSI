@@ -44,6 +44,7 @@ class Product extends Model
         'final_price_formatted',
         'discount',
         'is_in_stock',
+        'image_url',
     ];
 
     protected $casts = [
@@ -127,5 +128,13 @@ class Product extends Model
         }
 
         return 0;
+    }
+
+    public function getImageUrlAttribute(): string
+    {
+        if ($this->image && (str_starts_with($this->image, 'http://') || str_starts_with($this->image, 'https://'))) {
+            return $this->image;
+        }
+        return $this->image ? asset('storage/' . $this->image) : asset('images/placeholder.png');
     }
 }

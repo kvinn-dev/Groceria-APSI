@@ -13,107 +13,100 @@ use Illuminate\Support\Str;
 class ProductController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Display a listing of the resource for admin.
      */
     public function index(Request $request)
     {
-        $query = Product::with(['category', 'brand'])
-            ->latest();
+        // Cek apakah request datang dari route admin
+        if ($request->route()->named('admin.*')) {
+            $query = Product::with('category', 'brand');
 
-        // Search
-        if ($request->has('search')) {
-            $search = $request->search;
-            $query->where(function ($q) use ($search) {
+            if ($request->filled('search')) {
+                $search = $request->input('search');
+                $query->where(function($q) use ($search) {
+                    $q->where('name', 'like', "%{$search}%")
+                      ->orWhere('sku', 'like', "%{$search}%");
+                });
+
+                // Urutkan berdasarkan tingkat relevansi kecocokan teks
+                $query->orderByRaw("CASE 
+                    WHEN name = ? THEN 1 
+                    WHEN name LIKE ? THEN 2 
+                    WHEN name LIKE ? THEN 3 
+                    ELSE 4 
+                END ASC", [
+                    $search,
+                    $search . '%',
+                    '%' . $search . '%'
+                ])->latest();
+            } else {
+                $query->latest();
+            }
+
+            return Inertia::render('Admin/Products/Index', [
+                'products' => $query->paginate(10)->withQueryString(),
+                'filters' => $request->only(['search']),
+            ]);
+        }
+
+        // Logika untuk halaman publik
+        $query = Product::with(['category', 'brand'])->where('is_active', true);
+
+        if ($request->filled('search')) {
+            $search = $request->input('search');
+            $query->where(function($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('description', 'like', "%{$search}%")
                   ->orWhere('sku', 'like', "%{$search}%");
+            });
+
+            // Urutkan berdasarkan relevansi
+            $query->orderByRaw("CASE 
+                WHEN name = ? THEN 1 
+                WHEN name LIKE ? THEN 2 
+                WHEN name LIKE ? THEN 3 
+                ELSE 4 
+            END ASC", [
+                $search,
+                $search . '%',
+                '%' . $search . '%'
+            ]);
+        }
+
+        if ($request->filled('category')) {
+            $categorySlug = $request->input('category');
+            $query->whereHas('category', function($q) use ($categorySlug) {
+                $q->where('slug', $categorySlug);
             });
         }
 
-        // Filter by category
-        if ($request->has('category')) {
-            $query->where('category_id', $request->category);
+        if ($request->filled('brand')) {
+            $brandSlug = $request->input('brand');
+            $query->whereHas('brand', function($q) use ($brandSlug) {
+                $q->where('slug', $brandSlug);
+            });
         }
 
-        // Filter by brand
-        if ($request->has('brand')) {
-            $query->where('brand_id', $request->brand);
+        if ($request->filled('min_price')) {
+            $query->where('price', '>=', $request->input('min_price'));
         }
 
-        // Filter by price range
-        if ($request->has('min_price')) {
-            $query->where('price', '>=', $request->min_price);
+        if ($request->filled('max_price')) {
+            $query->where('price', '<=', $request->input('max_price'));
         }
 
-        if ($request->has('max_price')) {
-            $query->where('price', '<=', $request->max_price);
-        }
+        $query->latest();
 
-        // Filter featured
-        if ($request->has('featured')) {
-            $query->where('is_featured', true);
-        }
-
-        // Filter active
-        if ($request->has('active')) {
-            $query->where('is_active', true);
-        }
-
-        // Pagination for normal product listing
-        $products = $query->paginate(12)->withQueryString();
-
-        return Inertia::render('Products/Index', [
-            'products' => $products,
+        return Inertia::render('products/Index', [
+            'products' => $query->paginate(12)->withQueryString(),
             'categories' => Category::whereNull('parent_id')->with('children')->get(),
             'brands' => Brand::where('is_active', true)->get(),
-            'filters' => $request->only(['search', 'category', 'brand', 'min_price', 'max_price', 'featured']),
+            'filters' => $request->only(['search', 'category', 'brand', 'min_price', 'max_price']),
         ]);
     }
 
-    /**
-     * Display Flash Sale page (all products sent for client-side load)
-     */
-    public function flashSale()
-    {
-        $flashSaleProducts = Product::with(['category', 'brand'])
-            ->where('is_active', true)
-            ->where('is_flash_sale', true)
-            ->latest()
-            ->get(); // ambil semua flash sale
-
-        return Inertia::render('FlashSale', [
-            'flashSaleProducts' => $flashSaleProducts,
-        ]);
-    }
-
-    /**
-     * API endpoint for server-side batch loading (lazy load)
-     */
-    public function flashSaleBatch(Request $request)
-    {
-        $page = $request->get('page', 1);
-        $perPage = 30;
-
-        $products = Product::with(['category', 'brand'])
-            ->where('is_active', true)
-            ->where('is_flash_sale', true)
-            ->latest()
-            ->skip(($page - 1) * $perPage)
-            ->take($perPage)
-            ->get();
-
-        return response()->json([
-            'products' => $products,
-            'hasMore' => $products->count() === $perPage,
-        ]);
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
-        return Inertia::render('Products/Create', [
+        return Inertia::render('Admin/Products/Create', [
             'categories' => Category::all(),
             'brands' => Brand::where('is_active', true)->get(),
         ]);
@@ -124,50 +117,20 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'price' => 'required|numeric|min:0',
-            'discount_price' => 'nullable|numeric|min:0',
-            'stock' => 'required|integer|min:0',
-            'sku' => 'nullable|string|unique:products,sku',
-            'weight' => 'nullable|numeric|min:0',
-            'dimensions' => 'nullable|string|max:50',
-            'category_id' => 'required|exists:categories,id',
-            'brand_id' => 'nullable|exists:brands,id',
-            'is_featured' => 'boolean',
-            'is_active' => 'boolean',
-            'is_flash_sale' => 'boolean', // baru
-            'meta_title' => 'nullable|string|max:255',
-            'meta_description' => 'nullable|string',
-            'meta_keywords' => 'nullable|string',
-            'image' => 'nullable|image|max:2048',
-            'images' => 'nullable|array',
-            'images.*' => 'image|max:2048',
-        ]);
+        $validated = $this->validateProduct($request);
 
-        // Generate slug
-        $validated['slug'] = Str::slug($validated['name']);
-
-        // Handle main image upload
         if ($request->hasFile('image')) {
             $validated['image'] = $request->file('image')->store('products', 'public');
+        } elseif ($request->filled('image_url')) {
+            $validated['image'] = $request->input('image_url');
         }
 
-        // Handle multiple images upload
-        if ($request->hasFile('images')) {
-            $imagePaths = [];
-            foreach ($request->file('images') as $image) {
-                $imagePaths[] = $image->store('products/gallery', 'public');
-            }
-            $validated['images'] = json_encode($imagePaths);
-        }
+        unset($validated['image_url']);
+        $validated['slug'] = Str::slug($validated['name']) . '-' . uniqid();
 
-        $product = Product::create($validated);
+        Product::create($validated);
 
-        return redirect()
-            ->route('products.show', $product)
-            ->with('success', 'Produk berhasil ditambahkan!');
+        return redirect()->route('admin.products.index')->with('success', 'Produk berhasil ditambahkan.');
     }
 
     /**
@@ -175,19 +138,8 @@ class ProductController extends Controller
      */
     public function show(Product $product)
     {
-        $product->load(['category', 'brand', 'reviews.user']);
-
-        $relatedProducts = Product::where('category_id', $product->category_id)
-            ->where('id', '!=', $product->id)
-            ->where('is_active', true)
-            ->inRandomOrder()
-            ->limit(4)
-            ->get();
-
-        return Inertia::render('Products/Show', [
-            'product' => $product,
-            'relatedProducts' => $relatedProducts,
-        ]);
+        // Redirect ke halaman view publik
+        return redirect()->route('product.view', $product->slug);
     }
 
     /**
@@ -195,7 +147,7 @@ class ProductController extends Controller
      */
     public function edit(Product $product)
     {
-        return Inertia::render('Products/Edit', [
+        return Inertia::render('Admin/Products/Edit', [
             'product' => $product,
             'categories' => Category::all(),
             'brands' => Brand::where('is_active', true)->get(),
@@ -207,64 +159,32 @@ class ProductController extends Controller
      */
     public function update(Request $request, Product $product)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'price' => 'required|numeric|min:0',
-            'discount_price' => 'nullable|numeric|min:0',
-            'stock' => 'required|integer|min:0',
-            'sku' => 'nullable|string|unique:products,sku,' . $product->id,
-            'weight' => 'nullable|numeric|min:0',
-            'dimensions' => 'nullable|string|max:50',
-            'category_id' => 'required|exists:categories,id',
-            'brand_id' => 'nullable|exists:brands,id',
-            'is_featured' => 'boolean',
-            'is_active' => 'boolean',
-            'is_flash_sale' => 'boolean', // baru
-            'meta_title' => 'nullable|string|max:255',
-            'meta_description' => 'nullable|string',
-            'meta_keywords' => 'nullable|string',
-            'image' => 'nullable|image|max:2048',
-            'remove_image' => 'boolean',
-            'images' => 'nullable|array',
-            'images.*' => 'image|max:2048',
-            'remove_images' => 'nullable|array',
-        ]);
+        $validated = $this->validateProduct($request, $product->id);
 
-        // Slug
-        if ($product->name !== $validated['name']) {
-            $validated['slug'] = Str::slug($validated['name']);
-        }
-
-        // Main image update
         if ($request->hasFile('image')) {
-            if ($product->image) Storage::disk('public')->delete($product->image);
+            // Hapus gambar lama jika ada
+            if ($product->image && !str_starts_with($product->image, 'http://') && !str_starts_with($product->image, 'https://')) {
+                Storage::disk('public')->delete($product->image);
+            }
             $validated['image'] = $request->file('image')->store('products', 'public');
-        } elseif ($request->boolean('remove_image')) {
-            if ($product->image) Storage::disk('public')->delete($product->image);
-            $validated['image'] = null;
+        } elseif ($request->filled('image_url')) {
+            // Hapus gambar lama jika ada
+            if ($product->image && !str_starts_with($product->image, 'http://') && !str_starts_with($product->image, 'https://')) {
+                Storage::disk('public')->delete($product->image);
+            }
+            $validated['image'] = $request->input('image_url');
         }
 
-        // Multiple images
-        $currentImages = $product->images ? json_decode($product->images, true) : [];
-        if ($request->has('remove_images')) {
-            foreach ($request->remove_images as $img) {
-                Storage::disk('public')->delete($img);
-                $currentImages = array_diff($currentImages, [$img]);
-            }
+        unset($validated['image_url']);
+
+        // Update slug jika nama produk berubah
+        if ($product->name !== $validated['name']) {
+            $validated['slug'] = Str::slug($validated['name']) . '-' . uniqid();
         }
-        if ($request->hasFile('images')) {
-            foreach ($request->file('images') as $img) {
-                $currentImages[] = $img->store('products/gallery', 'public');
-            }
-        }
-        $validated['images'] = json_encode(array_values($currentImages));
 
         $product->update($validated);
 
-        return redirect()
-            ->route('products.show', $product)
-            ->with('success', 'Produk berhasil diperbarui!');
+        return redirect()->route('admin.products.index')->with('success', 'Produk berhasil diperbarui.');
     }
 
     /**
@@ -272,45 +192,33 @@ class ProductController extends Controller
      */
     public function destroy(Product $product)
     {
-        if ($product->image) Storage::disk('public')->delete($product->image);
-        if ($product->images) {
-            foreach (json_decode($product->images, true) as $img) {
-                Storage::disk('public')->delete($img);
-            }
+        if ($product->image && !str_starts_with($product->image, 'http://') && !str_starts_with($product->image, 'https://')) {
+            Storage::disk('public')->delete($product->image);
         }
         $product->delete();
-
-        return redirect()
-            ->route('products.index')
-            ->with('success', 'Produk berhasil dihapus!');
+        return redirect()->route('admin.products.index')->with('success', 'Produk berhasil dihapus.');
     }
 
-    /**
-     * API for frontend components (normal)
-     */
-    public function apiIndex(Request $request)
+    private function validateProduct(Request $request, $productId = null)
     {
-        $products = Product::with(['category', 'brand'])
-            ->where('is_active', true)
-            ->latest()
-            ->limit(8)
-            ->get();
+        $rules = [
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'price' => 'required|numeric|min:0',
+            'stock' => 'required|integer|min:0',
+            'category_id' => 'required|exists:categories,id',
+            'brand_id' => 'nullable|exists:brands,id',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+            'image_url' => 'nullable|url',
+            'is_featured' => 'boolean',
+            'is_active' => 'boolean',
+        ];
 
-        return response()->json($products);
-    }
+        // Saat update, pastikan 'image' tidak wajib
+        if ($request->isMethod('patch') || $request->isMethod('put')) {
+            $rules['image'] = 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048';
+        }
 
-    /**
-     * Get featured products
-     */
-    public function featured()
-    {
-        $products = Product::with(['category', 'brand'])
-            ->where('is_active', true)
-            ->where('is_featured', true)
-            ->latest()
-            ->limit(8)
-            ->get();
-
-        return response()->json($products);
+        return $request->validate($rules);
     }
 }

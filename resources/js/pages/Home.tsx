@@ -580,9 +580,9 @@ export default function Home({
                                 href="/lokal"
                                 className="flex flex-col items-center">
                                 <div className="rounded-xl border border-gray-200 dark:border-[#252523] p-3 bg-white dark:bg-[#1A1A19]">
-                                    <img src="images/icon/icon_local.png" alt="Ditoekoe Pilih Lokal" className="h-8 w-8" />
+                                    <img src="images/icon/icon_local.png" alt="Groceria Pilih Lokal" className="h-8 w-8" />
                                 </div>
-                                <p className="mt-2 text-[13px] font-regular text-gray-900 dark:text-gray-300">Ditoekoe Pilih Lokal</p>
+                                <p className="mt-2 text-[13px] font-regular text-gray-900 dark:text-gray-300">Groceria Pilih Lokal</p>
                             </Link>
 
                             {/* Item 2 */}
@@ -590,9 +590,9 @@ export default function Home({
                                 href="/mall"
                                 className="flex flex-col items-center">
                                 <div className="rounded-xl border border-gray-200 dark:border-[#252523] p-3 bg-white dark:bg-[#1A1A19]">
-                                    <img src="images/icon/icon_bag.png" alt="Ditoekoe Mall" className="h-8 w-8" />
+                                    <img src="images/icon/icon_bag.png" alt="Groceria Mall" className="h-8 w-8" />
                                 </div>
-                                <p className="mt-2 text-[13px] font-regular text-gray-900 dark:text-gray-300">Ditoekoe Mall</p>
+                                <p className="mt-2 text-[13px] font-regular text-gray-900 dark:text-gray-300">Groceria Mall</p>
                             </Link>
 
                             {/* Item 3 */}
@@ -622,7 +622,7 @@ export default function Home({
                                 <div className="rounded-xl border border-gray-200 dark:border-[#252523] p-3 bg-white dark:bg-[#1A1A19]">
                                     <img src="images/icon/icon_supermarket.png" alt="Supermarket" className="h-8 w-10" />
                                 </div>
-                                <p className="mt-2 text-[13px] font-regular text-gray-900 dark:text-gray-300">Ditoekoe Supermarket</p>
+                                <p className="mt-2 text-[13px] font-regular text-gray-900 dark:text-gray-300">Groceria Supermarket</p>
                             </Link>
 
                             {/* Item 6 */}
@@ -630,9 +630,9 @@ export default function Home({
                                 href="/kelola"
                                 className="flex flex-col items-center">
                                 <div className="rounded-xl border border-gray-200 dark:border-[#252523] p-3 bg-white dark:bg-[#1A1A19]">
-                                    <img src="images/icon/icon_kelola.png" alt="Dikelola Ditoekoe" className="h-8 w-8" />
+                                    <img src="images/icon/icon_kelola.png" alt="Dikelola Groceria" className="h-8 w-8" />
                                 </div>
-                                <p className="mt-2 text-[13px] font-regular text-gray-900 dark:text-gray-300">Dikelola Ditoekoe</p>
+                                <p className="mt-2 text-[13px] font-regular text-gray-900 dark:text-gray-300">Dikelola Groceria</p>
                             </Link>
 
                             {/* Item 7 */}
@@ -660,9 +660,9 @@ export default function Home({
                                 href="/berkah"
                                 className="flex flex-col items-center">
                                 <div className="rounded-xl border border-gray-200 dark:border-[#252523] p-3 bg-white dark:bg-[#1A1A19]">
-                                    <img src="images/icon/icon_berkah.png" alt="Ditoekoe Berkah" className="h-8 w-8" />
+                                    <img src="images/icon/icon_berkah.png" alt="Groceria Berkah" className="h-8 w-8" />
                                 </div>
-                                <p className="mt-2 text-[13px] font-regular text-gray-900 dark:text-gray-300">Ditoekoe Berkah</p>
+                                <p className="mt-2 text-[13px] font-regular text-gray-900 dark:text-gray-300">Groceria Berkah</p>
                             </Link>
 
                             {/* Item 10 */}

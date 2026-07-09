@@ -56,9 +56,7 @@ class ViewProductController extends Controller
         // ===============================
         $images = $product->images;
         if (!$images || !is_array($images) || count($images) === 0) {
-            $images = $product->image
-                ? [Storage::url($product->image)]
-                : ['/images/placeholder.png'];
+            $images = [$product->image_url];
         }
 
         // ===============================
@@ -264,9 +262,7 @@ class ViewProductController extends Controller
                     'sold' => $related->sold ?? 0,
                     'stock' => $related->stock,
 
-                    'image' => $related->image
-                        ? Storage::url($related->image)
-                        : '/images/placeholder.png',
+                    'image' => $related->image_url,
 
                     'rating' => $related->rating ?? 0,
                     'review_count' => $related->reviews

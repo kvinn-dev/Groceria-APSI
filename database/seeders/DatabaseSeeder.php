@@ -14,11 +14,12 @@ class DatabaseSeeder extends Seeder
     {
         // Buat user test jika belum ada
         User::firstOrCreate(
-            ['email' => 'test@example.com'],
+            ['email' => 'admin@example.com'],
             [
-                'name' => 'Test User',
-                'password' => bcrypt('password'), // jangan lupa bcrypt
+                'name' => 'Admin',
+                'password' => bcrypt('admin123'), // jangan lupa bcrypt
                 'email_verified_at' => now(),
+                'is_admin' => true, // set sebagai admin
             ]
         );
 

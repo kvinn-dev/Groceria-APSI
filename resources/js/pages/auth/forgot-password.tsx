@@ -13,10 +13,10 @@ import AuthLayout from '@/layouts/auth-layout';
 export default function ForgotPassword({ status }: { status?: string }) {
     return (
         <AuthLayout
-            title="Ditoekoe"
+            title="Groceria"
             description="Enter your email to receive a password reset link"
         >
-            <Head title="Ditoekoe" />
+            <Head title="Groceria" />
 
             {status && (
                 <div className="mb-4 text-center text-sm font-medium text-green-600">

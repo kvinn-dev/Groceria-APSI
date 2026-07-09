@@ -50,7 +50,7 @@ class FlashSaleController extends Controller
                 'final_price' => $product->final_price,
                 'final_price_formatted' => $product->final_price_formatted,
                 'discount' => $discountPercent,
-                'image' => $product->image ?? '/images/placeholder.png',
+                'image' => $product->image_url,
                 'category' => $product->category ? [
                     'id' => $product->category->id,
                     'name' => $product->category->name,
@@ -130,7 +130,7 @@ class FlashSaleController extends Controller
                 'final_price' => $product->final_price,
                 'final_price_formatted' => $product->final_price_formatted,
                 'discount' => $discountPercent,
-                'image' => $product->image ?? '/images/placeholder.png',
+                'image' => $product->image_url,
                 'category' => $product->category ? [
                     'id' => $product->category->id,
                     'name' => $product->category->name,

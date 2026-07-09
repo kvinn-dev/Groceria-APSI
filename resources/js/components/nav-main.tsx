@@ -1,4 +1,4 @@
-import { Link, usePage } from "@inertiajs/react";
+import { Link, usePage, router } from "@inertiajs/react";
 import { type SharedData } from "@/types";
 import { useEffect, useState } from "react";
 import { Mail } from "lucide-react";
@@ -9,6 +9,16 @@ import CartDropdown from "@/components/cart-dropdown";
 export default function NavMain() {
     const page = usePage<SharedData>();
     const auth = page.props.auth ?? { user: null };
+
+    // State untuk Search Query
+    const [searchQuery, setSearchQuery] = useState(
+        typeof window !== "undefined" ? new URLSearchParams(window.location.search).get("search") || "" : ""
+    );
+
+    const handleSearchSubmit = (e?: React.FormEvent) => {
+        if (e) e.preventDefault();
+        router.get("/products", { search: searchQuery });
+    };
 
     // State untuk CSRF token
     const [csrfToken, setCsrfToken] = useState<string>("");
@@ -121,7 +131,7 @@ export default function NavMain() {
                     </div>
 
                     <div className="flex items-center gap-6">
-                        {["Tentang Ditoekoe", "Mulai Berjualan", "Promo", "Ditoekoe Care"].map((item) => (
+                        {["Tentang Groceria", "Mulai Berjualan", "Promo", "Groceria Care"].map((item) => (
                             <Link
                                 key={item}
                                 href="/"
@@ -139,33 +149,40 @@ export default function NavMain() {
 
                     {/* LOGO */}
                     <Link href="/" className="text-2xl font-bold text-green-600">
-                        Ditoekoe
+                        Groceria
                     </Link>
 
                     {/* SEARCH BAR */}
-                    <div className="flex-1 hidden md:flex">
+                    <form onSubmit={handleSearchSubmit} className="flex-1 hidden md:flex">
                         <div className="w-full relative">
                             <input
                                 type="text"
-                                placeholder="Cari di Ditoekoe"
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                                placeholder="Cari di Groceria"
                                 className="w-full rounded-lg border border-gray-300 py-2.5 pl-10 pr-4 text-sm shadow-xs outline-none focus:ring-1 focus:ring-green-600 focus:border-green-600 dark:border-[#3E3E3A] dark:bg-[#252523] dark:text-gray-200 focus:dark:border-green-600 focus:dark:ring-green-600"
                             />
 
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                className="h-5 w-5 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                stroke="currentColor"
+                            <button
+                                type="submit"
+                                className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500 hover:text-green-600 transition"
                             >
-                                <path
-                                    strokeLinecap="round"
-                                    strokeWidth="2"
-                                    d="M21 21l-4.35-4.35M10.5 18a7.5 7.5 0 110-15 7.5 7.5 0 010 15z"
-                                />
-                            </svg>
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    className="h-5 w-5"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    stroke="currentColor"
+                                >
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeWidth="2"
+                                        d="M21 21l-4.35-4.35M10.5 18a7.5 7.5 0 110-15 7.5 7.5 0 010 15z"
+                                    />
+                                </svg>
+                            </button>
                         </div>
-                    </div>
+                    </form>
 
                     {/* RIGHT SIDE */}
                     <div className="flex items-center">

@@ -12,7 +12,7 @@ const TABS = [
     "Food & Voucher",
     "Produk Digital",
     "Fintech",
-    "Ditoekoe Salam",
+    "Groceria Salam",
 ] as const;
 
 type TabKey = typeof TABS[number];
@@ -33,21 +33,21 @@ const TAB_DATA: Record<TabKey, string[][]> = {
         [
             "Waktu Indonesia Belanja",
             "Promo Pengguna Baru",
-            "Ditoekoe Peduli Sehat",
+            "Groceria Peduli Sehat",
             "Kolaborasi Anak Bangsa",
-            "Ditoekoe Parents"
+            "Groceria Parents"
         ],
         [
             "Waktu Indonesia Belanja TV Show",
-            "Ditoekoe Nyam", "Home Living Salebration",
-            "Ditoekoe B2B Digital",
+            "Groceria Nyam", "Home Living Salebration",
+            "Groceria B2B Digital",
             "Cantik Fest"
         ],
         [
             "Kejar Diskon",
             "Bangga Buatan Indonesia",
             "Super Gadget Day",
-            "Mitra Ditoekoe",
+            "Mitra Groceria",
             "GOPAY COINS"
         ],
     ],
@@ -240,7 +240,7 @@ const TAB_DATA: Record<TabKey, string[][]> = {
             "Bell Pulsa AS",
             "Bell Paket Data TS",
             "Bell Paket Data XL",
-            "Ditoekoe B2B Digital",
+            "Groceria B2B Digital",
             "Catchplay"
         ],
         [
@@ -293,7 +293,7 @@ const TAB_DATA: Record<TabKey, string[][]> = {
             "Pinjaman Online Cepat Cair",
             "Pinjaman Pendidikan",
             "Mandiri Pasar Uang Syariah Ekstra",
-            "Kamus Ditoekoe",
+            "Kamus Groceria",
             "Kartu Kredit Citibank"
         ],
         [
@@ -304,13 +304,13 @@ const TAB_DATA: Record<TabKey, string[][]> = {
             "Kartu Kredit Standard Chartered"
         ],
     ],
-    "Ditoekoe Salam": [
+    "Groceria Salam": [
         [
             "Zakat Firah",
             "Cari Masjid Terdekat",
             "Jadwal Sholat Sidoarjo",
             "Juz Amma Online",
-            "Ditoekoe Salam Produk"
+            "Groceria Salam Produk"
         ],
         [
             "Jadwal Sholat Bandung",
@@ -360,7 +360,7 @@ export function NavFooter() {
                     {/* HEADER */}
                     <div className="mb-6">
                         <h2 className="text-xl font-extrabold text-gray-900 dark:text-white mb-6">
-                            Cari Semua di Ditoekoe!
+                            Cari Semua di Groceria!
                         </h2>
 
                         {/* TABS */}
@@ -423,7 +423,7 @@ export function NavFooter() {
                     <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
                         <div className="max-w-md">
                             <h3 className="text-lg font-black text-green-600 mb-3">
-                                Punya Toko Online? Buka cabangnya di Ditoekoe
+                                Punya Toko Online? Buka cabangnya di Groceria
                             </h3>
 
                             <p className="text-[13px] text-gray-600 dark:text-gray-300 mb-5">
@@ -462,7 +462,7 @@ export function NavFooter() {
                             <div className="w-[360px] md:w-[420px] lg:w-[480px]">
                                 <img
                                     src="/images/nav/foot-01.webp"
-                                    alt="Buka Toko di Ditoekoe"
+                                    alt="Buka Toko di Groceria"
                                     className="w-full h-auto object-contain"
                                 />
                             </div>
@@ -473,7 +473,7 @@ export function NavFooter() {
                         <div className="w-full border-t border-dashed border-gray-300 dark:border-gray-600"></div>
                     </div>
 
-                    {/* KEAMANAN DITOEKOE - ELEMEN BARU */}
+                    {/* KEAMANAN Groceria - ELEMEN BARU */}
                     <div className="mt-0 pt-6 dark:border-[#252523] ">
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
 
@@ -531,7 +531,7 @@ export function NavFooter() {
                                         Fasilitas Escrow Gratis
                                     </h4>
                                     <p className="text-[13px] text-gray-600 dark:text-gray-400 leading-relaxed">
-                                        Fasilitas Escrow (rekening Bersama) Ditoekoe tidak dikenakan biaya tambahan
+                                        Fasilitas Escrow (rekening Bersama) Groceria tidak dikenakan biaya tambahan
                                     </p>
                                 </div>
                             </div>
@@ -546,12 +546,12 @@ export function NavFooter() {
                         <div className="mt-4 pt-8 dark:border-[#3E3E3A]">
                             <div className="grid grid-cols-1 md:grid-cols-4 gap-0.5 ">
 
-                                {/* Ditoekoe */}
+                                {/* Groceria */}
                                 <div className="pr-16">
                                     <div className="flex flex-col space-y-6 border-r border-gray-200/50 dark:border-gray-700 h-full">
-                                        <h4 className="font-bold text-gray-900 dark:text-white mb-2">Ditoekoe</h4>
+                                        <h4 className="font-bold text-gray-900 dark:text-white mb-2">Groceria</h4>
                                         <ul className="space-y-2">
-                                            {['Tentang Ditoekoe', 'Hak Kekayaan Intelektual', 'Karir', 'Blog', 'Ditoekoe Affiliate Program', 'Ditoekoe B2B Digital', 'Ditoekoe Marketing Solutions', 'Kalkulator Indeks Massa Tubuh', 'Ditoekoe Farma', 'Promo Hari Ini', 'Beli Lokal', 'Promo Guncang'].map((item) => (
+                                            {['Tentang Groceria', 'Hak Kekayaan Intelektual', 'Karir', 'Blog', 'Groceria Affiliate Program', 'Groceria B2B Digital', 'Groceria Marketing Solutions', 'Kalkulator Indeks Massa Tubuh', 'Groceria Farma', 'Promo Hari Ini', 'Beli Lokal', 'Promo Guncang'].map((item) => (
                                                 <li key={item}>
                                                     <a href="#" className="text-[13.5px] text-gray-600 dark:text-gray-400 hover:text-green-600 dark:hover:text-green-400 transition-colors">
                                                         {item}
@@ -569,7 +569,7 @@ export function NavFooter() {
                                         <div>
                                             <h4 className="font-bold text-gray-900 dark:text-white mb-2">Beli</h4>
                                             <ul className="space-y-2">
-                                                {['Tagihan & Top Up', 'Ditoekoe COD', 'Bebas Ongkir'].map((item) => (
+                                                {['Tagihan & Top Up', 'Groceria COD', 'Bebas Ongkir'].map((item) => (
                                                     <li key={item}>
                                                         <a href="#" className="text-[13.5px] text-gray-600 dark:text-gray-400 hover:text-green-600 dark:hover:text-green-400 transition-colors">
                                                             {item}
@@ -597,7 +597,7 @@ export function NavFooter() {
                                         <div>
                                             <h4 className="font-bold text-gray-900 dark:text-white mb-2">Bantuan & Panduan</h4>
                                             <ul className="space-y-2">
-                                                {['Ditoekoe Care', 'Syarat dan Ketentuan', 'Kebijakan Privasi'].map((item) => (
+                                                {['Groceria Care', 'Syarat dan Ketentuan', 'Kebijakan Privasi'].map((item) => (
                                                     <li key={item}>
                                                         <a href="#" className="text-[13.5px] text-gray-600 dark:text-gray-400 hover:text-green-600 dark:hover:text-green-400 transition-colors">
                                                             {item}
@@ -707,7 +707,7 @@ export function NavFooter() {
                                             <div className="mx-[-10px] flex-shrink-0 w-30 h-28">
                                                 <img
                                                     src="/images/nav/qr-apk.webp"
-                                                    alt="QR Code Ditoekoe"
+                                                    alt="QR Code Groceria"
                                                     className="w-full h-full object-contain"
                                                 />
                                             </div>
@@ -757,7 +757,7 @@ export function NavFooter() {
                             {/* Copyright & Toggle */}
                             <div className="mt-8 pt-6 border-t border-gray-200 dark:border-[#3E3E3A] flex justify-between items-center">
                                 <p className="text-[13.5px] text-gray-600 dark:text-gray-400">
-                                    © Ditoekoe 2025. All Rights Reserved.
+                                    © Groceria 2026. All Rights Reserved.
                                 </p>
 
                                 {/* Toggle Switch Bahasa */}

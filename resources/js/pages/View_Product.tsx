@@ -206,7 +206,7 @@ export default function ProductView({
 
     return (
         <>
-            <Head title={`${product.name} - Ditoekoe`} />
+            <Head title={`${product.name} - Groceria`} />
             <ToasterProvider />
             <div className="min-h-screen bg-white text-gray-900">
                 <NavMain />
@@ -363,7 +363,7 @@ export default function ProductView({
                                                 <div
                                                     className="bg-gray-800/85 text-white text-xs px-3 py-2 rounded-sm min-w-[220px] max-w-[360px] text-center leading-snug whitespace-normal"
                                                 >
-                                                    Yang kamu lihat di sini adalah total penjualan produk ini di Ditoekoe
+                                                    Yang kamu lihat di sini adalah total penjualan produk ini di Groceria
                                                 </div>
 
                                             </div>

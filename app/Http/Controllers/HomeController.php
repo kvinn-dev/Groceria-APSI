@@ -45,13 +45,29 @@ class HomeController extends Controller
                 'name'     => $product->name,
                 'slug'     => $product->slug,
                 'price'    => $product->discount_price ?? $product->price,
-                'image'    => $product->image,
+                'image'    => $product->image_url,
                 'category' => $product->category,
                 'sold'     => null,
             ]);
 
-        $products = Product::where('is_active', true)
-            ->latest()
+        $search = request('search');
+        $productsQuery = Product::where('is_active', true);
+
+        if ($search) {
+            $productsQuery->where('name', 'like', "%{$search}%")
+                ->orderByRaw("CASE 
+                    WHEN name = ? THEN 1 
+                    WHEN name LIKE ? THEN 2 
+                    WHEN name LIKE ? THEN 3 
+                    ELSE 4 
+                END ASC", [
+                    $search,
+                    $search . '%',
+                    '%' . $search . '%'
+                ]);
+        }
+
+        $products = $productsQuery->latest()
             ->get()
             ->map(fn($p) => [
                 'id' => $p->id,
@@ -63,9 +79,7 @@ class HomeController extends Controller
                     : null,
                 'discount' => (int) ($p->discount ?? 0),
                 'stock' => (int) ($p->stock ?? 0),
-                'image' => $p->image
-                    ? $p->image
-                    : '/images/placeholder.png',
+                'image' => $p->image_url,
             ]);
 
 

@@ -64,7 +64,10 @@ Route::post('/logout', function (Request $request) {
     $request->session()->invalidate();
     $request->session()->regenerateToken();
 
-    return response()->json(['message' => 'Logged out']);
+    if ($request->expectsJson() && !$request->hasHeader('X-Inertia')) {
+        return response()->json(['message' => 'Logged out']);
+    }
+    return redirect('/login');
 });
 
 // Ambil CSRF token untuk frontend
@@ -72,73 +75,75 @@ Route::get('/csrf-token', function () {
     return response()->json(['csrfToken' => csrf_token()]);
 });
 
-/*
-|--------------------------------------------------------------------------
-| PUBLIC ROUTES
-|--------------------------------------------------------------------------
-*/
+Route::middleware(['user.only'])->group(function () {
+    /*
+    |--------------------------------------------------------------------------
+    | PUBLIC ROUTES
+    |--------------------------------------------------------------------------
+    |*/
 
-Route::get('/', [HomeController::class, 'index'])->name('home');
+    Route::get('/', [HomeController::class, 'index'])->name('home');
 
-Route::get('/product/{slug}', [ViewProductController::class, 'view'])
-    ->name('product.view');
+    Route::get('/product/{slug}', [ViewProductController::class, 'view'])
+        ->name('product.view');
 
-/*
-|--------------------------------------------------------------------------
-| PRODUCT & CATEGORY (PUBLIC)
-|--------------------------------------------------------------------------
-*/
+    /*
+    |--------------------------------------------------------------------------
+    | PRODUCT & CATEGORY (PUBLIC)
+    |--------------------------------------------------------------------------
+    |*/
 
-Route::prefix('products')->group(function () {
-    Route::get('/', [ProductController::class, 'index'])
-        ->name('products.index');
+    Route::prefix('products')->group(function () {
+        Route::get('/', [ProductController::class, 'index'])
+            ->name('products.index');
 
-    Route::get('/{product:slug}', [ProductController::class, 'show'])
-        ->name('products.show');
-});
+        Route::get('/{product:slug}', [ProductController::class, 'show'])
+            ->name('products.show');
+    });
 
-Route::prefix('categories')->group(function () {
-    Route::get('/', [WebCategoryController::class, 'index'])
-        ->name('categories.index');
+    Route::prefix('categories')->group(function () {
+        Route::get('/', [WebCategoryController::class, 'index'])
+            ->name('categories.index');
 
-    Route::get('/{category:slug}', [WebCategoryController::class, 'show'])
-        ->name('categories.show');
-});
+        Route::get('/{category:slug}', [WebCategoryController::class, 'show'])
+            ->name('categories.show');
+    });
 
-/*
-|--------------------------------------------------------------------------
-| FLASH SALE & TOP PRODUCT (PUBLIC)
-|--------------------------------------------------------------------------
-*/
+    /*
+    |--------------------------------------------------------------------------
+    | FLASH SALE & TOP PRODUCT (PUBLIC)
+    |--------------------------------------------------------------------------
+    |*/
 
-Route::get('/flash-sale', [FlashSaleController::class, 'index'])
-    ->name('flash-sale');
+    Route::get('/flash-sale', [FlashSaleController::class, 'index'])
+        ->name('flash-sale');
 
-Route::get('/flash-sale/batch', [FlashSaleController::class, 'batch']);
+    Route::get('/flash-sale/batch', [FlashSaleController::class, 'batch']);
 
-Route::get('/top-product', [TopProductController::class, 'index'])
-    ->name('top-product');
+    Route::get('/top-product', [TopProductController::class, 'index'])
+        ->name('top-product');
 
-Route::get('/top-product/all', [TopProductController::class, 'all'])
-    ->name('top-product.all');
+    Route::get('/top-product/all', [TopProductController::class, 'all'])
+        ->name('top-product.all');
 
-Route::middleware(['auth'])->group(function () {
+    Route::middleware(['auth'])->group(function () {
 
-    // Profile page
-    Route::get('/user-profile', [UserProfileController::class, 'index'])
-        ->name('user-profile');
+        // Profile page
+        Route::get('/user-profile', [UserProfileController::class, 'index'])
+            ->name('user-profile');
 
-    // Update basic info (name, avatar, dll)
-    Route::post('/user-profile', [UserProfileController::class, 'update'])
-        ->name('user-profile.update');
+        // Update basic info (name, avatar, dll)
+        Route::post('/user-profile', [UserProfileController::class, 'update'])
+            ->name('user-profile.update');
 
-    // Update password
-    Route::put('/user-profile/password', [UserProfileController::class, 'updatePassword'])
-        ->name('user-profile.password');
+        // Update password
+        Route::put('/user-profile/password', [UserProfileController::class, 'updatePassword'])
+            ->name('user-profile.password');
 
-    // Delete account
-    Route::delete('/user-profile', [UserProfileController::class, 'destroy'])
-        ->name('user-profile.destroy');
+        // Delete account
+        Route::delete('/user-profile', [UserProfileController::class, 'destroy'])
+            ->name('user-profile.destroy');
+    });
 });
 
 /*
@@ -154,7 +159,13 @@ Route::middleware(['auth', 'verified', 'admin'])
 
         // Dashboard
         Route::get('/dashboard', function () {
-            return Inertia::render('Admin/Dashboard');
+            return Inertia::render('Admin/Dashboard', [
+                'stats' => [
+                    'total_products' => \App\Models\Product::count(),
+                    'total_categories' => \App\Models\Category::count(),
+                    'total_orders' => \App\Models\Order::count(),
+                ]
+            ]);
         })->name('dashboard');
 
         // Flash Sale Management
@@ -175,6 +186,7 @@ Route::middleware(['auth', 'verified', 'admin'])
 
         // Product Management
         Route::prefix('products')->group(function () {
+            Route::get('/', [ProductController::class, 'index'])->name('products.index');
             Route::get('/create', [ProductController::class, 'create'])->name('products.create');
             Route::post('/', [ProductController::class, 'store'])->name('products.store');
             Route::get('/{product}/edit', [ProductController::class, 'edit'])->name('products.edit');
@@ -226,9 +238,9 @@ Route::prefix('api')->group(function () {
 });
 
 
-Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('/cart', [App\Http\Controllers\CartController::class, 'index'])->name('cart.index');
-    Route::post('/cart/add', [App\Http\Controllers\CartController::class, 'add'])->name('cart.add');
-    Route::patch('/cart/update/{cart}', [App\Http\Controllers\CartController::class, 'update'])->name('cart.update');
-    Route::delete('/cart/remove/{cart}', [App\Http\Controllers\CartController::class, 'remove'])->name('cart.remove');
-});
+    Route::middleware(['auth', 'verified', 'user.only'])->group(function () {
+        Route::get('/cart', [App\Http\Controllers\CartController::class, 'index'])->name('cart.index');
+        Route::post('/cart/add', [App\Http\Controllers\CartController::class, 'add'])->name('cart.add');
+        Route::patch('/cart/update/{cart}', [App\Http\Controllers\CartController::class, 'update'])->name('cart.update');
+        Route::delete('/cart/remove/{cart}', [App\Http\Controllers\CartController::class, 'remove'])->name('cart.remove');
+    });

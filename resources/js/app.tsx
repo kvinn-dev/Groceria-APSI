@@ -6,15 +6,18 @@ import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { initializeTheme } from './hooks/use-appearance';
 
-const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
+const appName = import.meta.env.VITE_APP_NAME || 'Groceria';
 
 createInertiaApp({
     title: (title) => (title ? `${title} - ${appName}` : appName),
-    resolve: (name) =>
-        resolvePageComponent(
-            `./pages/${name}.tsx`,
-            import.meta.glob('./pages/**/*.tsx'),
-        ),
+    resolve: (name) => {
+        const pages = import.meta.glob('./pages/**/*.tsx');
+        const path = `./pages/${name}.tsx`;
+        const matchedKey = Object.keys(pages).find(
+            (key) => key.toLowerCase() === path.toLowerCase()
+        );
+        return resolvePageComponent(matchedKey || path, pages);
+    },
     setup({ el, App, props }) {
         const root = createRoot(el);
 

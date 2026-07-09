@@ -117,7 +117,7 @@ export default function TopProduct({
 
     return (
         <>
-            <Head title="Produk Terlaris - Ditoekoe" />
+            <Head title="Produk Terlaris - Groceria" />
 
             <div className="min-h-screen text-gray-900">
                 <NavMain />

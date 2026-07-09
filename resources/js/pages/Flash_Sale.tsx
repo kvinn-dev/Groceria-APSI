@@ -160,7 +160,7 @@ export default function FlashSale({
 
     return (
         <>
-            <Head title="Flash Sale - Ditoekoe" />
+            <Head title="Flash Sale - Groceria" />
             <div className="min-h-screen text-gray-900">
                 <NavMain />
 

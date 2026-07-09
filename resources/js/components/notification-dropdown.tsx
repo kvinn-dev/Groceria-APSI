@@ -100,7 +100,7 @@ export default function NotificationDropdown() {
                         href="#"
                         className="block text-center text-[13px] text-green-600 font-semibold border border-green-600 rounded-sm py-1 hover:bg-green-50 mb-2"
                     >
-                        Masuk ke Ditoekoe Seller
+                        Masuk ke Groceria Seller
                     </Link>
                 </div>
 

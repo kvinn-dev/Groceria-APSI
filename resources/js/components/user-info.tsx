@@ -2,7 +2,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useInitials } from '@/hooks/use-initials';
 import { type User } from '@/types';
 import { Link } from '@inertiajs/react';
-
+import { ShieldCheck } from 'lucide-react';
 interface UserInfoProps {
     user: User;
     onLogout: () => void;
@@ -40,10 +40,21 @@ export function UserInfo({ user, onLogout }: UserInfoProps) {
                 <div className="absolute top-0 right-0 left-0 h-2 -translate-y-full" />
 
                 <div className="w-44 rounded-md border bg-white shadow-md dark:border-[#3E3E3A] dark:bg-[#252523]">
+                    {/* HANYA UNTUK ADMIN */}
+                    {user.is_admin && (
+                        <Link
+                            href="/admin/dashboard"
+                            className="flex items-center gap-2 rounded-t-sm px-4 py-2 text-sm hover:bg-gray-100 dark:text-white dark:hover:bg-[#1A1A19]"
+                        >
+                            <ShieldCheck className="h-4 w-4 text-green-600" />
+                            <span>Admin Panel</span>
+                        </Link>
+                    )}
+
                     {/* Sesuai route */}
                     <Link
                         href="/user-profile"
-                        className="block rounded-t-sm px-4 py-2 text-sm hover:bg-gray-100 dark:text-white dark:hover:bg-[#1A1A19]"
+                        className={`block px-4 py-2 text-sm hover:bg-gray-100 dark:text-white dark:hover:bg-[#1A1A19] ${user.is_admin ? '' : 'rounded-t-sm'}`}
                     >
                         Profil Saya
                     </Link>

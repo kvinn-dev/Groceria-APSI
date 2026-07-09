@@ -52,7 +52,12 @@ export function LoginForm({ className, ...props }: React.ComponentProps<"div">) 
       })
 
       if (res.ok) {
-        window.location.href = "/"
+        const data = await res.json()
+        if (data.user?.is_admin) {
+          window.location.href = "/admin/dashboard"
+        } else {
+          window.location.href = "/"
+        }
       } else {
         const data = await res.json()
         if (data.errors) {
@@ -77,7 +82,7 @@ export function LoginForm({ className, ...props }: React.ComponentProps<"div">) 
           <form className="p-6 md:p-8" onSubmit={handleLogin}>
             <FieldGroup>
               <div className="flex flex-col items-center gap-1 text-center">
-                <h1 className="text-3xl font-bold text-green-600">Ditoekoe</h1>
+                <h1 className="text-3xl font-bold text-green-600">Groceria</h1>
                 <p className="text-gray-900 text-balance text-sm">
                   Login to your account
                 </p>

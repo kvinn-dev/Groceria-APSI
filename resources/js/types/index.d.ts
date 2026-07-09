@@ -131,7 +131,14 @@ export interface Product {
     weight?: number;
     dimensions?: string;
     image?: string;
+    image_url?: string;
     images?: string[];
+    final_price?: number;
+    price_formatted?: string;
+    discount_price_formatted?: string | null;
+    final_price_formatted?: string;
+    discount?: number;
+    is_in_stock?: boolean;
     category_id: number;
     category?: Category;
     brand_id?: number;
