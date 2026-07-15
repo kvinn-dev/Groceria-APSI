@@ -60,9 +60,10 @@ class TopProduct extends Model
         $this->increment('sold_count', $quantity);
         
         // Update product sold count as well
-        if ($this->product) {
-            $this->product->increment('sold_count', $quantity);
-        }
+        // Note: products table does not have sold_count column
+        // if ($this->product) {
+        //     $this->product->increment('sold_count', $quantity);
+        // }
     }
 
     /**

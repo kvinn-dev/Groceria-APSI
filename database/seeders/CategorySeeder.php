@@ -14,26 +14,24 @@ class CategorySeeder extends Seeder
     {
         // Array contoh nama kategori
         $categories = [
-            'Elektronik',
-            'Fashion Pria',
-            'Fashion Wanita',
-            'Sepatu',
-            'Tas',
-            'Peralatan Rumah Tangga',
-            'Mainan & Hobi',
-            'Kecantikan & Perawatan',
-            'Olahraga & Outdoor',
-            'Gadget & Aksesoris',
-            'Buku',
-            'Alat Musik',
-            'Kamera & Fotografi',
-            'Otomotif',
-            'Makanan & Minuman',
-            'Perlengkapan Bayi',
+            'Sayuran',
+            'Buah-buahan',
+            'Daging',
+            'Ikan',
+            'Frozen Food',
+            'Snack',
+            'Minuman',
+            'Perlengkapan Mandi',
+            'Pembersih',
+            'Siap Saji',
+            'Makanan Ringan',
+            'Bumbu & Saus',
+            'Perawatan Diri',
             'Kesehatan',
-            'Peralatan Kantor',
-            'Dekorasi Rumah',
-            'Hobi Kreatif'
+            'Susu & Olahan',
+            'Perlengkapan Bayi',
+            'Sembako',
+            'Popok & Tisu',
         ];
 
         foreach ($categories as $name) {

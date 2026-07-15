@@ -120,7 +120,8 @@ class FlashSale extends Model
     public function incrementSoldCount(int $quantity = 1): void
     {
         $this->increment('sold_count', $quantity);
-        $this->product?->increment('sold_count', $quantity);
+        // Note: products table does not have sold_count column
+        // $this->product?->increment('sold_count', $quantity);
     }
 
     public function hasStock(int $quantity = 1): bool
@@ -130,10 +131,6 @@ class FlashSale extends Model
 
     public function scopeHighDiscountProduct($query, int $min = 25)
     {
-        return $query->whereHas('product', function ($q) use ($min) {
-            $q->whereNotNull('discount_price')
-                ->whereColumn('discount_price', '<', 'price')
-                ->whereRaw('((price - discount_price) / price * 100) >= ?', [$min]);
-        });
+        return $query->where('discount_percentage', '>=', $min);
     }
 }

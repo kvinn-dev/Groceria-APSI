@@ -1,8 +1,8 @@
-import { Head, Link, router } from '@inertiajs/react';
-import { useState, useEffect, useRef } from 'react';
-import NavMain from '@/components/nav-main';
 import { NavFooter } from '@/components/nav-footer';
+import NavMain from '@/components/nav-main';
 import { type SharedData } from '@/types';
+import { Head, Link, router } from '@inertiajs/react';
+import { useEffect, useRef, useState } from 'react';
 
 type Product = {
     slug: string;
@@ -51,14 +51,19 @@ export default function FlashSale({
     const [activeCategory, setActiveCategory] = useState<'all' | string>('all');
     const [products, setProducts] = useState<Product[]>(flashSaleProducts);
     const [page, setPage] = useState(1);
-    const [hasMore, setHasMore] = useState(flashSaleProducts.length >= ITEMS_PER_LOAD);
+    const [hasMore, setHasMore] = useState(
+        flashSaleProducts.length >= ITEMS_PER_LOAD,
+    );
 
-    const [activeSession, setActiveSession] = useState(upcomingSessions[0].time);
+    const [activeSession, setActiveSession] = useState(
+        upcomingSessions[0].time,
+    );
     const moreBtnRef = useRef<HTMLButtonElement>(null);
     const [openMore, setOpenMore] = useState(false);
     const [timeLeft, setTimeLeft] = useState({ h: '00', m: '00', s: '00' });
 
-    const formatRupiah = (value: number) => `Rp ${value.toLocaleString('id-ID')}`;
+    const formatRupiah = (value: number) =>
+        `Rp ${value.toLocaleString('id-ID')}`;
 
     // Countdown timer
     useEffect(() => {
@@ -75,7 +80,9 @@ export default function FlashSale({
             }
 
             const hours = Math.floor(distance / (1000 * 60 * 60));
-            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const minutes = Math.floor(
+                (distance % (1000 * 60 * 60)) / (1000 * 60),
+            );
             const seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
             setTimeLeft({
@@ -92,7 +99,9 @@ export default function FlashSale({
     const loadMore = async () => {
         const nextPage = page + 1;
         try {
-            const res = await fetch(`/flash-sale/batch?page=${nextPage}&category=${activeCategory}`);
+            const res = await fetch(
+                `/flash-sale/batch?page=${nextPage}&category=${activeCategory}`,
+            );
             const data = await res.json();
 
             setProducts((prev) => [...prev, ...data.products]);
@@ -104,9 +113,10 @@ export default function FlashSale({
     };
 
     // Filter products berdasarkan kategori
-    const filteredProducts = activeCategory === 'all'
-        ? products
-        : products.filter(p => p.category?.slug === activeCategory);
+    const filteredProducts =
+        activeCategory === 'all'
+            ? products
+            : products.filter((p) => p.category?.slug === activeCategory);
 
     // Proses produk untuk menghitung harga & diskon
     const processedProducts = filteredProducts.map((p) => {
@@ -123,18 +133,20 @@ export default function FlashSale({
             discountPriceRaw < originalPrice;
 
         const discountPercent = hasDiscount
-            ? Math.round(((originalPrice - discountPriceRaw) / originalPrice) * 100)
+            ? Math.round(
+                  ((originalPrice - discountPriceRaw) / originalPrice) * 100,
+              )
             : 0;
 
         const finalPrice = hasDiscount ? discountPriceRaw : originalPrice;
 
         function formatRupiah(amount: number | null | undefined) {
-            if (!amount) return "Rp0";
+            if (!amount) return 'Rp0';
             // pastikan angka utuh
             const intAmount = Math.round(amount);
-            return new Intl.NumberFormat("id-ID", {
-                style: "currency",
-                currency: "IDR",
+            return new Intl.NumberFormat('id-ID', {
+                style: 'currency',
+                currency: 'IDR',
                 minimumFractionDigits: 0,
             })
                 .format(intAmount)
@@ -165,57 +177,81 @@ export default function FlashSale({
                 <NavMain />
 
                 {/* Countdown Banner */}
-                <div className="flex items-center justify-center w-full gap-4 pt-5 pb-5 dark:bg-[#1A1A19]">
-                    <div className="flex-1 max-w-[50px] h-[1px] bg-gray-400" />
+                <div className="flex w-full items-center justify-center gap-4 pt-5 pb-5 dark:bg-[#1A1A19]">
+                    <div className="h-[1px] max-w-[50px] flex-1 bg-gray-400" />
                     <div className="flex items-center gap-1">
-                        <img src="images/icon/flashsale.png" alt="Flash Sale" className="h-8 w-auto object-contain" />
-                        <div className="flex items-center gap-1 text-md text-gray-600">
-                            <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <img
+                            src="images/icon/flashsale.png"
+                            alt="Flash Sale"
+                            className="h-8 w-auto object-contain"
+                        />
+                        <div className="text-md flex items-center gap-1 text-gray-600">
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                className="h-5 w-5"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                            >
                                 <circle cx="12" cy="12" r="9" strokeWidth="2" />
                                 <path strokeWidth="2" d="M12 7v5l3 3" />
                             </svg>
                             <span>BERAKHIR DALAM</span>
                         </div>
-                        <div className="flex px-0.5 py-2 space-x-1 text-white font-medium -mt-1">
-                            {[timeLeft.h, timeLeft.m, timeLeft.s].map((t, i) => (
-                                <span key={i} className="bg-[#191919] w-8 h-6 flex items-center justify-center rounded text-sm">
-                                    {t}
-                                </span>
-                            ))}
+                        <div className="-mt-1 flex space-x-1 px-0.5 py-2 font-medium text-white">
+                            {[timeLeft.h, timeLeft.m, timeLeft.s].map(
+                                (t, i) => (
+                                    <span
+                                        key={i}
+                                        className="flex h-6 w-8 items-center justify-center rounded bg-[#191919] text-sm"
+                                    >
+                                        {t}
+                                    </span>
+                                ),
+                            )}
                         </div>
                     </div>
-                    <div className="flex-1 max-w-[50px] h-[1px] bg-gray-400" />
+                    <div className="h-[1px] max-w-[50px] flex-1 bg-gray-400" />
                 </div>
 
                 <section className="bg-white dark:bg-[#1A1A19]">
                     <div className="container mx-auto max-w-6xl">
                         {/* Banner */}
                         <div className="my-0">
-                            <img src="images/banner/flash-sale-banner.webp" alt="Flash Sale Banner" className="w-full h-auto object-cover rounded-t-lg" />
+                            <img
+                                src="images/banner/flash-sale-banner.webp"
+                                alt="Flash Sale Banner"
+                                className="h-auto w-full rounded-t-lg object-cover"
+                            />
                         </div>
 
                         {/* SESSION TABS */}
-                        <div className="flex flex-col lg:flex-row items-start lg:items-center gap-4 mb-6">
+                        <div className="mb-6 flex flex-col items-start gap-4 lg:flex-row lg:items-center">
                             <div className="flex w-full gap-0 overflow-hidden">
                                 {upcomingSessions.map((s, i) => {
                                     const isFirst = i === 0;
-                                    const isLast = i === upcomingSessions.length - 1;
+                                    const isLast =
+                                        i === upcomingSessions.length - 1;
                                     const isActive = activeSession === s.time;
 
                                     return (
                                         <button
                                             key={i}
-                                            onClick={() => setActiveSession(s.time)}
-                                            className={`flex flex-col items-center justify-center flex-1 px-4 py-1.5 transition-all duration-300
-                        ${isFirst ? 'rounded-bl-xl' : ''}
-                        ${isLast ? 'rounded-br-xl' : ''}
-                        ${isActive
+                                            onClick={() =>
+                                                setActiveSession(s.time)
+                                            }
+                                            className={`flex flex-1 flex-col items-center justify-center px-4 py-1.5 transition-all duration-300 ${isFirst ? 'rounded-bl-xl' : ''} ${isLast ? 'rounded-br-xl' : ''} ${
+                                                isActive
                                                     ? 'bg-gradient-to-r from-green-600 to-green-500 text-white'
-                                                    : 'bg-gray-100 dark:bg-[#252523] text-gray-900 dark:text-gray-100 hover:bg-gray-200'
-                                                }`}
+                                                    : 'bg-gray-100 text-gray-900 hover:bg-gray-200 dark:bg-[#252523] dark:text-gray-100'
+                                            }`}
                                         >
-                                            <div className="font-semibold text-[23px] mb-[-5px]">{s.time}</div>
-                                            <div className="text-[14.5px]">{s.label}</div>
+                                            <div className="mb-[-5px] text-[23px] font-semibold">
+                                                {s.time}
+                                            </div>
+                                            <div className="text-[14.5px]">
+                                                {s.label}
+                                            </div>
                                         </button>
                                     );
                                 })}
@@ -223,26 +259,31 @@ export default function FlashSale({
                         </div>
 
                         {/* CATEGORY FILTER */}
-                        <div className="mb-7 relative pt-2">
-                            <div className="flex flex-wrap gap-2 ml-1.5 items-center relative">
+                        <div className="relative mb-7 pt-2">
+                            <div className="relative ml-1.5 flex flex-wrap items-center gap-7.5">
                                 <button
                                     onClick={() => setActiveCategory('all')}
-                                    className={`px-4 py-1.5 rounded-full text-sm font-medium whitespace-nowrap transition ${activeCategory === 'all'
-                                        ? 'bg-gradient-to-r from-green-500 to-green-600 text-white shadow-sm'
-                                        : 'bg-gray-100 dark:bg-[#252523] text-gray-700 dark:text-gray-100 hover:bg-gray-200'
-                                        }`}
+                                    className={`rounded-full px-4 py-1.5 text-sm font-medium whitespace-nowrap transition ${
+                                        activeCategory === 'all'
+                                            ? 'bg-gradient-to-r from-green-500 to-green-600 text-white shadow-sm'
+                                            : 'bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-[#252523] dark:text-gray-100'
+                                    }`}
                                 >
                                     All
                                 </button>
 
-                                {mainCategories.map(c => (
+                                {mainCategories.map((c) => (
                                     <button
                                         key={c.id}
-                                        onClick={() => { setActiveCategory(c.slug); setOpenMore(false); }}
-                                        className={`px-4 py-1.5 rounded-full text-sm font-medium whitespace-nowrap transition ${activeCategory === c.slug
-                                            ? 'bg-gradient-to-r from-green-500 to-green-600 text-white shadow-sm'
-                                            : 'bg-gray-100 dark:bg-[#252523] text-gray-700 dark:text-gray-100 hover:bg-gray-200'
-                                            }`}
+                                        onClick={() => {
+                                            setActiveCategory(c.slug);
+                                            setOpenMore(false);
+                                        }}
+                                        className={`rounded-full px-4 py-1.5 text-sm font-medium whitespace-nowrap transition ${
+                                            activeCategory === c.slug
+                                                ? 'bg-gradient-to-r from-green-500 to-green-600 text-white shadow-sm'
+                                                : 'bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-[#252523] dark:text-gray-100'
+                                        }`}
                                     >
                                         {c.name}
                                     </button>
@@ -251,8 +292,10 @@ export default function FlashSale({
                                 {moreCategories.length > 0 && (
                                     <button
                                         ref={moreBtnRef}
-                                        onClick={() => setOpenMore(prev => !prev)}
-                                        className="px-5 py-1.5 rounded-full text-sm font-medium bg-gray-100 dark:bg-[#252523] hover:bg-gray-200 text-gray-700 dark:text-gray-100 flex items-center gap-1.5 transition"
+                                        onClick={() =>
+                                            setOpenMore((prev) => !prev)
+                                        }
+                                        className="flex items-center gap-1.5 rounded-full bg-gray-100 px-5 py-1.5 text-sm font-medium text-gray-700 transition hover:bg-gray-200 dark:bg-[#252523] dark:text-gray-100"
                                     >
                                         Lainnya
                                         <svg
@@ -261,9 +304,13 @@ export default function FlashSale({
                                             fill="none"
                                             stroke="currentColor"
                                             strokeWidth={2}
-                                            className={`w-4 h-4 transition-transform duration-200 ${openMore ? 'rotate-180' : ''}`}
+                                            className={`h-4 w-4 transition-transform duration-200 ${openMore ? 'rotate-180' : ''}`}
                                         >
-                                            <path strokeLinecap="round" strokeLinejoin="round" d="m6 9 6 6 6-6" />
+                                            <path
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                                d="m6 9 6 6 6-6"
+                                            />
                                         </svg>
                                     </button>
                                 )}
@@ -272,17 +319,23 @@ export default function FlashSale({
                             {/* Dropdown */}
                             {openMore && moreBtnRef.current && (
                                 <div
-                                    className="absolute min-w-[200px] mt-2 bg-white border border-gray-200 rounded-md shadow-xl z-[9999]"
+                                    className="absolute z-[9999] mt-2 min-w-[200px] rounded-md border border-gray-200 bg-white shadow-xl"
                                     style={{
-                                        top: moreBtnRef.current.offsetTop + moreBtnRef.current.offsetHeight + 4,
+                                        top:
+                                            moreBtnRef.current.offsetTop +
+                                            moreBtnRef.current.offsetHeight +
+                                            4,
                                         left: moreBtnRef.current.offsetLeft,
                                     }}
                                 >
                                     {moreCategories.map((item) => (
                                         <button
                                             key={item.id}
-                                            onClick={() => { setActiveCategory(item.slug); setOpenMore(false); }}
-                                            className="block w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-100 transition"
+                                            onClick={() => {
+                                                setActiveCategory(item.slug);
+                                                setOpenMore(false);
+                                            }}
+                                            className="block w-full px-4 py-2.5 text-left text-sm text-gray-700 transition hover:bg-gray-100"
                                         >
                                             {item.name}
                                         </button>
@@ -293,67 +346,83 @@ export default function FlashSale({
 
                         {/* PRODUCTS GRID */}
                         <div className="mb-10">
-                            <div className="grid gap-2 grid-cols-3 sm:grid-cols-3 lg:grid-cols-5">
+                            <div className="grid grid-cols-3 gap-2 sm:grid-cols-3 lg:grid-cols-5">
                                 {processedProducts.map((p) => (
                                     <Link
                                         key={p.id}
                                         href={`/product/${p.slug}`}
-                                        className="relative bg-white dark:bg-[#1A1A19] rounded-xl border border-gray-200 dark:border-[#252523] transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-sm"
+                                        className="relative rounded-xl border border-gray-200 bg-white transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-sm dark:border-[#252523] dark:bg-[#1A1A19]"
                                     >
                                         {/* Badge Diskon */}
                                         {p.hasDiscount && (
-                                            <div className="absolute top-3 left-3 z-20">
-                                                <div className="discount-wrapper-fs">
-                                                    <span className="discount-dark-fs"></span>
-                                                    <span className="discount-light-fs">
-                                                        -{p.discount}%
-                                                    </span>
-                                                </div>
+                                            <div className="discount-wrapper">
+                                                <span className="discount-dark"></span>
+                                                <span className="discount-light">
+                                                    -{p.discount}%
+                                                </span>
                                             </div>
                                         )}
 
                                         {/* Gambar */}
                                         <div className="relative h-44 w-full overflow-hidden rounded-t-xl">
                                             <img
-                                                src={p.image ?? '/images/placeholder.png'}
+                                                src={
+                                                    p.image ??
+                                                    '/images/placeholder.png'
+                                                }
                                                 alt={p.name ?? '-'}
-                                                className="w-full h-full object-cover"
+                                                className="h-full w-full object-cover"
                                             />
                                         </div>
 
                                         {/* Info Produk */}
-                                        <div className="px-2.5 py-2.5 mb-3">
-                                            <h3 className="text-sm font-medium line-clamp-2 mb-1.5 min-h-[40px] text-gray-800 dark:text-gray-100">
+                                        <div className="mb-3 px-2.5 py-2.5">
+                                            <h3 className="mb-1.5 line-clamp-2 min-h-[40px] text-sm font-medium text-gray-800 dark:text-gray-100">
                                                 {p.name ?? '-'}
                                             </h3>
 
-                                            <div className="flex gap-2 mt-3">
+                                            <div className="mt-3 flex gap-2">
                                                 <div className="flex-1">
                                                     <div className="mb-1 flex flex-col gap-0.5">
                                                         {p.hasDiscount ? (
-                                                            <div className="text-gray-400 text-[12px] line-through leading-tight">
-                                                                {p.originalPriceFormatted}
+                                                            <div className="text-[12px] leading-tight text-gray-400 line-through">
+                                                                {
+                                                                    p.originalPriceFormatted
+                                                                }
                                                             </div>
                                                         ) : (
-                                                            <div className="invisible text-[12px] leading-tight">placeholder</div>
+                                                            <div className="invisible text-[12px] leading-tight">
+                                                                placeholder
+                                                            </div>
                                                         )}
-                                                        <div className="text-green-600 font-semibold text-[18px] leading-tight">
-                                                            {p.finalPriceFormatted}
+                                                        <div className="text-[18px] leading-tight font-semibold text-green-600">
+                                                            {
+                                                                p.finalPriceFormatted
+                                                            }
                                                         </div>
                                                     </div>
 
                                                     <div>
-                                                        <div className="text-[11px] text-gray-500 mb-0.5">
-                                                            Terjual {p.sold ?? 0} / {p.stock ?? 0}
+                                                        <div className="mb-0.5 text-[11px] text-gray-500">
+                                                            Terjual{' '}
+                                                            {p.sold ?? 0} /{' '}
+                                                            {p.stock ?? 0}
                                                         </div>
-                                                        <div className="w-[100px] max-w-full bg-gray-200 rounded-full h-2">
+                                                        <div className="h-2 w-[100px] max-w-full rounded-full bg-gray-200">
                                                             <div
-                                                                className="bg-gradient-to-r from-green-500 to-green-600 h-2 rounded-full"
+                                                                className="h-2 rounded-full bg-gradient-to-r from-green-500 to-green-600"
                                                                 style={{
-                                                                    width: `${p.stock && p.sold
-                                                                        ? Math.min((p.sold / p.stock) * 100, 100)
-                                                                        : 0
-                                                                        }%`,
+                                                                    width: `${
+                                                                        p.stock &&
+                                                                        p.sold
+                                                                            ? Math.min(
+                                                                                  (p.sold /
+                                                                                      p.stock) *
+                                                                                      100,
+                                                                                  100,
+                                                                              )
+                                                                            : 0
+                                                                    }%`,
                                                                 }}
                                                             />
                                                         </div>
@@ -361,18 +430,20 @@ export default function FlashSale({
                                                 </div>
 
                                                 {/* Tombol aksi */}
-                                                <div className="w-[80px] flex flex-col items-end justify-between">
-                                                    <div className="pt-1 flex gap-3 px-1">
+                                                <div className="flex w-[80px] flex-col items-end justify-between">
+                                                    <div className="flex gap-3 px-1 pt-1">
                                                         {/* Favorit */}
                                                         <button
-                                                            className="w-7.5 h-7.5 rounded-md border border-green-600/50 flex items-center justify-center hover:bg-gray-100 transition"
+                                                            className="flex h-7.5 w-7.5 items-center justify-center rounded-md border border-green-600/50 transition hover:bg-gray-100"
                                                             title="Favorit"
                                                         >
                                                             <svg
                                                                 xmlns="http://www.w3.org/2000/svg"
                                                                 fill="none"
                                                                 viewBox="0 0 24 24"
-                                                                strokeWidth={1.5}
+                                                                strokeWidth={
+                                                                    1.5
+                                                                }
                                                                 stroke="#16a34a"
                                                                 className="size-5"
                                                             >
@@ -386,14 +457,16 @@ export default function FlashSale({
 
                                                         {/* Tambah ke keranjang */}
                                                         <button
-                                                            className="w-7.5 h-7.5 rounded-md border border-green-600/50 flex items-center justify-center hover:bg-gray-100 transition"
+                                                            className="flex h-7.5 w-7.5 items-center justify-center rounded-md border border-green-600/50 transition hover:bg-gray-100"
                                                             title="Tambah ke Keranjang"
                                                         >
                                                             <svg
                                                                 xmlns="http://www.w3.org/2000/svg"
                                                                 fill="none"
                                                                 viewBox="0 0 24 24"
-                                                                strokeWidth={1.5}
+                                                                strokeWidth={
+                                                                    1.5
+                                                                }
                                                                 stroke="#16a34a"
                                                                 className="size-5"
                                                             >
@@ -410,9 +483,16 @@ export default function FlashSale({
                                                     <button
                                                         onClick={(e) => {
                                                             e.preventDefault();
-                                                            router.post('/cart/add', { product_id: p.id });
+                                                            router.post(
+                                                                '/checkout',
+                                                                {
+                                                                    product_id:
+                                                                        p.id,
+                                                                    quantity: 1,
+                                                                },
+                                                            );
                                                         }}
-                                                        className="w-full bg-green-600 text-white text-xs font-semibold py-1.5 rounded-md hover:bg-green-700 transition"
+                                                        className="w-full rounded-md bg-green-600 py-1.5 text-xs font-semibold text-white transition hover:bg-green-700"
                                                     >
                                                         BELI
                                                     </button>
@@ -425,10 +505,10 @@ export default function FlashSale({
 
                             {/* Tombol Muat Lebih Banyak */}
                             {hasMore && (
-                                <div className="flex justify-center mt-8">
+                                <div className="mt-8 flex justify-center">
                                     <button
                                         onClick={loadMore}
-                                        className="px-16 py-2.5 rounded-lg border border-green-600 text-green-700 font-semibold hover:bg-green-100/50 hover:text-green-600 transition-colors duration-300"
+                                        className="rounded-lg border border-green-600 px-16 py-2.5 font-semibold text-green-700 transition-colors duration-300 hover:bg-green-100/50 hover:text-green-600"
                                     >
                                         Muat Lebih Banyak
                                     </button>

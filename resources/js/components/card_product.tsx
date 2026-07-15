@@ -101,13 +101,11 @@ export default function CardProducts() {
                                         className="relative rounded-xl border border-gray-200 bg-white transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-sm dark:border-[#252523] dark:bg-[#1A1A19]"
                                     >
                                         {p.hasDiscount && (
-                                            <div className="absolute top-3 left-3 z-20">
-                                                <div className="discount-wrapper-fs">
-                                                    <span className="discount-dark-fs"></span>
-                                                    <span className="discount-light-fs">
-                                                        -{p.discountPercent}%
-                                                    </span>
-                                                </div>
+                                            <div className="discount-wrapper">
+                                                <span className="discount-dark"></span>
+                                                <span className="discount-light">
+                                                    -{p.discountPercent}%
+                                                </span>
                                             </div>
                                         )}
 
@@ -209,7 +207,7 @@ export default function CardProducts() {
                                                     <button
                                                         onClick={(e) => {
                                                             e.preventDefault();
-                                                            router.post('/cart/add', { product_id: p.id });
+                                                            router.post('/checkout', { product_id: p.id, quantity: 1 });
                                                         }}
                                                         disabled={p.stock <= 0}
                                                         className="w-full rounded-md bg-green-600 py-1.5 text-xs font-semibold text-white transition hover:bg-green-700 disabled:bg-gray-400"

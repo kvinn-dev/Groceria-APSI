@@ -256,15 +256,12 @@ export default function TopProduct({
                                         href={`/product/${p.slug}`}
                                         className="relative bg-white dark:bg-[#1A1A19] rounded-xl border border-gray-200 dark:border-[#252523] transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-sm"
                                     >
-                                        {/* DISCOUNT BADGE */}
                                         {p.discount > 0 && (
-                                            <div className="absolute top-3 left-3 z-20">
-                                                <div className="discount-wrapper-fs">
-                                                    <span className="discount-dark-fs"></span>
-                                                    <span className="discount-light-fs">
-                                                        -{p.discount}%
-                                                    </span>
-                                                </div>
+                                            <div className="discount-wrapper">
+                                                <span className="discount-dark"></span>
+                                                <span className="discount-light">
+                                                    -{p.discount}%
+                                                </span>
                                             </div>
                                         )}
 
@@ -374,7 +371,7 @@ export default function TopProduct({
                                                     <button
                                                         onClick={(e) => {
                                                             e.preventDefault()
-                                                            router.post('/cart/add', { product_id: p.id })
+                                                            router.post('/checkout', { product_id: p.id, quantity: 1 })
                                                         }}
                                                         className="w-full bg-green-600 text-white text-xs font-semibold py-1.5 rounded-md hover:bg-green-700 transition"
                                                     >

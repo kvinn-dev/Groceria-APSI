@@ -68,7 +68,7 @@ Route::post('/logout', function (Request $request) {
         return response()->json(['message' => 'Logged out']);
     }
     return redirect('/login');
-});
+})->name('logout');
 
 // Ambil CSRF token untuk frontend
 Route::get('/csrf-token', function () {
@@ -243,4 +243,15 @@ Route::prefix('api')->group(function () {
         Route::post('/cart/add', [App\Http\Controllers\CartController::class, 'add'])->name('cart.add');
         Route::patch('/cart/update/{cart}', [App\Http\Controllers\CartController::class, 'update'])->name('cart.update');
         Route::delete('/cart/remove/{cart}', [App\Http\Controllers\CartController::class, 'remove'])->name('cart.remove');
+
+        // Checkout Routes
+        Route::post('/checkout', [OrderController::class, 'prepareCheckout'])->name('checkout.prepare');
+        Route::get('/checkout', [OrderController::class, 'checkoutPage'])->name('checkout.page');
+        Route::post('/checkout/process', [OrderController::class, 'checkout'])->name('checkout.process');
+
+        // Customer Order Routes
+        Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
+        Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
     });
+
+require __DIR__.'/settings.php';

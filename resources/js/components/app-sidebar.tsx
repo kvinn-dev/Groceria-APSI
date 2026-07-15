@@ -1,6 +1,4 @@
-import { NavFooter } from '@/components/nav-footer';
-import { NavMain } from '@/components/nav-main';
-import { NavUser } from '@/components/nav-user';
+import { NavSidebarFooter } from '@/components/nav-sidebar-footer';
 import {
     Sidebar,
     SidebarContent,
@@ -10,16 +8,17 @@ import {
     SidebarMenuButton,
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
-import { dashboard } from '@/routes';
+import { UserInfo } from '@/components/user-info';
+import { dashboard } from '@/routes/admin';
 import { type NavItem } from '@/types';
-import { Link } from '@inertiajs/react';
+import { Link, router, usePage } from '@inertiajs/react';
 import { BookOpen, Folder, LayoutGrid } from 'lucide-react';
 import AppLogo from './app-logo';
 
 const mainNavItems: NavItem[] = [
     {
         title: 'Dashboard',
-        href: dashboard(),
+        href: dashboard().url,
         icon: LayoutGrid,
     },
 ];
@@ -38,13 +37,19 @@ const footerNavItems: NavItem[] = [
 ];
 
 export function AppSidebar() {
+    const { auth } = usePage<any>().props;
+
+    const handleLogout = () => {
+        router.post('/logout');
+    };
+
     return (
         <Sidebar collapsible="icon" variant="inset">
             <SidebarHeader>
                 <SidebarMenu>
                     <SidebarMenuItem>
                         <SidebarMenuButton size="lg" asChild>
-                            <Link href={dashboard()} prefetch>
+                            <Link href={dashboard().url} prefetch>
                                 <AppLogo />
                             </Link>
                         </SidebarMenuButton>
@@ -53,12 +58,30 @@ export function AppSidebar() {
             </SidebarHeader>
 
             <SidebarContent>
-                <NavMain items={mainNavItems} />
+                <SidebarMenu className="px-2 py-2">
+                    {mainNavItems.map((item) => (
+                        <SidebarMenuItem key={item.title}>
+                            <SidebarMenuButton asChild tooltip={item.title}>
+                                <Link
+                                    href={item.href}
+                                    className="flex items-center gap-2"
+                                >
+                                    {item.icon && (
+                                        <item.icon className="h-4 w-4" />
+                                    )}
+                                    <span>{item.title}</span>
+                                </Link>
+                            </SidebarMenuButton>
+                        </SidebarMenuItem>
+                    ))}
+                </SidebarMenu>
             </SidebarContent>
 
             <SidebarFooter>
-                <NavFooter items={footerNavItems} className="mt-auto" />
-                <NavUser />
+                <NavSidebarFooter items={footerNavItems} className="mt-auto" />
+                {auth?.user && (
+                    <UserInfo user={auth.user} onLogout={handleLogout} />
+                )}
             </SidebarFooter>
         </Sidebar>
     );

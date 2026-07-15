@@ -35,20 +35,20 @@ class FlashSaleController extends Controller
             $product = $fs->product;
             if (!$product) return null;
 
-            // Ambil harga diskon persis dari DB
-            $discountPrice = $product->discount_price ?? $product->price;
-            $discountPercent = $product->discount ?? 0;
+            // Ambil harga diskon persis dari flash sale
+            $discountPrice = (float) $fs->discounted_price;
+            $discountPercent = (int) $fs->discount_percentage;
 
             return [
                 'id' => $product->id,
                 'name' => $product->name,
                 'slug' => $product->slug,
-                'price' => $product->price,
+                'price' => (float) $product->price,
                 'discount_price' => $discountPrice,
                 'price_formatted' => $product->price_formatted,
                 'discount_price_formatted' => number_format($discountPrice, 0, ',', '.'),
-                'final_price' => $product->final_price,
-                'final_price_formatted' => $product->final_price_formatted,
+                'final_price' => $discountPrice,
+                'final_price_formatted' => number_format($discountPrice, 0, ',', '.'),
                 'discount' => $discountPercent,
                 'image' => $product->image_url,
                 'category' => $product->category ? [
@@ -56,7 +56,7 @@ class FlashSaleController extends Controller
                     'name' => $product->category->name,
                     'slug' => $product->category->slug ?? strtolower(str_replace(' ', '-', $product->category->name)),
                 ] : null,
-                'stock' => $product->stock,
+                'stock' => $fs->remaining_stock,
                 'sold' => $fs->sold_count ?? 0,
                 'time_left' => $fs->time_left ?? 0,
                 'progress' => $fs->progress_percentage ?? 0,
@@ -114,21 +114,19 @@ class FlashSaleController extends Controller
             $product = $fs->product;
             if (!$product) return null;
 
-            $discountPercent = (int) ($product->discount ?? 0);
-            $discountPrice = $discountPercent > 0
-                ? round($product->price * (1 - $discountPercent / 100), 2)
-                : $product->price;
+            $discountPrice = (float) $fs->discounted_price;
+            $discountPercent = (int) $fs->discount_percentage;
 
             return [
                 'id' => $product->id,
                 'name' => $product->name,
                 'slug' => $product->slug,
-                'price' => $product->price,
+                'price' => (float) $product->price,
                 'discount_price' => $discountPrice,
                 'price_formatted' => $product->price_formatted,
                 'discount_price_formatted' => number_format($discountPrice, 0, ',', '.'),
-                'final_price' => $product->final_price,
-                'final_price_formatted' => $product->final_price_formatted,
+                'final_price' => $discountPrice,
+                'final_price_formatted' => number_format($discountPrice, 0, ',', '.'),
                 'discount' => $discountPercent,
                 'image' => $product->image_url,
                 'category' => $product->category ? [
@@ -168,12 +166,13 @@ class FlashSaleController extends Controller
             'start_time' => 'required|date',
             'end_time' => 'required|date|after:start_time',
             'stock_limit' => 'required|integer|min:1',
+            'is_active' => 'nullable|boolean',
         ]);
 
         $product = Product::findOrFail($validated['product_id']);
         $validated['original_price'] = $product->price;
         $validated['discounted_price'] = round($product->price * (1 - $validated['discount_percentage'] / 100), 2);
-        $validated['is_active'] = true;
+        $validated['is_active'] = isset($validated['is_active']) ? (bool) $validated['is_active'] : true;
         $validated['sold_count'] = 0;
 
         FlashSale::create($validated);
@@ -190,6 +189,7 @@ class FlashSaleController extends Controller
             'start_time' => 'required|date',
             'end_time' => 'required|date|after:start_time',
             'stock_limit' => 'required|integer|min:1',
+            'is_active' => 'required|boolean',
         ]);
 
         $flashSale = FlashSale::findOrFail($id);

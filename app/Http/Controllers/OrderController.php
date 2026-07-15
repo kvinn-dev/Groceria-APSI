@@ -127,6 +127,12 @@ class OrderController extends Controller
 
             // Reduce stock
             $product->decrement('stock', $item['quantity']);
+
+            // Increment flash sale sold count if active
+            $activeFlashSale = $product->active_flash_sale;
+            if ($activeFlashSale) {
+                $activeFlashSale->incrementSoldCount($item['quantity']);
+            }
         }
 
         // Calculate tax (11% PPN) and shipping
@@ -158,6 +164,14 @@ class OrderController extends Controller
             // Create order items
             foreach ($itemsData as $itemData) {
                 $order->items()->create($itemData);
+            }
+
+            // Clear items from cart
+            if (Auth::check()) {
+                $productIds = collect($itemsData)->pluck('product_id')->toArray();
+                \App\Models\Cart::where('user_id', Auth::id())
+                    ->whereIn('product_id', $productIds)
+                    ->delete();
             }
         });
 
@@ -239,6 +253,106 @@ class OrderController extends Controller
     /**
      * Customer checkout from cart
      */
+    /**
+     * Prepare items for checkout and save them to user session.
+     */
+    public function prepareCheckout(Request $request)
+    {
+        $request->validate([
+            'cart_items' => 'nullable|array',
+            'cart_items.*' => 'exists:carts,id',
+            'product_id' => 'nullable|exists:products,id',
+            'quantity' => 'nullable|integer|min:1',
+        ]);
+
+        $checkoutItems = [];
+
+        if ($request->has('cart_items')) {
+            $cartItems = \App\Models\Cart::with('product')
+                ->where('user_id', Auth::id())
+                ->whereIn('id', $request->cart_items)
+                ->get();
+
+            foreach ($cartItems as $cartItem) {
+                $product = $cartItem->product;
+                if ($product) {
+                    $checkoutItems[] = [
+                        'product_id' => $product->id,
+                        'name' => $product->name,
+                        'price' => (float) ($product->discount_price ?? $product->price),
+                        'quantity' => (int) $cartItem->quantity,
+                        'image' => $product->image_url,
+                        'stock' => (int) $product->stock,
+                    ];
+                }
+            }
+        } elseif ($request->has('product_id')) {
+            $product = Product::findOrFail($request->product_id);
+            $checkoutItems[] = [
+                'product_id' => $product->id,
+                'name' => $product->name,
+                'price' => (float) ($product->discount_price ?? $product->price),
+                'quantity' => (int) $request->input('quantity', 1),
+                'image' => $product->image_url,
+                'stock' => (int) $product->stock,
+            ];
+        }
+
+        if (empty($checkoutItems)) {
+            return redirect()->route('cart.index')->with('error', 'Silakan pilih produk terlebih dahulu.');
+        }
+
+        // Save to session
+        session(['checkout_items' => $checkoutItems]);
+
+        return redirect()->route('checkout.page');
+    }
+
+    /**
+     * Display checkout form page.
+     */
+    public function checkoutPage()
+    {
+        $checkoutItems = session('checkout_items');
+
+        if (empty($checkoutItems)) {
+            return redirect()->route('cart.index')->with('error', 'Keranjang belanja Anda kosong.');
+        }
+
+        $subtotal = 0;
+        foreach ($checkoutItems as $item) {
+            $subtotal += $item['price'] * $item['quantity'];
+        }
+
+        $tax = $subtotal * 0.11;
+        $shippingCost = 15000; // Flat rate shipping
+        $total = $subtotal + $tax + $shippingCost;
+
+        $user = Auth::user();
+
+        return Inertia::render('Checkout', [
+            'checkoutItems' => $checkoutItems,
+            'summary' => [
+                'subtotal' => $subtotal,
+                'tax' => $tax,
+                'shippingCost' => $shippingCost,
+                'total' => $total,
+            ],
+            'user' => [
+                'name' => $user->name,
+                'email' => $user->email,
+                'phone' => $user->phone ?? '',
+                'address' => $user->address ?? '',
+                'city' => $user->city ?? '',
+                'province' => $user->province ?? '',
+                'postal_code' => $user->postal_code ?? '',
+            ]
+        ]);
+    }
+
+    /**
+     * Customer checkout from cart
+     */
     public function checkout(Request $request)
     {
         $validated = $request->validate([
@@ -257,9 +371,16 @@ class OrderController extends Controller
             'notes' => 'nullable|string',
         ]);
 
-        // Process order (similar to store method)
+        // Map cart items from frontend format to backend items structure
+        $items = array_map(function ($item) {
+            return [
+                'product_id' => $item['id'],
+                'quantity' => $item['quantity'],
+            ];
+        }, $validated['cart']);
+
+        // Process order using the store method
         return $this->store(new Request([
-            ...$validated,
             'customer_name' => $validated['shipping_address']['name'],
             'customer_email' => $validated['shipping_address']['email'],
             'customer_phone' => $validated['shipping_address']['phone'],
@@ -268,7 +389,9 @@ class OrderController extends Controller
             'customer_province' => $validated['shipping_address']['province'],
             'customer_postal_code' => $validated['shipping_address']['postal_code'],
             'customer_country' => 'Indonesia',
-            'items' => $validated['cart'],
+            'payment_method' => $validated['payment_method'],
+            'notes' => $validated['notes'] ?? null,
+            'items' => $items,
         ]));
     }
 }

@@ -37,6 +37,8 @@ class Product extends Model
         'meta_keywords',
     ];
 
+    protected $with = ['flashSales'];
+
     protected $appends = [
         'final_price',
         'price_formatted',
@@ -45,6 +47,7 @@ class Product extends Model
         'discount',
         'is_in_stock',
         'image_url',
+        'active_flash_sale',
     ];
 
     protected $casts = [
@@ -128,6 +131,41 @@ class Product extends Model
         }
 
         return 0;
+    }
+
+    public function getActiveFlashSaleAttribute()
+    {
+        $now = now();
+        if ($this->relationLoaded('flashSales')) {
+            return $this->flashSales->first(function ($fs) use ($now) {
+                return (int)$fs->is_active === 1 &&
+                    (!$fs->start_time || $fs->start_time->lte($now)) &&
+                    (!$fs->end_time || $fs->end_time->gte($now));
+            });
+        }
+        return $this->flashSales()
+            ->where('is_active', 1)
+            ->where('start_time', '<=', $now)
+            ->where('end_time', '>=', $now)
+            ->first();
+    }
+
+    public function getIsFlashSaleAttribute(): bool
+    {
+        return $this->active_flash_sale !== null;
+    }
+
+    public function getDiscountPriceAttribute($value)
+    {
+        if (request()->is('admin/*') || request()->routeIs('admin.*')) {
+            return $value;
+        }
+
+        $flashSale = $this->active_flash_sale;
+        if ($flashSale) {
+            return $flashSale->discounted_price;
+        }
+        return $value;
     }
 
     public function getImageUrlAttribute(): string

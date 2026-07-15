@@ -1,9 +1,9 @@
-import { Head, Link, router } from '@inertiajs/react';
-import { useEffect, useState } from 'react';
+import { NavFooter } from '@/components/nav-footer';
 import NavMain from '@/components/nav-main';
 import { ToasterProvider } from '@/components/toaster-provider';
-import { NavFooter } from '@/components/nav-footer';
 import { type SharedData } from '@/types';
+import { Head, Link, router } from '@inertiajs/react';
+import { useEffect, useState } from 'react';
 
 type Product = {
     id: number;
@@ -61,34 +61,47 @@ export default function ProductView({
 
     useEffect(() => {
         if (showInfoModal) {
-            document.body.style.overflow = "hidden";
+            document.body.style.overflow = 'hidden';
         } else {
-            document.body.style.overflow = "auto";
+            document.body.style.overflow = 'auto';
         }
 
         return () => {
-            document.body.style.overflow = "auto";
+            document.body.style.overflow = 'auto';
         };
     }, [showInfoModal]);
 
     const [activeInfoIndex, setActiveInfoIndex] = useState(0);
 
     const [quantity, setQuantity] = useState<number | ''>(minOrder);
-    const [activeTab, setActiveTab] = useState<'detail' | 'spec' | 'info'>('detail');
+    const [activeTab, setActiveTab] = useState<'detail' | 'spec' | 'info'>(
+        'detail',
+    );
     const [selectedImage, setSelectedImage] = useState(0);
 
     const ITEMS_PER_LOAD = 10;
-    const [displayedRelated, setDisplayedRelated] = useState(relatedProducts.slice(0, ITEMS_PER_LOAD));
-    const [hasMore, setHasMore] = useState(relatedProducts.length > ITEMS_PER_LOAD);
+    const [displayedRelated, setDisplayedRelated] = useState(
+        relatedProducts.slice(0, ITEMS_PER_LOAD),
+    );
+    const [hasMore, setHasMore] = useState(
+        relatedProducts.length > ITEMS_PER_LOAD,
+    );
 
     const loadMore = () => {
-        const nextItems = relatedProducts.slice(displayedRelated.length, displayedRelated.length + ITEMS_PER_LOAD);
-        setDisplayedRelated(prev => [...prev, ...nextItems]);
-        if (displayedRelated.length + nextItems.length >= relatedProducts.length) setHasMore(false);
+        const nextItems = relatedProducts.slice(
+            displayedRelated.length,
+            displayedRelated.length + ITEMS_PER_LOAD,
+        );
+        setDisplayedRelated((prev) => [...prev, ...nextItems]);
+        if (
+            displayedRelated.length + nextItems.length >=
+            relatedProducts.length
+        )
+            setHasMore(false);
     };
 
     const increaseQuantity = () => {
-        setQuantity(q => {
+        setQuantity((q) => {
             if (q === '') return minOrder;
             if (stock && q >= stock) return q;
             return q + 1;
@@ -96,7 +109,7 @@ export default function ProductView({
     };
 
     const decreaseQuantity = () => {
-        setQuantity(q => {
+        setQuantity((q) => {
             if (q === '' || q <= minOrder) return minOrder;
             return q - 1;
         });
@@ -108,19 +121,21 @@ export default function ProductView({
         { label: product.name, href: '#' },
     ];
 
-    const images = product.images?.length ? product.images : ['/images/placeholder.png'];
+    const images = product.images?.length
+        ? product.images
+        : ['/images/placeholder.png'];
     const condition = product.condition || 'Baru';
     const categoryName = product.category?.name || 'Kategori';
     const sold = product.sold ?? 0;
     const reviewCount = product.review_count ?? 0;
 
     function formatRupiah(amount: number | null | undefined) {
-        if (!amount) return "Rp0";
+        if (!amount) return 'Rp0';
         // pastikan angka utuh
         const intAmount = Math.round(amount);
-        return new Intl.NumberFormat("id-ID", {
-            style: "currency",
-            currency: "IDR",
+        return new Intl.NumberFormat('id-ID', {
+            style: 'currency',
+            currency: 'IDR',
             minimumFractionDigits: 0,
         })
             .format(intAmount)
@@ -135,7 +150,8 @@ export default function ProductView({
     const mainProductPrice = (() => {
         const originalPrice = Number(product.price) || 0;
         const discountPriceRaw =
-            product.discount_price !== null && product.discount_price !== undefined
+            product.discount_price !== null &&
+            product.discount_price !== undefined
                 ? Number(product.discount_price)
                 : null;
 
@@ -146,7 +162,9 @@ export default function ProductView({
             discountPriceRaw < originalPrice;
 
         const discountPercent = hasDiscount
-            ? Math.round(((originalPrice - discountPriceRaw) / originalPrice) * 100)
+            ? Math.round(
+                  ((originalPrice - discountPriceRaw) / originalPrice) * 100,
+              )
             : 0;
 
         const finalPrice = hasDiscount ? discountPriceRaw : originalPrice;
@@ -189,7 +207,9 @@ export default function ProductView({
             discountPriceRaw < originalPrice;
 
         const discountPercent = hasDiscount
-            ? Math.round(((originalPrice - discountPriceRaw) / originalPrice) * 100)
+            ? Math.round(
+                  ((originalPrice - discountPriceRaw) / originalPrice) * 100,
+              )
             : 0;
 
         const finalPrice = hasDiscount ? discountPriceRaw : originalPrice;
@@ -203,7 +223,6 @@ export default function ProductView({
         };
     });
 
-
     return (
         <>
             <Head title={`${product.name} - Groceria`} />
@@ -213,15 +232,17 @@ export default function ProductView({
 
                 {/* Breadcrumb */}
                 <div className="border-b">
-                    <div className="max-w-6xl mx-auto px-6 py-3 flex items-center text-[12.5px] text-green-600">
+                    <div className="mx-auto flex max-w-6xl items-center px-6 py-3 text-[12.5px] text-green-600">
                         {breadcrumbItems.map((item, i) => (
                             <div key={i} className="flex items-center">
                                 {i > 0 && <span className="mx-2">›</span>}
                                 <Link
                                     href={item.href}
-                                    className={i === breadcrumbItems.length - 1
-                                        ? 'text-gray-900'
-                                        : 'hover:text-gray-900'}
+                                    className={
+                                        i === breadcrumbItems.length - 1
+                                            ? 'text-gray-900'
+                                            : 'hover:text-gray-900'
+                                    }
                                 >
                                     {item.label}
                                 </Link>
@@ -231,21 +252,18 @@ export default function ProductView({
                 </div>
 
                 <section className="py-6">
-                    <div className="max-w-6xl mx-auto px-4 border-b">
-
+                    <div className="mx-auto max-w-6xl border-b px-4">
                         {/* GRID */}
-                        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-15">
-
+                        <div className="mb-15 grid grid-cols-1 gap-8 lg:grid-cols-12">
                             {/* LEFT — IMAGE FIX */}
                             <div className="lg:col-span-4">
-                                <div className="sticky top-24 w-[340px] mx-auto">
-
+                                <div className="sticky top-24 mx-auto w-[340px]">
                                     {/* Main Image */}
-                                    <div className="w-[340px] h-[320px] border rounded-xl flex items-center justify-center mb-2">
+                                    <div className="mb-2 flex h-[320px] w-[340px] items-center justify-center rounded-xl border">
                                         <img
                                             src={images[selectedImage]}
                                             alt={product.name}
-                                            className="max-w-full max-h-full object-contain"
+                                            className="max-h-full max-w-full object-contain"
                                         />
                                     </div>
 
@@ -254,88 +272,99 @@ export default function ProductView({
                                         {images.map((img, i) => (
                                             <button
                                                 key={i}
-                                                onClick={() => setSelectedImage(i)}
-                                                className={`aspect-square border rounded-lg overflow-hidden
-                                                ${selectedImage === i
+                                                onClick={() =>
+                                                    setSelectedImage(i)
+                                                }
+                                                className={`aspect-square overflow-hidden rounded-lg border ${
+                                                    selectedImage === i
                                                         ? 'border-green-600'
-                                                        : 'border-gray-200'}`}
+                                                        : 'border-gray-200'
+                                                }`}
                                             >
                                                 <img
                                                     src={img}
-                                                    className="w-full h-full object-cover"
+                                                    className="h-full w-full object-cover"
                                                 />
                                             </button>
                                         ))}
                                         {images.map((img, i) => (
                                             <button
                                                 key={i}
-                                                onClick={() => setSelectedImage(i)}
-                                                className={`aspect-square border rounded-lg overflow-hidden
-                                                ${selectedImage === i
+                                                onClick={() =>
+                                                    setSelectedImage(i)
+                                                }
+                                                className={`aspect-square overflow-hidden rounded-lg border ${
+                                                    selectedImage === i
                                                         ? 'border-green-600'
-                                                        : 'border-gray-200'}`}
+                                                        : 'border-gray-200'
+                                                }`}
                                             >
                                                 <img
                                                     src={img}
-                                                    className="w-full h-full object-cover"
+                                                    className="h-full w-full object-cover"
                                                 />
                                             </button>
                                         ))}
                                         {images.map((img, i) => (
                                             <button
                                                 key={i}
-                                                onClick={() => setSelectedImage(i)}
-                                                className={`aspect-square border rounded-lg overflow-hidden
-                                                ${selectedImage === i
+                                                onClick={() =>
+                                                    setSelectedImage(i)
+                                                }
+                                                className={`aspect-square overflow-hidden rounded-lg border ${
+                                                    selectedImage === i
                                                         ? 'border-green-600'
-                                                        : 'border-gray-200'}`}
+                                                        : 'border-gray-200'
+                                                }`}
                                             >
                                                 <img
                                                     src={img}
-                                                    className="w-full h-full object-cover"
+                                                    className="h-full w-full object-cover"
                                                 />
                                             </button>
                                         ))}
                                         {images.map((img, i) => (
                                             <button
                                                 key={i}
-                                                onClick={() => setSelectedImage(i)}
-                                                className={`aspect-square border rounded-lg overflow-hidden
-                                                ${selectedImage === i
+                                                onClick={() =>
+                                                    setSelectedImage(i)
+                                                }
+                                                className={`aspect-square overflow-hidden rounded-lg border ${
+                                                    selectedImage === i
                                                         ? 'border-green-600'
-                                                        : 'border-gray-200'}`}
+                                                        : 'border-gray-200'
+                                                }`}
                                             >
                                                 <img
                                                     src={img}
-                                                    className="w-full h-full object-cover"
+                                                    className="h-full w-full object-cover"
                                                 />
                                             </button>
                                         ))}
                                     </div>
-
                                 </div>
                             </div>
 
                             {/* MIDDLE — PRODUCT INFO */}
                             <div className="lg:col-span-5">
-
                                 {/* Name */}
-                                <h1 className="text-[14px] lg:text-[19px] font-black mt-1">
+                                <h1 className="mt-1 text-[14px] font-black lg:text-[19px]">
                                     {product.name}
                                 </h1>
 
                                 {/* Sold & Rating */}
-                                <div className="text-sm mt-1 flex items-center gap-2">
-
+                                <div className="mt-1 flex items-center gap-2 text-sm">
                                     {/* Sold */}
                                     <div className="flex items-center gap-1 leading-none">
-                                        <span className="text-gray-900">Terjual</span>
+                                        <span className="text-gray-900">
+                                            Terjual
+                                        </span>
                                         <span className="text-gray-400">
                                             {sold.toLocaleString()}
                                         </span>
 
                                         {/* Info Tooltip */}
-                                        <div className="relative flex items-center group ml-1 shrink-0">
+                                        <div className="group relative ml-1 flex shrink-0 items-center">
                                             <svg
                                                 className="block"
                                                 viewBox="0 0 24 24"
@@ -352,29 +381,25 @@ export default function ProductView({
                                             </svg>
 
                                             {/* Tooltip Wrapper */}
-                                            <div className="absolute left-1/2 -translate-x-1/2 top-full mt-2 hidden group-hover:block z-10">
-
+                                            <div className="absolute top-full left-1/2 z-10 mt-2 hidden -translate-x-1/2 group-hover:block">
                                                 {/* Arrow */}
-                                                <div
-                                                    className="absolute -top-[6px] left-1/2 -translate-x-1/2 w-0 h-0 border-l-6 border-r-6 border-b-6 border-l-transparent border-r-transparent border-b-gray-800/85"
-                                                />
+                                                <div className="absolute -top-[6px] left-1/2 h-0 w-0 -translate-x-1/2 border-r-6 border-b-6 border-l-6 border-r-transparent border-b-gray-800/85 border-l-transparent" />
 
                                                 {/* Tooltip Box */}
-                                                <div
-                                                    className="bg-gray-800/85 text-white text-xs px-3 py-2 rounded-sm min-w-[220px] max-w-[360px] text-center leading-snug whitespace-normal"
-                                                >
-                                                    Yang kamu lihat di sini adalah total penjualan produk ini di Groceria
+                                                <div className="max-w-[360px] min-w-[220px] rounded-sm bg-gray-800/85 px-3 py-2 text-center text-xs leading-snug whitespace-normal text-white">
+                                                    Yang kamu lihat di sini
+                                                    adalah total penjualan
+                                                    produk ini di Groceria
                                                 </div>
-
                                             </div>
                                         </div>
                                     </div>
 
                                     {/* Separator Dot */}
-                                    <span className="w-1 h-1 rounded-full bg-gray-400 inline-block" />
+                                    <span className="inline-block h-1 w-1 rounded-full bg-gray-400" />
 
                                     {/* Rating */}
-                                    <div className="flex items-center gap-1 text-gray-400 leading-none">
+                                    <div className="flex items-center gap-1 leading-none text-gray-400">
                                         <svg
                                             viewBox="0 0 24 24"
                                             width="14"
@@ -385,75 +410,92 @@ export default function ProductView({
                                             <path d="M21.57 9.14a2.37 2.37 0 0 0-1.93-1.63L15.9 7l-1.68-3.4a2.38 2.38 0 0 0-4.27 0L8.27 7l-3.75.54a2.39 2.39 0 0 0-1.32 4.04l2.71 2.64L5.27 18a2.38 2.38 0 0 0 2.35 2.79 2.42 2.42 0 0 0 1.11-.27l3.35-1.76 3.35 1.76a2.41 2.41 0 0 0 2.57-.23 2.369 2.369 0 0 0 .89-2.29l-.64-3.73L21 11.58a2.38 0 0 0 .57-2.44Z" />
                                         </svg>
 
-                                        <span>{reviewCount.toLocaleString()} rating</span>
+                                        <span>
+                                            {reviewCount.toLocaleString()}{' '}
+                                            rating
+                                        </span>
                                     </div>
                                 </div>
 
                                 <div className="flex-1 border-b pb-2">
-                                    <div className="font-black mt-4 text-[26px] mb-1 text-gray-900">
+                                    <div className="mt-4 mb-1 text-[26px] font-black text-gray-900">
                                         {mainProductPrice.finalPriceFormatted}
                                     </div>
 
                                     {mainProductPrice.hasDiscount && (
-                                        <div className="flex items-center gap-1.5 mt-[-6px]">
+                                        <div className="mt-[-6px] flex items-center gap-1.5">
                                             {/* Kotak diskon merah */}
-                                            <div className="bg-[rgb(249,77,99)]/30 text-[rgba(242,49,75,1)] font-medium text-[10px] px-1 py-1 rounded">
-                                                {mainProductPrice.discountPercent}%
+                                            <div className="rounded bg-[rgb(249,77,99)]/30 px-1 py-1 text-[10px] font-medium text-[rgba(242,49,75,1)]">
+                                                {
+                                                    mainProductPrice.discountPercent
+                                                }
+                                                %
                                             </div>
 
                                             {/* Harga coret */}
-                                            <div className="text-gray-400 text-[15px] line-through">
-                                                {mainProductPrice.originalPriceFormatted}
+                                            <div className="text-[15px] text-gray-400 line-through">
+                                                {
+                                                    mainProductPrice.originalPriceFormatted
+                                                }
                                             </div>
                                         </div>
                                     )}
                                 </div>
 
                                 {/* Tabs */}
-                                <div className="border-b mt-8 flex gap-6 text-sm font-bold">
-                                    {(['detail', 'spec', 'info'] as const).map(tab => (
-                                        <button
-                                            key={tab}
-                                            onClick={() => setActiveTab(tab)}
-                                            className={`pb-2 ${activeTab === tab
-                                                ? 'border-b-3 border-green-600 text-green-600'
-                                                : 'text-gray-500'
+                                <div className="mt-8 flex gap-6 border-b text-sm font-bold">
+                                    {(['detail', 'spec', 'info'] as const).map(
+                                        (tab) => (
+                                            <button
+                                                key={tab}
+                                                onClick={() =>
+                                                    setActiveTab(tab)
+                                                }
+                                                className={`pb-2 ${
+                                                    activeTab === tab
+                                                        ? 'border-b-3 border-green-600 text-green-600'
+                                                        : 'text-gray-500'
                                                 }`}
-                                        >
-                                            {tab === 'detail'
-                                                ? 'Detail Produk'
-                                                : tab === 'spec'
-                                                    ? 'Spesifikasi'
-                                                    : 'Info Penting'}
-                                        </button>
-                                    ))}
+                                            >
+                                                {tab === 'detail'
+                                                    ? 'Detail Produk'
+                                                    : tab === 'spec'
+                                                      ? 'Spesifikasi'
+                                                      : 'Info Penting'}
+                                            </button>
+                                        ),
+                                    )}
                                 </div>
 
                                 {/* Content */}
                                 <div className="py-4 text-sm">
-
                                     {activeTab === 'detail' && (
                                         <div className="space-y-4">
-
                                             {/* Basic Info */}
                                             <div className="space-y-0.5 text-sm">
                                                 <div className="font-regular">
-                                                    <span className="text-gray-500">Kondisi: </span>
+                                                    <span className="text-gray-500">
+                                                        Kondisi:{' '}
+                                                    </span>
                                                     <span className="text-gray-900">
                                                         {condition}
                                                     </span>
                                                 </div>
 
                                                 <div className="font-regular">
-                                                    <span className="text-gray-500">Min. Pemesanan: </span>
+                                                    <span className="text-gray-500">
+                                                        Min. Pemesanan:{' '}
+                                                    </span>
                                                     <span className="text-gray-900">
                                                         {minOrder} Buah
                                                     </span>
                                                 </div>
 
                                                 <div className="font-regular">
-                                                    <span className="text-gray-500">Etalase: </span>{' '}
-                                                    <span className="text-green-600 font-bold">
+                                                    <span className="text-gray-500">
+                                                        Etalase:{' '}
+                                                    </span>{' '}
+                                                    <span className="font-bold text-green-600">
                                                         {categoryName}
                                                     </span>
                                                 </div>
@@ -463,79 +505,106 @@ export default function ProductView({
                                             <div className="font-regular">
                                                 {product.description || '-'}
                                             </div>
-
                                         </div>
                                     )}
 
                                     {activeTab === 'spec' &&
                                         (product.specifications?.length ? (
-                                            product.specifications.map((s, i) => (
-                                                <div key={i} className="flex border-b py-2">
-                                                    <div className="w-1/3 font-medium">{s.key}</div>
-                                                    <div className="w-2/3">{s.value}</div>
-                                                </div>
-                                            ))
+                                            product.specifications.map(
+                                                (s, i) => (
+                                                    <div
+                                                        key={i}
+                                                        className="flex border-b py-2"
+                                                    >
+                                                        <div className="w-1/3 font-medium">
+                                                            {s.key}
+                                                        </div>
+                                                        <div className="w-2/3">
+                                                            {s.value}
+                                                        </div>
+                                                    </div>
+                                                ),
+                                            )
                                         ) : (
-                                            <div className="text-gray-500">Belum ada spesifikasi.</div>
+                                            <div className="text-gray-500">
+                                                Belum ada spesifikasi.
+                                            </div>
                                         ))}
 
                                     {activeTab === 'info' && (
                                         <div className="space-y-4">
-                                            {(product.important_info ?? []).map((item, index) => (
-                                                <div key={index} className="space-y-1">
-                                                    {/* JUDUL */}
-                                                    <h3 className="font-semibold text-[15px] text-gray-900">
-                                                        {item.title}
-                                                    </h3>
-
-                                                    {/* DESKRIPSI SINGKAT */}
-                                                    <p className="text-sm text-gray-600 line-clamp-2 mb-[-2px]">
-                                                        {item.content}
-                                                    </p>
-
-                                                    {/* SELENGKAPNYA */}
-                                                    <button
-                                                        onClick={() => {
-                                                            setActiveInfoIndex(index);
-                                                            setShowInfoModal(true);
-                                                        }}
-                                                        className="text-green-600 text-sm font-bold hover:font-black"
+                                            {(product.important_info ?? []).map(
+                                                (item, index) => (
+                                                    <div
+                                                        key={index}
+                                                        className="space-y-1"
                                                     >
-                                                        Selengkapnya
-                                                    </button>
-                                                </div>
-                                            ))}
+                                                        {/* JUDUL */}
+                                                        <h3 className="text-[15px] font-semibold text-gray-900">
+                                                            {item.title}
+                                                        </h3>
+
+                                                        {/* DESKRIPSI SINGKAT */}
+                                                        <p className="mb-[-2px] line-clamp-2 text-sm text-gray-600">
+                                                            {item.content}
+                                                        </p>
+
+                                                        {/* SELENGKAPNYA */}
+                                                        <button
+                                                            onClick={() => {
+                                                                setActiveInfoIndex(
+                                                                    index,
+                                                                );
+                                                                setShowInfoModal(
+                                                                    true,
+                                                                );
+                                                            }}
+                                                            className="text-sm font-bold text-green-600 hover:font-black"
+                                                        >
+                                                            Selengkapnya
+                                                        </button>
+                                                    </div>
+                                                ),
+                                            )}
                                         </div>
                                     )}
                                 </div>
 
                                 {showInfoModal && (
                                     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-                                        <div className="relative bg-white w-[65vw] max-w-5xl h-[80vh] rounded-md shadow-lg flex overflow-hidden">
-
+                                        <div className="relative flex h-[80vh] w-[65vw] max-w-5xl overflow-hidden rounded-md bg-white shadow-lg">
                                             {/* CLOSE */}
                                             <button
-                                                onClick={() => setShowInfoModal(false)}
-                                                className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-xl"
+                                                onClick={() =>
+                                                    setShowInfoModal(false)
+                                                }
+                                                className="absolute top-4 right-4 text-xl text-gray-400 hover:text-gray-600"
                                             >
                                                 ✕
                                             </button>
 
                                             {/* SIDEBAR */}
-                                            <div className="w-1/4 border-r bg-gray-50 p-5 space-y-0.5">
-                                                <h3 className="font-bold text-[20px] px-2 mb-2">
+                                            <div className="w-1/4 space-y-0.5 border-r bg-gray-50 p-5">
+                                                <h3 className="mb-2 px-2 text-[20px] font-bold">
                                                     Info Penting
                                                 </h3>
 
-                                                {(product.important_info ?? []).map((item, index) => (
+                                                {(
+                                                    product.important_info ?? []
+                                                ).map((item, index) => (
                                                     <button
                                                         key={index}
-                                                        onClick={() => setActiveInfoIndex(index)}
-                                                        className={`w-full text-left px-3 py-1.5 rounded-lg text-sm transition
-                                                            ${activeInfoIndex === index
-                                                                ? 'bg-green-600 text-white border font-semibold shadow-xs'
+                                                        onClick={() =>
+                                                            setActiveInfoIndex(
+                                                                index,
+                                                            )
+                                                        }
+                                                        className={`w-full rounded-lg px-3 py-1.5 text-left text-sm transition ${
+                                                            activeInfoIndex ===
+                                                            index
+                                                                ? 'border bg-green-600 font-semibold text-white shadow-xs'
                                                                 : 'hover:bg-green-100/50'
-                                                            }`}
+                                                        }`}
                                                     >
                                                         {item.title}
                                                     </button>
@@ -543,13 +612,20 @@ export default function ProductView({
                                             </div>
 
                                             {/* CONTENT */}
-                                            <div className="flex-1 p-6 overflow-y-auto custom-scroll">
-                                                <h2 className="text-lg pr-15 font-semibold mb-6 text-center">
-                                                    {product.important_info?.[activeInfoIndex]?.title ?? ''}
+                                            <div className="custom-scroll flex-1 overflow-y-auto p-6">
+                                                <h2 className="mb-6 pr-15 text-center text-lg font-semibold">
+                                                    {product.important_info?.[
+                                                        activeInfoIndex
+                                                    ]?.title ?? ''}
                                                 </h2>
 
-                                                <div className="text-sm text-gray-700 leading-normal whitespace-pre-line mr-10 max-h-[55vh] overflow-y-auto custom-scroll pr-2" >
-                                                    {product.important_info?.[activeInfoIndex]?.content}
+                                                <div className="custom-scroll mr-10 max-h-[55vh] overflow-y-auto pr-2 text-sm leading-normal whitespace-pre-line text-gray-700">
+                                                    {
+                                                        product
+                                                            .important_info?.[
+                                                            activeInfoIndex
+                                                        ]?.content
+                                                    }
                                                 </div>
                                             </div>
                                         </div>
@@ -558,27 +634,29 @@ export default function ProductView({
                             </div>
 
                             {/* RIGHT — BUY BOX */}
-                            <div className="lg:col-span-3 sticky top-24">
-                                <div className="border rounded-xl p-4 bg-white">
-
-                                    <div className="text-[16px] font-bold mb-4">
+                            <div className="sticky top-24 lg:col-span-3">
+                                <div className="rounded-xl border bg-white p-4">
+                                    <div className="mb-4 text-[16px] font-bold">
                                         Atur jumlah dan catatan
                                     </div>
 
                                     {/* QTY + STOCK */}
-                                    <div className="flex items-center justify-between text-sm mb-4">
-
+                                    <div className="mb-4 flex items-center justify-between text-sm">
                                         {/* QUANTITY */}
-                                        <div className="flex items-center border rounded-sm px-1 py-0.5">
-
+                                        <div className="flex items-center rounded-sm border px-1 py-0.5">
                                             {/* MINUS */}
                                             <button
                                                 onClick={decreaseQuantity}
-                                                disabled={quantity === '' || quantity <= 1}
-                                                className={`px-1 text-xl font-medium leading-none transition ${quantity !== '' && quantity > 1
-                                                    ? 'text-green-600 hover:bg-green-50'
-                                                    : 'text-gray-300 cursor-not-allowed'
-                                                    }`}
+                                                disabled={
+                                                    quantity === '' ||
+                                                    quantity <= 1
+                                                }
+                                                className={`px-1 text-xl leading-none font-medium transition ${
+                                                    quantity !== '' &&
+                                                    quantity > 1
+                                                        ? 'text-green-600 hover:bg-green-50'
+                                                        : 'cursor-not-allowed text-gray-300'
+                                                }`}
                                             >
                                                 −
                                             </button>
@@ -589,7 +667,11 @@ export default function ProductView({
                                                 inputMode="numeric"
                                                 value={quantity}
                                                 onChange={(e) => {
-                                                    const raw = e.target.value.replace(/\D/g, '');
+                                                    const raw =
+                                                        e.target.value.replace(
+                                                            /\D/g,
+                                                            '',
+                                                        );
 
                                                     // boleh kosong
                                                     if (raw === '') {
@@ -599,8 +681,10 @@ export default function ProductView({
 
                                                     let val = parseInt(raw, 10);
 
-                                                    if (val < minOrder) val = minOrder;
-                                                    if (stock && val > stock) val = stock;
+                                                    if (val < minOrder)
+                                                        val = minOrder;
+                                                    if (stock && val > stock)
+                                                        val = stock;
 
                                                     setQuantity(val);
                                                 }}
@@ -610,33 +694,34 @@ export default function ProductView({
                                                         setQuantity(minOrder);
                                                     }
                                                 }}
-                                                className="w-12 text-center text-[15px] font-medium outline-none bg-transparent"
+                                                className="w-12 bg-transparent text-center text-[15px] font-medium outline-none"
                                             />
 
                                             {/* PLUS */}
                                             <button
                                                 onClick={increaseQuantity}
-                                                className="px-1 text-xl font-medium leading-none text-green-600 hover:bg-green-50 transition"
+                                                className="px-1 text-xl leading-none font-medium text-green-600 transition hover:bg-green-50"
                                             >
                                                 +
                                             </button>
                                         </div>
 
                                         {/* STOCK */}
-                                        <div className="text-gray-700 px-3">
+                                        <div className="px-3 text-gray-700">
                                             Stok Total:
                                             <span className="font-medium text-gray-900">
-                                                {' '} {stock}
+                                                {' '}
+                                                {stock}
                                             </span>
                                         </div>
                                     </div>
 
-                                    <div className="flex items-center justify-between mb-4">
+                                    <div className="mb-4 flex items-center justify-between">
                                         <span className="text-sm text-gray-500">
                                             Subtotal
                                         </span>
 
-                                        <div className="font-black text-[19px] px-2 text-gray-900">
+                                        <div className="px-2 text-[19px] font-black text-gray-900">
                                             {mainProductPrice.subtotalFormatted}
                                         </div>
                                     </div>
@@ -646,10 +731,13 @@ export default function ProductView({
                                         onClick={() =>
                                             router.post('/cart/add', {
                                                 product_id: product.id,
-                                                quantity: quantity === '' ? minOrder : quantity,
+                                                quantity:
+                                                    quantity === ''
+                                                        ? minOrder
+                                                        : quantity,
                                             })
                                         }
-                                        className="w-full bg-green-600 text-white py-1.5 rounded-lg font-semibold hover:bg-green-700 mb-2 transition"
+                                        className="mb-2 w-full rounded-lg bg-green-600 py-1.5 font-semibold text-white transition hover:bg-green-700"
                                     >
                                         + Keranjang
                                     </button>
@@ -658,17 +746,19 @@ export default function ProductView({
                                         onClick={() =>
                                             router.post('/checkout', {
                                                 product_id: product.id,
-                                                quantity: quantity === '' ? minOrder : quantity,
+                                                quantity:
+                                                    quantity === ''
+                                                        ? minOrder
+                                                        : quantity,
                                             })
                                         }
-                                        className="w-full border border-green-600 text-green-600 py-1.5 rounded-lg font-semibold hover:bg-green-50 transition"
+                                        className="w-full rounded-lg border border-green-600 py-1.5 font-semibold text-green-600 transition hover:bg-green-50"
                                     >
                                         Beli Langsung
                                     </button>
 
                                     {/* ACTION MENU */}
                                     <div className="mt-4 flex items-center justify-between text-gray-900">
-
                                         {/* CHAT */}
                                         <button className="flex items-center gap-0.5">
                                             <svg
@@ -686,11 +776,13 @@ export default function ProductView({
                                                 />
                                             </svg>
 
-                                            <span className="text-[12px] font-bold">Chat</span>
+                                            <span className="text-[12px] font-bold">
+                                                Chat
+                                            </span>
                                         </button>
 
                                         {/* DIVIDER */}
-                                        <span className="w-px h-4 bg-gray-300" />
+                                        <span className="h-4 w-px bg-gray-300" />
 
                                         {/* WISHLIST */}
                                         <button className="flex items-center gap-0.5">
@@ -704,11 +796,13 @@ export default function ProductView({
                                             >
                                                 <path d="M12.11 20.81a1.61 1.61 0 0 1-.92-.28c-2.14-1.28-6-4-7.92-7.64a6.8 6.8 0 0 1 0-7.12 5.39 5.39 0 0 1 4.6-2.54A5.1 5.1 0 0 1 12 5.55a5.14 5.14 0 0 1 4.24-2.32 5.5 5.5 0 0 1 4.56 2.56 7.62 7.62 0 0 1 .15 7c-2.31 4.17-7 7.15-8 7.7a1.63 1.63 0 0 1-.84.32ZM7.87 4.73a3.89 3.89 0 0 0-3.4 1.87c-.18.27-1.6 2.45.13 5.59 1.7 3.32 5.4 5.86 7.4 7.08a.19.19 0 0 0 .2 0c.56-.34 5.29-3.25 7.43-7.1a6.11 6.11 0 0 0-.09-5.6 4 4 0 0 0-3.29-1.86 4.12 4.12 0 0 0-3.57 2.61L12 8.68l-.67-1.34c-.84-1.68-2.07-2.61-3.46-2.61Z" />
                                             </svg>
-                                            <span className="text-[12px] font-bold">Wishlist</span>
+                                            <span className="text-[12px] font-bold">
+                                                Wishlist
+                                            </span>
                                         </button>
 
                                         {/* DIVIDER */}
-                                        <span className="w-px h-4 bg-gray-300" />
+                                        <span className="h-4 w-px bg-gray-300" />
 
                                         {/* SHARE */}
                                         <button className="flex items-center gap-0.5">
@@ -722,93 +816,105 @@ export default function ProductView({
                                             >
                                                 <path d="M18.28 14.85a2.89 2.89 0 0 0-2.36 1.21l-6.69-3.53a.38.38 0 0 1-.1 0A2.63 2.63 0 0 0 9.1 11h.09l7-3.2a2.85 2.85 0 0 0 2.12 1 2.95 2.95 0 1 0-3-2.88c.02.203.057.403.11.6L8.57 9.61a.83.83 0 0 0-.18.13 2.95 2.95 0 0 0-5.06 2.12 3 3 0 0 0 3 2.88 2.94 2.94 0 0 0 2.16-1c.028.026.058.05.09.07l6.84 3.61c-.01.13-.01.26 0 .39a3 3 0 0 0 3 2.88 2.949 2.949 0 0 0 2.196-5.09 2.95 2.95 0 0 0-2.196-.8l-.14.05Zm0-10.5a1.45 1.45 0 1 1 0 2.89 1.52 1.52 0 0 1-1.45-1.44 1.46 1.46 0 0 1 1.45-1.45Zm-12 8.89a1.52 1.52 0 0 1-1.45-1.44 1.45 1.45 0 1 1 1.45 1.44Zm12 6a1.52 1.52 0 0 1-1.45-1.44 1.45 1.45 0 1 1 1.45 1.44Z" />
                                             </svg>
-                                            <span className="text-[12px] font-bold">Bagikan</span>
+                                            <span className="text-[12px] font-bold">
+                                                Bagikan
+                                            </span>
                                         </button>
-
                                     </div>
-
                                 </div>
                             </div>
-
                         </div>
                     </div>
                 </section>
 
                 {/* RELATED PRODUCTS */}
                 {relatedProductsPrepared.length > 0 && (
-                    <section className="dark:bg-[#1A1A19] py-6 mt-3">
-                        <div className="max-w-6xl mx-auto px-4">
-                            <h2 className="text-lg font-semibold px-2 mb-4">
+                    <section className="mt-3 py-6 dark:bg-[#1A1A19]">
+                        <div className="mx-auto max-w-6xl px-4">
+                            <h2 className="mb-4 px-2 text-lg font-semibold">
                                 Pilihan Lainnya Untukmu
                             </h2>
 
-                            <div className="grid gap-2 grid-cols-3 sm:grid-cols-3 lg:grid-cols-5">
+                            <div className="grid grid-cols-3 gap-2 sm:grid-cols-3 lg:grid-cols-5">
                                 {relatedProductsPrepared.map((p) => (
                                     <Link
                                         key={p.id}
                                         href={`/product/${p.slug}`}
-                                        className="relative bg-white rounded-xl border border-gray-200 transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-sm"
+                                        className="relative rounded-xl border border-gray-200 bg-white transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-sm"
                                     >
                                         {/* Badge Diskon */}
                                         {p.hasDiscount && (
-                                            <div className="absolute top-3 left-3 z-20">
-                                                <div className="discount-wrapper-fs">
-                                                    <span className="discount-dark-fs"></span>
-                                                    <span className="discount-light-fs">
-                                                        -{p.discount}%
-                                                    </span>
-                                                </div>
+                                            <div className="discount-wrapper">
+                                                <span className="discount-dark"></span>
+                                                <span className="discount-light">
+                                                    -{p.discount}%
+                                                </span>
                                             </div>
                                         )}
 
                                         {/* Image */}
                                         <div className="relative h-44 w-full overflow-hidden rounded-t-xl">
                                             <img
-                                                src={p.image || '/images/placeholder.png'}
+                                                src={
+                                                    p.image ||
+                                                    '/images/placeholder.png'
+                                                }
                                                 alt={p.name ?? '-'}
-                                                className="w-full h-full object-cover"
+                                                className="h-full w-full object-cover"
                                             />
                                         </div>
 
                                         {/* Info */}
-                                        <div className="px-2.5 py-2.5 mb-3">
-                                            <h3 className="text-sm font-medium line-clamp-2 mb-1.5 min-h-[40px] text-gray-800">
+                                        <div className="mb-3 px-2.5 py-2.5">
+                                            <h3 className="mb-1.5 line-clamp-2 min-h-[40px] text-sm font-medium text-gray-800">
                                                 {p.name ?? '-'}
                                             </h3>
 
-                                            <div className="flex gap-2 mt-3">
+                                            <div className="mt-3 flex gap-2">
                                                 <div className="flex-1">
                                                     {/* Price */}
                                                     <div className="mb-1 flex flex-col gap-0.5">
                                                         {p.hasDiscount ? (
-                                                            <div className="text-gray-400 text-[12px] line-through leading-tight">
-                                                                {p.originalPriceFormatted}
+                                                            <div className="text-[12px] leading-tight text-gray-400 line-through">
+                                                                {
+                                                                    p.originalPriceFormatted
+                                                                }
                                                             </div>
                                                         ) : (
-                                                            <div className="invisible text-[12px] leading-tight">placeholder</div>
+                                                            <div className="invisible text-[12px] leading-tight">
+                                                                placeholder
+                                                            </div>
                                                         )}
-                                                        <div className="text-green-600 font-semibold text-[18px] leading-tight">
-                                                            {p.finalPriceFormatted}
+                                                        <div className="text-[18px] leading-tight font-semibold text-green-600">
+                                                            {
+                                                                p.finalPriceFormatted
+                                                            }
                                                         </div>
                                                     </div>
 
                                                     {/* Sold Progress */}
                                                     <div>
-                                                        <div className="text-[11px] text-gray-500 mb-0.5">
-                                                            Terjual {p.sold ?? 0} / {p.stock ?? 0}
+                                                        <div className="mb-0.5 text-[11px] text-gray-500">
+                                                            Terjual{' '}
+                                                            {p.sold ?? 0} /{' '}
+                                                            {p.stock ?? 0}
                                                         </div>
 
-                                                        <div className="w-[100px] max-w-full bg-gray-200 rounded-full h-2">
+                                                        <div className="h-2 w-[100px] max-w-full rounded-full bg-gray-200">
                                                             <div
-                                                                className="bg-gradient-to-r from-green-500 to-green-600 h-2 rounded-full"
+                                                                className="h-2 rounded-full bg-gradient-to-r from-green-500 to-green-600"
                                                                 style={{
-                                                                    width: `${p.stock && p.sold
-                                                                        ? Math.min(
-                                                                            (p.sold / p.stock) * 100,
-                                                                            100
-                                                                        )
-                                                                        : 0
-                                                                        }%`,
+                                                                    width: `${
+                                                                        p.stock &&
+                                                                        p.sold
+                                                                            ? Math.min(
+                                                                                  (p.sold /
+                                                                                      p.stock) *
+                                                                                      100,
+                                                                                  100,
+                                                                              )
+                                                                            : 0
+                                                                    }%`,
                                                                 }}
                                                             />
                                                         </div>
@@ -816,18 +922,20 @@ export default function ProductView({
                                                 </div>
 
                                                 {/* Tombol aksi */}
-                                                <div className="w-[80px] flex flex-col items-end justify-between">
-                                                    <div className="pt-1 flex gap-3 px-1">
+                                                <div className="flex w-[80px] flex-col items-end justify-between">
+                                                    <div className="flex gap-3 px-1 pt-1">
                                                         {/* Favorit */}
                                                         <button
-                                                            className="w-7.5 h-7.5 rounded-md border border-green-600/50 flex items-center justify-center hover:bg-gray-100 transition"
+                                                            className="flex h-7.5 w-7.5 items-center justify-center rounded-md border border-green-600/50 transition hover:bg-gray-100"
                                                             title="Favorit"
                                                         >
                                                             <svg
                                                                 xmlns="http://www.w3.org/2000/svg"
                                                                 fill="none"
                                                                 viewBox="0 0 24 24"
-                                                                strokeWidth={1.5}
+                                                                strokeWidth={
+                                                                    1.5
+                                                                }
                                                                 stroke="#16a34a"
                                                                 className="size-5"
                                                             >
@@ -841,14 +949,16 @@ export default function ProductView({
 
                                                         {/* Tambah ke keranjang */}
                                                         <button
-                                                            className="w-7.5 h-7.5 rounded-md border border-green-600/50 flex items-center justify-center hover:bg-gray-100 transition"
+                                                            className="flex h-7.5 w-7.5 items-center justify-center rounded-md border border-green-600/50 transition hover:bg-gray-100"
                                                             title="Tambah ke Keranjang"
                                                         >
                                                             <svg
                                                                 xmlns="http://www.w3.org/2000/svg"
                                                                 fill="none"
                                                                 viewBox="0 0 24 24"
-                                                                strokeWidth={1.5}
+                                                                strokeWidth={
+                                                                    1.5
+                                                                }
                                                                 stroke="#16a34a"
                                                                 className="size-5"
                                                             >
@@ -865,9 +975,15 @@ export default function ProductView({
                                                     <button
                                                         onClick={(e) => {
                                                             e.preventDefault();
-                                                            router.post('/cart/add', { product_id: p.id });
+                                                            router.post(
+                                                                '/cart/add',
+                                                                {
+                                                                    product_id:
+                                                                        p.id,
+                                                                },
+                                                            );
                                                         }}
-                                                        className="w-full bg-green-600 text-white text-xs font-semibold py-1.5 rounded-md hover:bg-green-700 transition"
+                                                        className="w-full rounded-md bg-green-600 py-1.5 text-xs font-semibold text-white transition hover:bg-green-700"
                                                     >
                                                         BELI
                                                     </button>
@@ -879,8 +995,11 @@ export default function ProductView({
                             </div>
 
                             {hasMore && (
-                                <div className="flex justify-center mt-8">
-                                    <button onClick={loadMore} className="px-16 py-2.5 rounded-lg border border-green-600 text-green-700 font-semibold hover:bg-green-100/50 hover:text-green-600 transition-colors duration-300">
+                                <div className="mt-8 flex justify-center">
+                                    <button
+                                        onClick={loadMore}
+                                        className="rounded-lg border border-green-600 px-16 py-2.5 font-semibold text-green-700 transition-colors duration-300 hover:bg-green-100/50 hover:text-green-600"
+                                    >
                                         Muat Lebih Banyak
                                     </button>
                                 </div>

@@ -1,10 +1,15 @@
-import { Head, Link, router } from '@inertiajs/react';
-import { useState } from 'react';
-import { type Brand, type Category, type PaginatedData, type Product } from '@/types';
-import NavMain from '@/components/nav-main';
-import { NavFooter } from '@/components/nav-footer';
 import { DataTablePagination } from '@/components/data-table-pagination';
+import { NavFooter } from '@/components/nav-footer';
+import NavMain from '@/components/nav-main';
+import {
+    type Brand,
+    type Category,
+    type PaginatedData,
+    type Product,
+} from '@/types';
+import { Head, Link, router } from '@inertiajs/react';
 import { Filter, RotateCcw, SlidersHorizontal } from 'lucide-react';
+import { useState } from 'react';
 
 interface ProductsIndexProps {
     products: PaginatedData<Product & { category?: Category; brand?: Brand }>;
@@ -38,14 +43,24 @@ interface ProductCardProps {
 
 function ProductCard({ product, handleBuyNow }: ProductCardProps) {
     const originalPrice = Number(product.price) || 0;
-    const discountPriceRaw = product.discount_price !== null && product.discount_price !== undefined ? Number(product.discount_price) : null;
-    const hasDiscount = discountPriceRaw !== null && !Number.isNaN(discountPriceRaw) && discountPriceRaw > 0 && discountPriceRaw < originalPrice;
-    const discountPercent = hasDiscount ? Math.round(((originalPrice - discountPriceRaw) / originalPrice) * 100) : 0;
+    const discountPriceRaw =
+        product.discount_price !== null && product.discount_price !== undefined
+            ? Number(product.discount_price)
+            : null;
+    const hasDiscount =
+        discountPriceRaw !== null &&
+        !Number.isNaN(discountPriceRaw) &&
+        discountPriceRaw > 0 &&
+        discountPriceRaw < originalPrice;
+    const discountPercent = hasDiscount
+        ? Math.round(((originalPrice - discountPriceRaw) / originalPrice) * 100)
+        : 0;
     const finalPrice = hasDiscount ? discountPriceRaw : originalPrice;
 
     const originalPriceFormatted = formatRupiah(originalPrice);
     const finalPriceFormatted = formatRupiah(finalPrice);
-    const imageUrl = product.image_url || product.image || '/images/placeholder.png';
+    const imageUrl =
+        product.image_url || product.image || '/images/placeholder.png';
     const sold = product.sold ?? 0;
 
     const handleAddToCart = (e: React.MouseEvent) => {
@@ -59,13 +74,11 @@ function ProductCard({ product, handleBuyNow }: ProductCardProps) {
             className="relative rounded-xl border border-gray-200 bg-white transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-sm dark:border-[#252523] dark:bg-[#1A1A19]"
         >
             {hasDiscount && (
-                <div className="absolute top-3 left-3 z-10">
-                    <div className="discount-wrapper-fs">
-                        <span className="discount-dark-fs"></span>
-                        <span className="discount-light-fs">
-                            -{discountPercent}%
-                        </span>
-                    </div>
+                <div className="discount-wrapper">
+                    <span className="discount-dark"></span>
+                    <span className="discount-light">
+                        -{discountPercent}%
+                    </span>
                 </div>
             )}
 
@@ -76,13 +89,14 @@ function ProductCard({ product, handleBuyNow }: ProductCardProps) {
                     className="h-full w-full object-cover"
                     loading="lazy"
                     onError={(e) => {
-                        (e.target as HTMLImageElement).src = '/images/placeholder.png';
+                        (e.target as HTMLImageElement).src =
+                            '/images/placeholder.png';
                     }}
                 />
             </div>
 
             <div className="mb-3 px-2.5 py-2.5">
-                <h3 className="mb-1.5 line-clamp-2 min-h-[40px] text-sm font-medium text-gray-800 dark:text-gray-100 group-hover:text-green-600 transition-colors">
+                <h3 className="mb-1.5 line-clamp-2 min-h-[40px] text-sm font-medium text-gray-800 transition-colors group-hover:text-green-600 dark:text-gray-100">
                     {product.name ?? '-'}
                 </h3>
 
@@ -185,8 +199,15 @@ function ProductCard({ product, handleBuyNow }: ProductCardProps) {
     );
 }
 
-export default function Index({ products, categories, brands, filters }: ProductsIndexProps) {
-    const [selectedCategory, setSelectedCategory] = useState(filters.category || '');
+export default function Index({
+    products,
+    categories,
+    brands,
+    filters,
+}: ProductsIndexProps) {
+    const [selectedCategory, setSelectedCategory] = useState(
+        filters.category || '',
+    );
     const [selectedBrand, setSelectedBrand] = useState(filters.brand || '');
     const [minPrice, setMinPrice] = useState(filters.min_price || '');
     const [maxPrice, setMaxPrice] = useState(filters.max_price || '');
@@ -204,7 +225,7 @@ export default function Index({ products, categories, brands, filters }: Product
             {
                 preserveState: true,
                 replace: true,
-            }
+            },
         );
     };
 
@@ -220,30 +241,38 @@ export default function Index({ products, categories, brands, filters }: Product
             },
             {
                 replace: true,
-            }
+            },
         );
     };
 
     const handleBuyNow = (productId: number) => {
-        router.post('/cart/add', { product_id: productId });
+        router.post('/checkout', { product_id: productId, quantity: 1 });
     };
 
     return (
-        <div className="min-h-screen flex flex-col bg-gray-50 dark:bg-[#151515] text-gray-900 dark:text-gray-100">
+        <div className="flex min-h-screen flex-col bg-gray-50 text-gray-900 dark:bg-[#151515] dark:text-gray-100">
             <NavMain />
-            
+
             <Head title="Jelajahi Produk - Groceria" />
 
-            <div className="flex-1 container mx-auto max-w-6xl px-4 py-8">
+            <div className="container mx-auto max-w-6xl flex-1 px-4 py-8">
                 {/* Header Section */}
                 <div className="mb-6 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                     <div>
-                        <h1 className="text-2xl font-bold tracking-tight">Daftar Produk</h1>
-                        <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                        <h1 className="text-2xl font-bold tracking-tight">
+                            Daftar Produk
+                        </h1>
+                        <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
                             {filters.search ? (
-                                <span>Menampilkan hasil untuk pencarian "<span className="font-semibold text-green-600">{filters.search}</span>"</span>
+                                <span>
+                                    Menampilkan hasil untuk pencarian "
+                                    <span className="font-semibold text-green-600">
+                                        {filters.search}
+                                    </span>
+                                    "
+                                </span>
                             ) : (
-                                "Temukan berbagai produk menarik dengan harga terbaik"
+                                'Temukan berbagai produk menarik dengan harga terbaik'
                             )}
                             {` (${(products as any).meta !== undefined ? (products as any).meta.total : ((products as any).total ?? 0)} produk ditemukan)`}
                         </p>
@@ -253,30 +282,38 @@ export default function Index({ products, categories, brands, filters }: Product
                 <div className="grid grid-cols-1 gap-8 lg:grid-cols-4">
                     {/* FILTERS SIDEBAR */}
                     <div className="space-y-6 lg:col-span-1">
-                        <div className="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-[#1e1e1d] p-5 shadow-sm">
-                            <div className="flex items-center justify-between border-b pb-4 mb-4 dark:border-gray-800">
-                                <h2 className="flex items-center gap-2 font-semibold text-lg text-gray-800 dark:text-gray-100">
-                                    <SlidersHorizontal className="h-4 w-4 text-green-600" /> Filter
+                        <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-800 dark:bg-[#1e1e1d]">
+                            <div className="mb-4 flex items-center justify-between border-b pb-4 dark:border-gray-800">
+                                <h2 className="flex items-center gap-2 text-lg font-semibold text-gray-800 dark:text-gray-100">
+                                    <SlidersHorizontal className="h-4 w-4 text-green-600" />{' '}
+                                    Filter
                                 </h2>
-                                <button 
+                                <button
                                     onClick={handleResetFilters}
-                                    className="flex items-center gap-1 text-xs font-medium text-red-600 hover:text-red-700 transition"
+                                    className="flex items-center gap-1 text-xs font-medium text-red-600 transition hover:text-red-700"
                                 >
                                     <RotateCcw className="h-3 w-3" /> Reset
                                 </button>
                             </div>
 
                             {/* Category Filter */}
-                            <div className="space-y-3 mb-6">
-                                <label className="text-sm font-semibold text-gray-700 dark:text-gray-300">Kategori</label>
-                                <select 
-                                    value={selectedCategory} 
-                                    onChange={(e) => setSelectedCategory(e.target.value)}
-                                    className="w-full flex h-10 rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-[#252523] px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-green-600 focus:border-green-600"
+                            <div className="mb-6 space-y-3">
+                                <label className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                                    Kategori
+                                </label>
+                                <select
+                                    value={selectedCategory}
+                                    onChange={(e) =>
+                                        setSelectedCategory(e.target.value)
+                                    }
+                                    className="flex h-10 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm focus:border-green-600 focus:ring-1 focus:ring-green-600 focus:outline-none dark:border-gray-700 dark:bg-[#252523]"
                                 >
                                     <option value="">Semua Kategori</option>
                                     {categories.map((category) => (
-                                        <option key={category.id} value={category.slug}>
+                                        <option
+                                            key={category.id}
+                                            value={category.slug}
+                                        >
                                             {category.name}
                                         </option>
                                     ))}
@@ -284,16 +321,23 @@ export default function Index({ products, categories, brands, filters }: Product
                             </div>
 
                             {/* Brand Filter */}
-                            <div className="space-y-3 mb-6">
-                                <label className="text-sm font-semibold text-gray-700 dark:text-gray-300">Brand</label>
-                                <select 
-                                    value={selectedBrand} 
-                                    onChange={(e) => setSelectedBrand(e.target.value)}
-                                    className="w-full flex h-10 rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-[#252523] px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-green-600 focus:border-green-600"
+                            <div className="mb-6 space-y-3">
+                                <label className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                                    Brand
+                                </label>
+                                <select
+                                    value={selectedBrand}
+                                    onChange={(e) =>
+                                        setSelectedBrand(e.target.value)
+                                    }
+                                    className="flex h-10 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm focus:border-green-600 focus:ring-1 focus:ring-green-600 focus:outline-none dark:border-gray-700 dark:bg-[#252523]"
                                 >
                                     <option value="">Semua Brand</option>
                                     {brands.map((brand) => (
-                                        <option key={brand.id} value={brand.slug}>
+                                        <option
+                                            key={brand.id}
+                                            value={brand.slug}
+                                        >
                                             {brand.name}
                                         </option>
                                     ))}
@@ -301,29 +345,35 @@ export default function Index({ products, categories, brands, filters }: Product
                             </div>
 
                             {/* Price Range Filter */}
-                            <div className="space-y-3 mb-6">
-                                <label className="text-sm font-semibold text-gray-700 dark:text-gray-300">Rentang Harga (Rp)</label>
+                            <div className="mb-6 space-y-3">
+                                <label className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                                    Rentang Harga (Rp)
+                                </label>
                                 <div className="space-y-2">
-                                    <input 
+                                    <input
                                         type="number"
                                         placeholder="Harga Minimum"
                                         value={minPrice}
-                                        onChange={(e) => setMinPrice(e.target.value)}
-                                        className="w-full flex h-10 rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-[#252523] px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-green-600"
+                                        onChange={(e) =>
+                                            setMinPrice(e.target.value)
+                                        }
+                                        className="flex h-10 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm focus:ring-1 focus:ring-green-600 focus:outline-none dark:border-gray-700 dark:bg-[#252523]"
                                     />
-                                    <input 
+                                    <input
                                         type="number"
                                         placeholder="Harga Maksimum"
                                         value={maxPrice}
-                                        onChange={(e) => setMaxPrice(e.target.value)}
-                                        className="w-full flex h-10 rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-[#252523] px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-green-600"
+                                        onChange={(e) =>
+                                            setMaxPrice(e.target.value)
+                                        }
+                                        className="flex h-10 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm focus:ring-1 focus:ring-green-600 focus:outline-none dark:border-gray-700 dark:bg-[#252523]"
                                     />
                                 </div>
                             </div>
 
-                            <button 
+                            <button
                                 onClick={handleApplyFilters}
-                                className="w-full mt-4 flex items-center justify-center gap-2 rounded-lg bg-green-600 hover:bg-green-700 text-white font-medium py-2.5 text-sm transition"
+                                className="mt-4 flex w-full items-center justify-center gap-2 rounded-lg bg-green-600 py-2.5 text-sm font-medium text-white transition hover:bg-green-700"
                             >
                                 <Filter className="h-4 w-4" /> Terapkan Filter
                             </button>
@@ -333,15 +383,19 @@ export default function Index({ products, categories, brands, filters }: Product
                     {/* PRODUCTS GRID */}
                     <div className="lg:col-span-3">
                         {products.data.length === 0 ? (
-                            <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-gray-200 dark:border-gray-800 bg-white dark:bg-[#1e1e1d] p-16 text-center shadow-sm min-h-[400px]">
-                                <RotateCcw className="h-10 w-10 text-gray-400 mb-4" />
-                                <h3 className="font-semibold text-lg">Tidak ada produk ditemukan</h3>
-                                <p className="text-sm text-gray-500 dark:text-gray-400 mt-2 max-w-sm">
-                                    Coba ubah kata kunci pencarian Anda atau atur ulang filter untuk menemukan produk yang diinginkan.
+                            <div className="flex min-h-[400px] flex-col items-center justify-center rounded-2xl border border-dashed border-gray-200 bg-white p-16 text-center shadow-sm dark:border-gray-800 dark:bg-[#1e1e1d]">
+                                <RotateCcw className="mb-4 h-10 w-10 text-gray-400" />
+                                <h3 className="text-lg font-semibold">
+                                    Tidak ada produk ditemukan
+                                </h3>
+                                <p className="mt-2 max-w-sm text-sm text-gray-500 dark:text-gray-400">
+                                    Coba ubah kata kunci pencarian Anda atau
+                                    atur ulang filter untuk menemukan produk
+                                    yang diinginkan.
                                 </p>
-                                <button 
+                                <button
                                     onClick={handleResetFilters}
-                                    className="mt-6 rounded-lg bg-green-600 hover:bg-green-700 text-white font-medium px-4 py-2 text-sm transition"
+                                    className="mt-6 rounded-lg bg-green-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-green-700"
                                 >
                                     Muat Ulang Semua Produk
                                 </button>
@@ -350,7 +404,11 @@ export default function Index({ products, categories, brands, filters }: Product
                             <div className="space-y-6">
                                 <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-3">
                                     {products.data.map((p) => (
-                                        <ProductCard key={p.id} product={p} handleBuyNow={handleBuyNow} />
+                                        <ProductCard
+                                            key={p.id}
+                                            product={p}
+                                            handleBuyNow={handleBuyNow}
+                                        />
                                     ))}
                                 </div>
 
