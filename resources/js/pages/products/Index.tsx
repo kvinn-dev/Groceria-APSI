@@ -267,7 +267,7 @@ export default function Index({
 
             <Head title="Jelajahi Produk - Groceria" />
 
-            <div className="max-w-8xl container mx-auto flex-1 px-4 py-8">
+            <div className="container mx-auto max-w-7xl flex-1 px-4 py-8">
                 {/* Header Section */}
                 <div className="mb-6 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                     <div>
@@ -293,7 +293,7 @@ export default function Index({
 
                 <div className="grid grid-cols-1 gap-8 lg:grid-cols-4">
                     {/* FILTERS SIDEBAR */}
-                    <div className="space-y-6 lg:col-span-1">
+                    <div className="h-fit space-y-6 lg:sticky lg:top-24 lg:col-span-1">
                         <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-800 dark:bg-[#1e1e1d]">
                             <div className="mb-4 flex items-center justify-between border-b pb-4 dark:border-gray-800">
                                 <h2 className="flex items-center gap-2 text-lg font-semibold text-gray-800 dark:text-gray-100">

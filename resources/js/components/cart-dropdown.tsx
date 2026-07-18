@@ -85,7 +85,7 @@ export default function CartDropdown() {
                                 Yuk, isi dengan barang-barang impianmu!
                             </p>
                             <Link
-                                href="/top-product"
+                                href="/products"
                                 className="inline-block border border-green-600 mb-5 text-green-600 font-semibold text-sm px-6 py-1 rounded-sm hover:bg-green-50 transition"
                             >
                                 Mulai Belanja

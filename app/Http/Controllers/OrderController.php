@@ -47,7 +47,7 @@ class OrderController extends Controller
 
         $orders = $query->paginate(20)->withQueryString();
 
-        return Inertia::render('Orders/Index', [
+        return Inertia::render('orders/Index', [
             'orders' => $orders,
             'filters' => $request->only(['search', 'status', 'payment_status']),
             'statusOptions' => [
@@ -71,7 +71,7 @@ class OrderController extends Controller
      */
     public function create()
     {
-        return Inertia::render('Orders/Create', [
+        return Inertia::render('orders/Create', [
             'products' => Product::where('is_active', true)
                 ->where('stock', '>', 0)
                 ->get(),
@@ -99,85 +99,94 @@ class OrderController extends Controller
             'items.*.quantity' => 'required|integer|min:1',
         ]);
 
-        // Calculate totals
-        $subtotal = 0;
-        $itemsData = [];
+        try {
+            DB::transaction(function () use ($validated) {
+                $subtotal = 0;
+                $itemsData = [];
 
-        foreach ($validated['items'] as $item) {
-            $product = Product::findOrFail($item['product_id']);
-            
-            // Check stock
-            if ($product->stock < $item['quantity']) {
-                return back()->withErrors([
-                    'items' => "Stok {$product->name} tidak mencukupi. Stok tersedia: {$product->stock}",
+                foreach ($validated['items'] as $item) {
+                    // Lock product row to prevent race conditions during concurrent checkouts
+                    $product = Product::lockForUpdate()->findOrFail($item['product_id']);
+
+                    // Check stock
+                    if ($product->stock < $item['quantity']) {
+                        throw new \Exception("Stok {$product->name} tidak mencukupi. Stok tersedia: {$product->stock}");
+                    }
+
+                    $price = $product->discount_price ?? $product->price;
+                    $itemSubtotal = $price * $item['quantity'];
+                    $subtotal += $itemSubtotal;
+
+                    $itemsData[] = [
+                        'product_id' => $product->id,
+                        'product_name' => $product->name,
+                        'product_price' => $price,
+                        'quantity' => $item['quantity'],
+                        'subtotal' => $itemSubtotal,
+                        'product_model' => $product, // temp reference to update stock
+                    ];
+                }
+
+                // Calculate tax (11% PPN) and shipping
+                $tax = $subtotal * 0.11;
+                $shippingCost = 15000; // Flat rate for now
+                $total = $subtotal + $tax + $shippingCost;
+
+                $order = Order::create([
+                    'user_id' => Auth::id(),
+                    'customer_name' => $validated['customer_name'],
+                    'customer_email' => $validated['customer_email'],
+                    'customer_phone' => $validated['customer_phone'],
+                    'customer_address' => $validated['customer_address'],
+                    'customer_city' => $validated['customer_city'],
+                    'customer_province' => $validated['customer_province'],
+                    'customer_postal_code' => $validated['customer_postal_code'],
+                    'customer_country' => $validated['customer_country'],
+                    'subtotal' => $subtotal,
+                    'tax' => $tax,
+                    'shipping_cost' => $shippingCost,
+                    'total' => $total,
+                    'payment_method' => $validated['payment_method'],
+                    'notes' => $validated['notes'] ?? null,
+                    'status' => 'pending',
+                    'payment_status' => 'pending',
                 ]);
-            }
 
-            $price = $product->discount_price ?? $product->price;
-            $itemSubtotal = $price * $item['quantity'];
-            $subtotal += $itemSubtotal;
+                // Create order items and decrement stock
+                foreach ($itemsData as $itemData) {
+                    $productModel = $itemData['product_model'];
+                    unset($itemData['product_model']);
 
-            $itemsData[] = [
-                'product_id' => $product->id,
-                'product_name' => $product->name,
-                'product_price' => $price,
-                'quantity' => $item['quantity'],
-                'subtotal' => $itemSubtotal,
-            ];
+                    $order->items()->create($itemData);
 
-            // Reduce stock
-            $product->decrement('stock', $item['quantity']);
+                    // Reduce stock in DB and memory
+                    $productModel->decrement('stock', $itemData['quantity']);
 
-            // Increment flash sale sold count if active
-            $activeFlashSale = $product->active_flash_sale;
-            if ($activeFlashSale) {
-                $activeFlashSale->incrementSoldCount($item['quantity']);
-            }
+                    // Increment flash sale sold count if active
+                    $activeFlashSale = $productModel->active_flash_sale;
+                    if ($activeFlashSale) {
+                        $activeFlashSale->incrementSoldCount($itemData['quantity']);
+                    }
+                }
+
+                // Clear items from cart
+                if (Auth::check()) {
+                    $productIds = collect($itemsData)->pluck('product_id')->toArray();
+                    \App\Models\Cart::where('user_id', Auth::id())
+                        ->whereIn('product_id', $productIds)
+                        ->delete();
+                }
+            });
+
+            return redirect()
+                ->route('orders.index')
+                ->with('success', 'Pesanan berhasil dibuat!');
+
+        } catch (\Exception $e) {
+            return back()->withErrors([
+                'items' => $e->getMessage(),
+            ])->withInput();
         }
-
-        // Calculate tax (11% PPN) and shipping
-        $tax = $subtotal * 0.11;
-        $shippingCost = 15000; // Flat rate for now
-        $total = $subtotal + $tax + $shippingCost;
-
-        DB::transaction(function () use ($validated, $subtotal, $tax, $shippingCost, $total, $itemsData) {
-            $order = Order::create([
-                'user_id' => Auth::id(),
-                'customer_name' => $validated['customer_name'],
-                'customer_email' => $validated['customer_email'],
-                'customer_phone' => $validated['customer_phone'],
-                'customer_address' => $validated['customer_address'],
-                'customer_city' => $validated['customer_city'],
-                'customer_province' => $validated['customer_province'],
-                'customer_postal_code' => $validated['customer_postal_code'],
-                'customer_country' => $validated['customer_country'],
-                'subtotal' => $subtotal,
-                'tax' => $tax,
-                'shipping_cost' => $shippingCost,
-                'total' => $total,
-                'payment_method' => $validated['payment_method'],
-                'notes' => $validated['notes'] ?? null,
-                'status' => 'pending',
-                'payment_status' => 'pending',
-            ]);
-
-            // Create order items
-            foreach ($itemsData as $itemData) {
-                $order->items()->create($itemData);
-            }
-
-            // Clear items from cart
-            if (Auth::check()) {
-                $productIds = collect($itemsData)->pluck('product_id')->toArray();
-                \App\Models\Cart::where('user_id', Auth::id())
-                    ->whereIn('product_id', $productIds)
-                    ->delete();
-            }
-        });
-
-        return redirect()
-            ->route('orders.index')
-            ->with('success', 'Pesanan berhasil dibuat!');
     }
 
     /**
@@ -192,7 +201,7 @@ class OrderController extends Controller
 
         $order->load(['user', 'items.product', 'payment']);
 
-        return Inertia::render('Orders/Show', [
+        return Inertia::render('orders/Show', [
             'order' => $order,
         ]);
     }

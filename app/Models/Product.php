@@ -48,6 +48,7 @@ class Product extends Model
         'is_in_stock',
         'image_url',
         'active_flash_sale',
+        'sold',
     ];
 
     protected $casts = [
@@ -174,5 +175,10 @@ class Product extends Model
             return $this->image;
         }
         return $this->image ? asset('storage/' . $this->image) : asset('images/placeholder.png');
+    }
+
+    public function getSoldAttribute(): int
+    {
+        return (int) ($this->attributes['order_items_sum_quantity'] ?? $this->orderItems()->sum('quantity'));
     }
 }

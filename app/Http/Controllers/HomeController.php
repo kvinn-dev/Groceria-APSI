@@ -46,7 +46,7 @@ class HomeController extends Controller
                 'price'    => $product->discount_price ?? $product->price,
                 'image'    => $product->image_url,
                 'category' => $product->category,
-                'sold'     => null,
+                'sold'     => (int) $product->sold,
             ]);
 
         $search = request('search');
@@ -79,6 +79,7 @@ class HomeController extends Controller
                 'discount' => (int) ($p->discount ?? 0),
                 'stock' => (int) ($p->stock ?? 0),
                 'image' => $p->image_url,
+                'sold' => (int) ($p->sold ?? 0),
             ]);
 
 

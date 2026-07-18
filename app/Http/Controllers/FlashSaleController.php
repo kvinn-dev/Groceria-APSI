@@ -83,6 +83,15 @@ class FlashSaleController extends Controller
     }
 
     /**
+     * API endpoint for homepage or other product retrievals
+     */
+    public function getProducts(Request $request)
+    {
+        $request->merge(['page' => 1, 'min_discount' => 0]);
+        return $this->batch($request);
+    }
+
+    /**
      * API endpoint for lazy load / batch
      */
     public function batch(Request $request)
@@ -152,7 +161,7 @@ class FlashSaleController extends Controller
     // ==============================
     public function manage()
     {
-        return Inertia::render('Admin/FlashSale/Index', [
+        return Inertia::render('Admin/flashsale/Index', [
             'flashSales' => FlashSale::with('product.category')->get(),
             'products' => Product::all(),
         ]);

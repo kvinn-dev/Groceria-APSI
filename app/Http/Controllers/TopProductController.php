@@ -26,11 +26,10 @@ class TopProductController extends Controller
                 'image'          => $product->image,
                 'category'       => $product->category,
                 'stock'          => $product->stock,
-                'sold_count'     => $product->sold_count,
+                'sold'           => (int) $product->sold,
             ]);
 
         return Inertia::render('Top_Product', [
-            'auth'     => Auth::user(),
             'products' => $products,
         ]);
     }
@@ -43,7 +42,6 @@ class TopProductController extends Controller
             ->paginate(40);
 
         return Inertia::render('TopProduct/All', [
-            'auth'     => Auth::user(),
             'products' => $products,
         ]);
     }

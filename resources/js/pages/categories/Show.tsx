@@ -4,7 +4,7 @@ import NavMain from '@/components/nav-main';
 import ProductCardItem from '@/components/product-card-item';
 import { type Category, type PaginatedData } from '@/types';
 import { Head, Link, router } from '@inertiajs/react';
-import { ChevronRight, Folder, FolderOpen } from 'lucide-react';
+import { ChevronRight } from 'lucide-react';
 
 type Product = {
     id: number;
@@ -89,9 +89,9 @@ export default function Show({ category, products, categories }: ShowProps) {
                 <NavMain />
 
                 {/* Main Content Area */}
-                <main className="max-w-8xl container mx-auto flex-grow px-4 py-6">
+                <main className="container mx-auto max-w-7xl flex-grow px-4 py-6">
                     {/* Breadcrumbs */}
-                    <nav className="mb-6 flex items-center gap-1.5 text-xs text-gray-500 dark:text-gray-400">
+                    <nav className="mb-6 flex items-center gap-1.5 text-sm text-gray-500 dark:text-gray-400">
                         <Link
                             href="/"
                             className="transition-colors hover:text-green-600"
@@ -156,17 +156,12 @@ export default function Show({ category, products, categories }: ShowProps) {
                                             >
                                                 <Link
                                                     href={`/categories/${cat.slug}`}
-                                                    className={`flex items-center gap-2 rounded-lg px-2 py-1.5 text-xs font-semibold transition-all ${
+                                                    className={`flex items-center gap-2 rounded-lg px-2 py-1.5 text-sm font-semibold transition-all ${
                                                         isActive
                                                             ? 'bg-green-50 text-green-700 dark:bg-green-950/20 dark:text-green-400'
                                                             : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-[#252523] dark:hover:text-gray-200'
                                                     }`}
                                                 >
-                                                    {isActive ? (
-                                                        <FolderOpen className="h-4 w-4 flex-shrink-0 text-green-600 dark:text-green-400" />
-                                                    ) : (
-                                                        <Folder className="h-4 w-4 flex-shrink-0 text-gray-400 dark:text-gray-500" />
-                                                    )}
                                                     <span className="truncate">
                                                         {cat.name}
                                                     </span>
@@ -219,7 +214,6 @@ export default function Show({ category, products, categories }: ShowProps) {
                         <section className="min-w-0 flex-1">
                             {processedProducts.length === 0 ? (
                                 <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-gray-200 bg-white px-4 py-16 text-center dark:border-[#252523] dark:bg-[#1A1A19]">
-                                    <span className="mb-4 text-5xl">🌾</span>
                                     <h3 className="text-lg font-bold text-gray-800 dark:text-gray-200">
                                         Tidak Ada Produk
                                     </h3>
@@ -239,7 +233,7 @@ export default function Show({ category, products, categories }: ShowProps) {
                                 <div className="space-y-8">
                                     {/* Products Grid */}
                                     <div className="space-y-6">
-                                        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
+                                        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
                                             {processedProducts.map((p) => (
                                                 <ProductCardItem
                                                     key={p.id}

@@ -1,10 +1,10 @@
-import { Head, Link, router, useForm } from '@inertiajs/react';
-import { useEffect, useMemo, useState } from 'react';
-import NavMain from '@/components/nav-main';
 import { NavFooter } from '@/components/nav-footer';
-import { Checkbox } from '@/components/ui/checkbox'; // Asumsi Anda punya komponen Checkbox dari shadcn/ui
+import NavMain from '@/components/nav-main';
 import { Button } from '@/components/ui/button'; // Asumsi Anda punya komponen Button dari shadcn/ui
+import { Checkbox } from '@/components/ui/checkbox'; // Asumsi Anda punya komponen Checkbox dari shadcn/ui
+import { Head, Link, router } from '@inertiajs/react';
 import { Trash2 } from 'lucide-react';
+import { useMemo, useState } from 'react';
 
 type CartItemType = {
     id: number;
@@ -19,14 +19,18 @@ type CartItemType = {
     store_name: string;
 };
 
-export default function Cart({ cartItems = [] }: { cartItems: CartItemType[] }) {
+export default function Cart({
+    cartItems = [],
+}: {
+    cartItems: CartItemType[];
+}) {
     const [selectedItems, setSelectedItems] = useState<number[]>(
-        cartItems.map((item) => item.id) // Default pilih semua
+        cartItems.map((item) => item.id), // Default pilih semua
     );
 
     const handleSelectItem = (itemId: number, checked: boolean) => {
         setSelectedItems((prev) =>
-            checked ? [...prev, itemId] : prev.filter((id) => id !== itemId)
+            checked ? [...prev, itemId] : prev.filter((id) => id !== itemId),
         );
     };
 
@@ -39,16 +43,16 @@ export default function Cart({ cartItems = [] }: { cartItems: CartItemType[] }) 
 
     const summary = useMemo(() => {
         const itemsToSummarize = cartItems.filter((item) =>
-            selectedItems.includes(item.id)
+            selectedItems.includes(item.id),
         );
 
         const totalItems = itemsToSummarize.reduce(
             (sum, item) => sum + item.quantity,
-            0
+            0,
         );
         const totalPrice = itemsToSummarize.reduce(
             (sum, item) => sum + item.price * item.quantity,
-            0
+            0,
         );
 
         return {
@@ -66,7 +70,7 @@ export default function Cart({ cartItems = [] }: { cartItems: CartItemType[] }) 
         router.patch(
             `/cart/update/${cartId}`,
             { quantity: newQuantity },
-            { preserveScroll: true }
+            { preserveScroll: true },
         );
     };
 
@@ -92,11 +96,17 @@ export default function Cart({ cartItems = [] }: { cartItems: CartItemType[] }) 
                     <h1 className="mb-6 text-2xl font-bold">Keranjang</h1>
 
                     {cartItems.length === 0 ? (
-                        <div className="text-center rounded-lg border bg-white p-12 dark:bg-[#1A1A19]">
-                            <h2 className="text-xl font-semibold">Keranjangmu kosong</h2>
-                            <p className="mt-2 text-gray-500">Yuk, isi dengan barang-barang impianmu!</p>
-                            <Link href="/top-product">
-                                <Button className="mt-6 bg-green-600 hover:bg-green-700">Mulai Belanja</Button>
+                        <div className="rounded-lg border bg-white p-12 text-center dark:bg-[#1A1A19]">
+                            <h2 className="text-xl font-semibold">
+                                Keranjangmu kosong
+                            </h2>
+                            <p className="mt-2 text-gray-500">
+                                Yuk, isi dengan barang-barang impianmu!
+                            </p>
+                            <Link href="/products">
+                                <Button className="mt-6 bg-green-600 hover:bg-green-700">
+                                    Mulai Belanja
+                                </Button>
                             </Link>
                         </div>
                     ) : (
@@ -111,16 +121,29 @@ export default function Cart({ cartItems = [] }: { cartItems: CartItemType[] }) 
                                             onCheckedChange={handleSelectAll}
                                             className="mr-4"
                                         />
-                                        <label htmlFor="select-all" className="text-sm font-medium">
+                                        <label
+                                            htmlFor="select-all"
+                                            className="text-sm font-medium"
+                                        >
                                             Pilih semua
                                         </label>
                                     </div>
 
                                     {cartItems.map((item) => (
-                                        <div key={item.id} className="flex items-start gap-4 border-b py-4 dark:border-[#3E3E3A]">
+                                        <div
+                                            key={item.id}
+                                            className="flex items-start gap-4 border-b py-4 dark:border-[#3E3E3A]"
+                                        >
                                             <Checkbox
-                                                checked={selectedItems.includes(item.id)}
-                                                onCheckedChange={(checked) => handleSelectItem(item.id, !!checked)}
+                                                checked={selectedItems.includes(
+                                                    item.id,
+                                                )}
+                                                onCheckedChange={(checked) =>
+                                                    handleSelectItem(
+                                                        item.id,
+                                                        !!checked,
+                                                    )
+                                                }
                                                 className="mt-1"
                                             />
                                             <img
@@ -129,20 +152,42 @@ export default function Cart({ cartItems = [] }: { cartItems: CartItemType[] }) 
                                                 className="h-20 w-20 rounded-md object-cover"
                                             />
                                             <div className="flex-1">
-                                                <p className="text-xs text-gray-500">{item.store_name}</p>
-                                                <Link href={`/product/${item.slug}`} className="font-semibold hover:text-green-600">
+                                                <p className="text-xs text-gray-500">
+                                                    {item.store_name}
+                                                </p>
+                                                <Link
+                                                    href={`/product/${item.slug}`}
+                                                    className="font-semibold hover:text-green-600"
+                                                >
                                                     {item.name}
                                                 </Link>
-                                                <p className="mt-1 font-bold text-green-600">{item.price_formatted}</p>
+                                                <p className="mt-1 font-bold text-green-600">
+                                                    {item.price_formatted}
+                                                </p>
                                             </div>
                                             <div className="flex items-center gap-4">
-                                                <button onClick={() => handleRemoveItem(item.id)} title="Hapus">
+                                                <button
+                                                    onClick={() =>
+                                                        handleRemoveItem(
+                                                            item.id,
+                                                        )
+                                                    }
+                                                    title="Hapus"
+                                                >
                                                     <Trash2 className="h-5 w-5 text-gray-400 hover:text-red-500" />
                                                 </button>
                                                 <div className="flex items-center rounded-md border">
                                                     <button
-                                                        onClick={() => handleQuantityChange(item.id, item.quantity - 1)}
-                                                        disabled={item.quantity <= 1}
+                                                        onClick={() =>
+                                                            handleQuantityChange(
+                                                                item.id,
+                                                                item.quantity -
+                                                                    1,
+                                                            )
+                                                        }
+                                                        disabled={
+                                                            item.quantity <= 1
+                                                        }
                                                         className="px-2 py-1 disabled:cursor-not-allowed disabled:text-gray-300"
                                                     >
                                                         -
@@ -154,8 +199,17 @@ export default function Cart({ cartItems = [] }: { cartItems: CartItemType[] }) 
                                                         className="w-10 border-none bg-transparent text-center outline-none"
                                                     />
                                                     <button
-                                                        onClick={() => handleQuantityChange(item.id, item.quantity + 1)}
-                                                        disabled={item.quantity >= item.stock}
+                                                        onClick={() =>
+                                                            handleQuantityChange(
+                                                                item.id,
+                                                                item.quantity +
+                                                                    1,
+                                                            )
+                                                        }
+                                                        disabled={
+                                                            item.quantity >=
+                                                            item.stock
+                                                        }
                                                         className="px-2 py-1 disabled:cursor-not-allowed disabled:text-gray-300"
                                                     >
                                                         +
@@ -170,19 +224,26 @@ export default function Cart({ cartItems = [] }: { cartItems: CartItemType[] }) 
                             {/* RINGKASAN BELANJA */}
                             <div className="lg:col-span-1">
                                 <div className="sticky top-24 rounded-lg border bg-white p-6 shadow-sm dark:border-[#3E3E3A] dark:bg-[#1A1A19]">
-                                    <h2 className="mb-4 text-lg font-semibold">Ringkasan Belanja</h2>
+                                    <h2 className="mb-4 text-lg font-semibold">
+                                        Ringkasan Belanja
+                                    </h2>
                                     <div className="flex justify-between text-sm">
                                         <span className="text-gray-500">
-                                            Total Harga ({summary.totalItems} barang)
+                                            Total Harga ({summary.totalItems}{' '}
+                                            barang)
                                         </span>
-                                        <span>{summary.totalPriceFormatted}</span>
+                                        <span>
+                                            {summary.totalPriceFormatted}
+                                        </span>
                                     </div>
 
                                     <div className="my-4 border-t dark:border-[#3E3E3A]" />
 
                                     <div className="flex justify-between font-bold">
                                         <span>Total Harga</span>
-                                        <span className="text-green-600">{summary.totalPriceFormatted}</span>
+                                        <span className="text-green-600">
+                                            {summary.totalPriceFormatted}
+                                        </span>
                                     </div>
 
                                     <Button
