@@ -1,41 +1,41 @@
-import { Head, Link, router, usePage } from '@inertiajs/react';
-import { useState, useEffect, useRef } from "react";
-import { type SharedData } from '@/types';
-import { ChevronRight, ChevronLeft, ShoppingCart, Star, Truck, Shield, Clock } from 'lucide-react';
-import NavMain from "@/components/nav-main";
-import { NavFooter } from '@/components/nav-footer';
 import CardProducts from '@/components/card_product';
+import { NavFooter } from '@/components/nav-footer';
+import NavMain from '@/components/nav-main';
+import { type SharedData } from '@/types';
+import { Head, Link, usePage } from '@inertiajs/react';
+import { ChevronLeft, ChevronRight, ShoppingCart } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
 
 const bannerData = [
     {
         id: 1,
-        title: "Promo Guncang 12.12",
-        subtitle: "HALEON",
-        slug: "banner-01",
-        src: "images/banner/01.webp",
-        href: "flash-sale",
+        title: 'Promo Guncang 12.12',
+        subtitle: 'HALEON',
+        slug: 'banner-01',
+        src: 'images/banner/001.webp',
+        href: 'flash-sale',
     },
     {
         id: 2,
-        title: "Flash Sale Akhir Tahun",
-        subtitle: "SENSODYNE",
-        slug: "banner-02",
-        src: "images/banner/02.webp",
+        title: 'Flash Sale Akhir Tahun',
+        subtitle: 'SENSODYNE',
+        slug: 'banner-02',
+        src: 'images/banner/02.webp',
     },
     {
         id: 3,
-        title: "Paket Hemat Keluarga",
-        subtitle: "PARAMONT",
-        slug: "banner-03",
-        src: "images/banner/03.webp",
+        title: 'Paket Hemat Keluarga',
+        subtitle: 'PARAMONT',
+        slug: 'banner-03',
+        src: 'images/banner/03.webp',
     },
     {
         id: 4,
-        title: "Paket Hemat Keluarga",
-        subtitle: "PARAMONT",
-        slug: "banner-04",
-        src: "images/banner/04.webp",
-    }
+        title: 'Paket Hemat Keluarga',
+        subtitle: 'PARAMONT',
+        slug: 'banner-04',
+        src: 'images/banner/04.webp',
+    },
 ];
 
 interface FlashSaleProduct {
@@ -79,6 +79,7 @@ interface HomePageProps {
         name: string;
         slug: string;
         products_count: number;
+        image?: string | null;
     }>;
     topProducts: any[];
 }
@@ -101,13 +102,13 @@ export default function Home({
     const nextSlide = () => {
         if (isTransitioning) return;
         setIsTransitioning(true);
-        setCurrentSlide(prev => prev + 1);
+        setCurrentSlide((prev) => prev + 1);
     };
 
     const prevSlide = () => {
         if (isTransitioning) return;
         setIsTransitioning(true);
-        setCurrentSlide(prev => prev - 1);
+        setCurrentSlide((prev) => prev - 1);
     };
 
     const goToSlide = (index: number) => {
@@ -137,7 +138,7 @@ export default function Home({
             try {
                 const res = await fetch('/flash-sale/batch?page=1', {
                     headers: {
-                        'Accept': 'application/json',
+                        Accept: 'application/json',
                     },
                 });
 
@@ -196,16 +197,16 @@ export default function Home({
                 }
             };
 
-            el.addEventListener("scroll", onScroll, { passive: true });
-            window.addEventListener("resize", updateArrows);
+            el.addEventListener('scroll', onScroll, { passive: true });
+            window.addEventListener('resize', updateArrows);
 
             return () => {
-                el.removeEventListener("scroll", onScroll);
-                window.removeEventListener("resize", updateArrows);
+                el.removeEventListener('scroll', onScroll);
+                window.removeEventListener('resize', updateArrows);
             };
         }, []);
 
-        const scroll = (direction: "left" | "right") => {
+        const scroll = (direction: 'left' | 'right') => {
             const el = ref.current;
             if (!el) return;
 
@@ -213,8 +214,8 @@ export default function Home({
             const distance = MOVE_COL * (ITEM_WIDTH + GAP);
 
             el.scrollBy({
-                left: direction === "right" ? distance : -distance,
-                behavior: "smooth",
+                left: direction === 'right' ? distance : -distance,
+                behavior: 'smooth',
             });
         };
 
@@ -223,34 +224,20 @@ export default function Home({
 
     const categorySlider = useCategorySlider(ITEM_WIDTH, ITEM_GAP);
 
-    const categoryItems = [
-        { icon: "images/category/00001.webp", label: "Elektronik" },
-        { icon: "images/category/00002.webp", label: "Komputer & Aksesoris" },
-        { icon: "images/category/00003.webp", label: "Handphone & Aksesoris" },
-        { icon: "images/category/00004.webp", label: "Pakaian Pria" },
-        { icon: "images/category/00005.webp", label: "Sepatu Pria" },
-        { icon: "images/category/00006.webp", label: "Tas Pria" },
-        { icon: "images/category/00007.webp", label: "Aksesoris Fashion" },
-        { icon: "images/category/00008.webp", label: "Jam Tangan" },
-        { icon: "images/category/00009.webp", label: "Kesehatan" },
-        { icon: "images/category/00010.webp", label: "Hobi & Koleksi" },
-        { icon: "images/category/00011.webp", label: "Makanan & Minuman" },
-        { icon: "images/category/00012.webp", label: "Perawatan & Kecantikan" },
-        { icon: "images/category/00013.webp", label: "Perlengkapan Rumah" },
-        { icon: "images/category/00014.webp", label: "Pakaian Wanita" },
-        { icon: "images/category/00015.webp", label: "Fashion Muslim" },
-        { icon: "images/category/00016.webp", label: "Fashion Bayi & Anak" },
-        { icon: "images/category/00017.webp", label: "Ibu & Bayi" },
-        { icon: "images/category/00018.webp", label: "Sepatu Wanita" },
-        { icon: "images/category/00019.webp", label: "Tas Wanita" },
-        { icon: "images/category/00020.webp", label: "Otomotif" },
-        { icon: "images/category/00021.webp", label: "Olahraga Outdoor" },
-        { icon: "images/category/00022.webp", label: "Souvenir & Perlengkapan" },
-        { icon: "images/category/00023.webp", label: "Voucher" },
-        { icon: "images/category/00024.webp", label: "Buku & Alat Tulis" },
-        { icon: "images/category/00025.webp", label: "Fotografi" },
-        { icon: "images/category/00026.webp", label: "Deals Sekitarmu" },
-    ];
+    const categoryItems = categories.map((cat, index) => {
+        const icon = cat.image
+            ? cat.image.startsWith('http')
+                ? cat.image
+                : `/storage/${cat.image}`
+            : `images/category/000${String((index % 26) + 1).padStart(2, '0')}.webp`;
+        return {
+            id: cat.id,
+            slug: cat.slug,
+            label: cat.name,
+            icon: icon,
+            products_count: cat.products_count,
+        };
+    });
 
     const ITEMS_PER_PAGE = 20;
     const [page, setPage] = useState(0);
@@ -259,7 +246,7 @@ export default function Home({
 
     const visibleItems = categoryItems.slice(
         page * ITEMS_PER_PAGE,
-        (page + 1) * ITEMS_PER_PAGE
+        (page + 1) * ITEMS_PER_PAGE,
     );
 
     const canPrev = page > 0;
@@ -293,15 +280,15 @@ export default function Home({
                 }
             };
 
-            el.addEventListener("scroll", onScroll, { passive: true });
-            window.addEventListener("resize", updateArrows);
+            el.addEventListener('scroll', onScroll, { passive: true });
+            window.addEventListener('resize', updateArrows);
             return () => {
-                el.removeEventListener("scroll", updateArrows);
-                window.removeEventListener("resize", updateArrows);
+                el.removeEventListener('scroll', updateArrows);
+                window.removeEventListener('resize', updateArrows);
             };
         }, []);
 
-        const scroll = (direction: "left" | "right") => {
+        const scroll = (direction: 'left' | 'right') => {
             const el = ref.current;
             if (!el) return;
 
@@ -311,8 +298,8 @@ export default function Home({
                 (ITEM_WIDTH + ITEM_GAP) * Math.max(1, ITEMS_PER_SCROLL);
 
             el.scrollBy({
-                left: direction === "right" ? distance : -distance,
-                behavior: "smooth",
+                left: direction === 'right' ? distance : -distance,
+                behavior: 'smooth',
             });
         };
 
@@ -362,16 +349,16 @@ export default function Home({
                 }
             };
 
-            el.addEventListener("scroll", onScroll, { passive: true });
-            window.addEventListener("resize", updateArrows);
+            el.addEventListener('scroll', onScroll, { passive: true });
+            window.addEventListener('resize', updateArrows);
 
             return () => {
-                el.removeEventListener("scroll", onScroll);
-                window.removeEventListener("resize", updateArrows);
+                el.removeEventListener('scroll', onScroll);
+                window.removeEventListener('resize', updateArrows);
             };
         }, []);
 
-        const scroll = (direction: "left" | "right") => {
+        const scroll = (direction: 'left' | 'right') => {
             const el = ref.current;
             if (!el) return;
 
@@ -379,8 +366,8 @@ export default function Home({
             const distance = (ITEM_WIDTH + ITEM_GAP) * ITEMS_PER_SCROLL;
 
             el.scrollBy({
-                left: direction === "right" ? distance : -distance,
-                behavior: "smooth",
+                left: direction === 'right' ? distance : -distance,
+                behavior: 'smooth',
             });
         };
 
@@ -389,7 +376,7 @@ export default function Home({
 
     const flashSlider = useChevronSlider([flashSale.length]);
 
-    const [timeLeft, setTimeLeft] = useState({ h: "00", m: "00", s: "00" });
+    const [timeLeft, setTimeLeft] = useState({ h: '00', m: '00', s: '00' });
 
     useEffect(() => {
         const countdownTarget = new Date();
@@ -405,13 +392,15 @@ export default function Home({
             }
 
             const hours = Math.floor(distance / (1000 * 60 * 60));
-            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const minutes = Math.floor(
+                (distance % (1000 * 60 * 60)) / (1000 * 60),
+            );
             const seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
             setTimeLeft({
-                h: String(hours).padStart(2, "0"),
-                m: String(minutes).padStart(2, "0"),
-                s: String(seconds).padStart(2, "0"),
+                h: String(hours).padStart(2, '0'),
+                m: String(minutes).padStart(2, '0'),
+                s: String(seconds).padStart(2, '0'),
             });
         }, 1000);
 
@@ -439,16 +428,16 @@ export default function Home({
                     onMouseLeave={() => setIsAutoPlaying(true)}
                 >
                     {/* Banner */}
-                    <div className="group relative mx-4 max-w-6xl md:mx-auto overflow-hidden rounded-xl shadow-lg">
-                        <div className="relative h-64 md:h-72 w-full overflow-hidden">
+                    <div className="group relative mx-4 max-w-6xl overflow-hidden rounded-xl shadow-lg md:mx-auto">
+                        <div className="relative h-64 w-full overflow-hidden md:h-72">
                             <div
                                 className="flex h-full"
                                 style={{
-                                    willChange: "transform",
+                                    willChange: 'transform',
                                     transform: `translateX(-${currentSlide * 100}%)`,
                                     transition: isTransitioning
-                                        ? "transform 1300ms cubic-bezier(0.22,1,0.36,1)"
-                                        : "none",
+                                        ? 'transform 1300ms cubic-bezier(0.22,1,0.36,1)'
+                                        : 'none',
                                 }}
                                 onTransitionEnd={() => {
                                     // Reset otomatis saat reach clone
@@ -486,7 +475,9 @@ export default function Home({
                                             src={banner.src}
                                             alt={`Banner ${index + 1}`}
                                             className="h-full w-full object-cover"
-                                            loading={index === 0 ? "eager" : "lazy"}
+                                            loading={
+                                                index === 0 ? 'eager' : 'lazy'
+                                            }
                                         />
                                     </Link>
                                 ))}
@@ -506,14 +497,14 @@ export default function Home({
                         </div>
 
                         {/* CHEVRONS */}
-                        <div className="absolute inset-0 pointer-events-none group">
+                        <div className="group pointer-events-none absolute inset-0">
                             <button
                                 onClick={() => {
                                     if (isTransitioning) return;
                                     setIsTransitioning(true);
-                                    setCurrentSlide(prev => prev - 1);
+                                    setCurrentSlide((prev) => prev - 1);
                                 }}
-                                className="pointer-events-auto absolute left-2 top-1/2 -translate-y-1/2 bg-white/90 dark:bg-[#1A1A19]/90 shadow-md p-3 rounded-full opacity-0 scale-75 group-hover:opacity-100 group-hover:scale-100 hover:scale-110 transition-all duration-300"
+                                className="pointer-events-auto absolute top-1/2 left-2 -translate-y-1/2 scale-75 rounded-full bg-white/90 p-3 opacity-0 shadow-md transition-all duration-300 group-hover:scale-100 group-hover:opacity-100 hover:scale-110 dark:bg-[#1A1A19]/90"
                             >
                                 <ChevronLeft className="h-5 w-5 text-gray-800 dark:text-gray-100" />
                             </button>
@@ -522,9 +513,9 @@ export default function Home({
                                 onClick={() => {
                                     if (isTransitioning) return;
                                     setIsTransitioning(true);
-                                    setCurrentSlide(prev => prev + 1);
+                                    setCurrentSlide((prev) => prev + 1);
                                 }}
-                                className="pointer-events-auto absolute right-2 top-1/2 -translate-y-1/2 bg-white/90 dark:bg-[#1A1A19]/90 shadow-md p-3 rounded-full opacity-0 scale-75 group-hover:opacity-100 group-hover:scale-100 hover:scale-110 transition-all duration-300"
+                                className="pointer-events-auto absolute top-1/2 right-2 -translate-y-1/2 scale-75 rounded-full bg-white/90 p-3 opacity-0 shadow-md transition-all duration-300 group-hover:scale-100 group-hover:opacity-100 hover:scale-110 dark:bg-[#1A1A19]/90"
                             >
                                 <ChevronRight className="h-5 w-5 text-gray-800 dark:text-gray-100" />
                             </button>
@@ -533,7 +524,8 @@ export default function Home({
                         {/* Dots */}
                         <div className="absolute bottom-4 left-4 z-20 flex gap-1">
                             {bannerData.map((_, index) => {
-                                const activeIndex = (currentSlide - 1 + total) % total;
+                                const activeIndex =
+                                    (currentSlide - 1 + total) % total;
                                 return (
                                     <button
                                         key={index}
@@ -542,8 +534,7 @@ export default function Home({
                                             setIsTransitioning(true);
                                             setCurrentSlide(index + 1);
                                         }}
-                                        className={`h-1.5 w-1.5 rounded-full transition-all 
-                            ${index === activeIndex ? "w-0 bg-white" : "bg-white/70"}`}
+                                        className={`h-1.5 w-1.5 rounded-full transition-all ${index === activeIndex ? 'w-0 bg-white' : 'bg-white/70'}`}
                                     />
                                 );
                             })}
@@ -552,18 +543,20 @@ export default function Home({
                         {/* Button promo kecil kanan bawah */}
                         <Link
                             href="/promotions"
-                            className="absolute bottom-4 right-4 z-20 rounded-sm bg-black px-2 py-1 text-xs font-regular text-white"
+                            className="font-regular absolute right-4 bottom-4 z-20 rounded-sm bg-black px-2 py-1 text-xs text-white"
                         >
                             Lihat promo lainnya
                         </Link>
 
                         {/* Progress bar (hidden) */}
-                        <div className="absolute bottom-0 left-0 h-1 w-full bg-white/20 hidden">
+                        <div className="absolute bottom-0 left-0 hidden h-1 w-full bg-white/20">
                             <div
                                 className="h-full bg-green-600 transition-all duration-5000"
                                 style={{
-                                    width: isAutoPlaying ? "100%" : "0%",
-                                    transitionDuration: isAutoPlaying ? "5s" : "0s",
+                                    width: isAutoPlaying ? '100%' : '0%',
+                                    transitionDuration: isAutoPlaying
+                                        ? '5s'
+                                        : '0s',
                                 }}
                             />
                         </div>
@@ -572,118 +565,186 @@ export default function Home({
 
                 {/* Features Section */}
                 <section className="py-10">
-                    <div className="container max-w-6xl mx-auto px-18">
-                        <div className="grid grid-cols-2 sm:grid-cols-5 lg:grid-cols-10 gap-3 text-center">
-
+                    <div className="container mx-auto max-w-6xl px-18">
+                        <div className="grid grid-cols-2 gap-3 text-center sm:grid-cols-5 lg:grid-cols-8">
                             {/* Item 1 */}
                             <Link
                                 href="/lokal"
-                                className="flex flex-col items-center">
-                                <div className="rounded-xl border border-gray-200 dark:border-[#252523] p-3 bg-white dark:bg-[#1A1A19]">
-                                    <img src="images/icon/icon_local.png" alt="Groceria Pilih Lokal" className="h-8 w-8" />
+                                className="flex flex-col items-center"
+                            >
+                                <div className="rounded-xl border border-gray-200 bg-white p-3 dark:border-[#252523] dark:bg-[#1A1A19]">
+                                    <img
+                                        src="images/icon/icon_local.png"
+                                        alt="Groceria Pilih Lokal"
+                                        className="h-8 w-8"
+                                    />
                                 </div>
-                                <p className="mt-2 text-[13px] font-regular text-gray-900 dark:text-gray-300">Groceria Pilih Lokal</p>
+                                <p className="font-regular mt-2 text-[13px] text-gray-900 dark:text-gray-300">
+                                    Groceria Pilih Lokal
+                                </p>
                             </Link>
 
                             {/* Item 2 */}
                             <Link
                                 href="/mall"
-                                className="flex flex-col items-center">
-                                <div className="rounded-xl border border-gray-200 dark:border-[#252523] p-3 bg-white dark:bg-[#1A1A19]">
-                                    <img src="images/icon/icon_bag.png" alt="Groceria Mall" className="h-8 w-8" />
+                                className="flex flex-col items-center"
+                            >
+                                <div className="rounded-xl border border-gray-200 bg-white p-3 dark:border-[#252523] dark:bg-[#1A1A19]">
+                                    <img
+                                        src="images/icon/icon_bag.png"
+                                        alt="Groceria Mall"
+                                        className="h-8 w-8"
+                                    />
                                 </div>
-                                <p className="mt-2 text-[13px] font-regular text-gray-900 dark:text-gray-300">Groceria Mall</p>
+                                <p className="font-regular mt-2 text-[13px] text-gray-900 dark:text-gray-300">
+                                    Groceria Mall
+                                </p>
                             </Link>
 
                             {/* Item 3 */}
-                            <Link
+                            {/* <Link
                                 href="/pulsa"
-                                className="flex flex-col items-center">
-                                <div className="rounded-xl border border-gray-200 dark:border-[#252523] p-3 bg-white dark:bg-[#1A1A19]">
-                                    <img src="images/icon/icon_pulsa.png" alt="Pulsa Tagihan Tiket" className="h-8 w-8" />
+                                className="flex flex-col items-center"
+                            >
+                                <div className="rounded-xl border border-gray-200 bg-white p-3 dark:border-[#252523] dark:bg-[#1A1A19]">
+                                    <img
+                                        src="images/icon/icon_pulsa.png"
+                                        alt="Pulsa Tagihan Tiket"
+                                        className="h-8 w-8"
+                                    />
                                 </div>
-                                <p className="mt-2 text-[13px] font-regular text-gray-900 dark:text-gray-300">Pulsa, Tagihan, dan Tiket</p>
-                            </Link>
+                                <p className="font-regular mt-2 text-[13px] text-gray-900 dark:text-gray-300">
+                                    Pulsa, Tagihan, dan Tiket
+                                </p>
+                            </Link> */}
 
                             {/* Item 4 */}
                             <Link
                                 href="/flash-sale"
-                                className="flex flex-col items-center">
-                                <div className="rounded-xl border border-gray-200 dark:border-[#252523] p-3 bg-white dark:bg-[#1A1A19]">
-                                    <img src="images/icon/icon_flashsale.png" alt="Flash Sale" className="h-8 w-8" />
+                                className="flex flex-col items-center"
+                            >
+                                <div className="rounded-xl border border-gray-200 bg-white p-3 dark:border-[#252523] dark:bg-[#1A1A19]">
+                                    <img
+                                        src="images/icon/icon_flashsale.png"
+                                        alt="Flash Sale"
+                                        className="h-8 w-8"
+                                    />
                                 </div>
-                                <p className="mt-2 text-[13px] font-regular text-gray-900 dark:text-gray-300">Flash Sale</p>
+                                <p className="font-regular mt-2 text-[13px] text-gray-900 dark:text-gray-300">
+                                    Flash Sale
+                                </p>
                             </Link>
 
                             {/* Item 5 */}
                             <Link
                                 href="/supermarket"
-                                className="flex flex-col items-center">
-                                <div className="rounded-xl border border-gray-200 dark:border-[#252523] p-3 bg-white dark:bg-[#1A1A19]">
-                                    <img src="images/icon/icon_supermarket.png" alt="Supermarket" className="h-8 w-10" />
+                                className="flex flex-col items-center"
+                            >
+                                <div className="rounded-xl border border-gray-200 bg-white p-3 dark:border-[#252523] dark:bg-[#1A1A19]">
+                                    <img
+                                        src="images/icon/icon_supermarket.png"
+                                        alt="Supermarket"
+                                        className="h-8 w-10"
+                                    />
                                 </div>
-                                <p className="mt-2 text-[13px] font-regular text-gray-900 dark:text-gray-300">Groceria Supermarket</p>
+                                <p className="font-regular mt-2 text-[13px] text-gray-900 dark:text-gray-300">
+                                    Groceria Supermarket
+                                </p>
                             </Link>
 
                             {/* Item 6 */}
                             <Link
                                 href="/kelola"
-                                className="flex flex-col items-center">
-                                <div className="rounded-xl border border-gray-200 dark:border-[#252523] p-3 bg-white dark:bg-[#1A1A19]">
-                                    <img src="images/icon/icon_kelola.png" alt="Dikelola Groceria" className="h-8 w-8" />
+                                className="flex flex-col items-center"
+                            >
+                                <div className="rounded-xl border border-gray-200 bg-white p-3 dark:border-[#252523] dark:bg-[#1A1A19]">
+                                    <img
+                                        src="images/icon/icon_kelola.png"
+                                        alt="Dikelola Groceria"
+                                        className="h-8 w-8"
+                                    />
                                 </div>
-                                <p className="mt-2 text-[13px] font-regular text-gray-900 dark:text-gray-300">Dikelola Groceria</p>
+                                <p className="font-regular mt-2 text-[13px] text-gray-900 dark:text-gray-300">
+                                    Dikelola Groceria
+                                </p>
                             </Link>
 
                             {/* Item 7 */}
-                            <Link
+                            {/* <Link
                                 href="/diskon"
-                                className="flex flex-col items-center">
-                                <div className="rounded-xl border border-gray-200 dark:border-[#252523] p-3 bg-white dark:bg-[#1A1A19]">
-                                    <img src="images/icon/icon_fitcheck.png" alt="FitCheck Diskon" className="h-8 w-8" />
+                                className="flex flex-col items-center"
+                            >
+                                <div className="rounded-xl border border-gray-200 bg-white p-3 dark:border-[#252523] dark:bg-[#1A1A19]">
+                                    <img
+                                        src="images/icon/icon_fitcheck.png"
+                                        alt="FitCheck Diskon"
+                                        className="h-8 w-8"
+                                    />
                                 </div>
-                                <p className="mt-2 text-[13px] font-regular text-gray-900 dark:text-gray-300">FitCheck Diskon 35%</p>
-                            </Link>
+                                <p className="font-regular mt-2 text-[13px] text-gray-900 dark:text-gray-300">
+                                    FitCheck Diskon 35%
+                                </p>
+                            </Link> */}
 
                             {/* Item 8 */}
                             <Link
                                 href="/gratis-ongkir"
-                                className="flex flex-col items-center">
-                                <div className="rounded-xl border border-gray-200 dark:border-[#252523] p-3 bg-white dark:bg-[#1A1A19]">
-                                    <img src="images/icon/icon_voucher.png" alt="Gratis Ongkir" className=" h-8 w-8.5" />
+                                className="flex flex-col items-center"
+                            >
+                                <div className="rounded-xl border border-gray-200 bg-white p-3 dark:border-[#252523] dark:bg-[#1A1A19]">
+                                    <img
+                                        src="images/icon/icon_voucher.png"
+                                        alt="Gratis Ongkir"
+                                        className="h-8 w-8.5"
+                                    />
                                 </div>
-                                <p className="mt-2 text-[13px] font-regular text-gray-900 dark:text-gray-300">Gratis Ongkir & Voucher</p>
+                                <p className="font-regular mt-2 text-[13px] text-gray-900 dark:text-gray-300">
+                                    Gratis Ongkir & Voucher
+                                </p>
                             </Link>
 
                             {/* Item 9 */}
                             <Link
                                 href="/berkah"
-                                className="flex flex-col items-center">
-                                <div className="rounded-xl border border-gray-200 dark:border-[#252523] p-3 bg-white dark:bg-[#1A1A19]">
-                                    <img src="images/icon/icon_berkah.png" alt="Groceria Berkah" className="h-8 w-8" />
+                                className="flex flex-col items-center"
+                            >
+                                <div className="rounded-xl border border-gray-200 bg-white p-3 dark:border-[#252523] dark:bg-[#1A1A19]">
+                                    <img
+                                        src="images/icon/icon_berkah.png"
+                                        alt="Groceria Berkah"
+                                        className="h-8 w-8"
+                                    />
                                 </div>
-                                <p className="mt-2 text-[13px] font-regular text-gray-900 dark:text-gray-300">Groceria Berkah</p>
+                                <p className="font-regular mt-2 text-[13px] text-gray-900 dark:text-gray-300">
+                                    Groceria Berkah
+                                </p>
                             </Link>
 
                             {/* Item 10 */}
                             <Link
                                 href="/semua"
-                                className="flex flex-col items-center">
-                                <div className="rounded-xl border border-gray-200 dark:border-[#252523] p-3 bg-white dark:bg-[#1A1A19]">
-                                    <img src="images/icon/icon_promo.png" alt="Semua Promo" className="h-8 w-8" />
+                                className="flex flex-col items-center"
+                            >
+                                <div className="rounded-xl border border-gray-200 bg-white p-3 dark:border-[#252523] dark:bg-[#1A1A19]">
+                                    <img
+                                        src="images/icon/icon_promo.png"
+                                        alt="Semua Promo"
+                                        className="h-8 w-8"
+                                    />
                                 </div>
-                                <p className="mt-2 text-[13px] font-regular text-gray-900 dark:text-gray-300">Semua Promo</p>
+                                <p className="font-regular mt-2 text-[13px] text-gray-900 dark:text-gray-300">
+                                    Semua Promo
+                                </p>
                             </Link>
                         </div>
                     </div>
-                </section >
+                </section>
 
                 {/* Category Section */}
-                <section className="py-0 relative">
-                    <div className="max-w-6xl mx-auto bg-white dark:bg-[#1A1A19] rounded-xl shadow-sm border border-gray-200 dark:border-[#252523] relative group overflow-hidden">
-
+                <section className="relative py-0">
+                    <div className="group relative mx-auto max-w-6xl overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm dark:border-[#252523] dark:bg-[#1A1A19]">
                         {/* Header */}
-                        <div className="px-6 py-5 border-b border-gray-200 dark:border-[#252523]">
+                        <div className="border-b border-gray-200 px-6 py-5 dark:border-[#252523]">
                             <h2 className="text-xl font-bold text-gray-900 dark:text-white">
                                 Kategori
                             </h2>
@@ -692,8 +753,8 @@ export default function Home({
                         {/* Chevron Left */}
                         {categorySlider.canPrev && (
                             <button
-                                onClick={() => categorySlider.scroll("left")}
-                                className="pointer-events-auto absolute left-0 top-1/2 -translate-y-1/2 bg-white/90 dark:bg-[#1A1A19]/90 shadow-md p-3 rounded-full opacity-0 scale-75 group-hover:opacity-100 group-hover:scale-100 hover:scale-110 transition-all duration-300"
+                                onClick={() => categorySlider.scroll('left')}
+                                className="pointer-events-auto absolute top-1/2 left-0 -translate-y-1/2 scale-75 rounded-full bg-white/90 p-3 opacity-0 shadow-md transition-all duration-300 group-hover:scale-100 group-hover:opacity-100 hover:scale-110 dark:bg-[#1A1A19]/90"
                             >
                                 <ChevronLeft className="h-5 w-5 text-gray-800 dark:text-gray-100" />
                             </button>
@@ -701,44 +762,54 @@ export default function Home({
 
                         {categorySlider.canNext && (
                             <button
-                                onClick={() => categorySlider.scroll("right")}
-                                className="pointer-events-auto absolute right-0 top-1/2 -translate-y-1/2 bg-white/90 dark:bg-[#1A1A19]/90 shadow-md p-3 rounded-full opacity-0 scale-75 group-hover:opacity-100 group-hover:scale-100 hover:scale-110 transition-all duration-300"
+                                onClick={() => categorySlider.scroll('right')}
+                                className="pointer-events-auto absolute top-1/2 right-0 -translate-y-1/2 scale-75 rounded-full bg-white/90 p-3 opacity-0 shadow-md transition-all duration-300 group-hover:scale-100 group-hover:opacity-100 hover:scale-110 dark:bg-[#1A1A19]/90"
                             >
                                 <ChevronRight className="h-5 w-5 text-gray-800 dark:text-gray-100" />
                             </button>
                         )}
 
                         {/* Scroll Wrapper */}
-                        <div ref={categorySlider.ref} className="overflow-x-hidden">
-
+                        <div
+                            ref={categorySlider.ref}
+                            className="overflow-x-hidden"
+                        >
                             {/* GRID */}
                             <div
-                                className="inline-grid grid-rows-2 auto-cols-[10%] divide-x divide-y divide-gray-300 dark:divide-[#252523]"
-                                style={{ gridAutoFlow: "column" }}
+                                className="inline-grid auto-cols-[17.05%] grid-rows-2 divide-x divide-y divide-gray-300 dark:divide-[#252523]"
+                                style={{ gridAutoFlow: 'column' }}
                             >
                                 {categoryItems.map((item, index) => (
-                                    <div
+                                    <Link
                                         key={index}
-                                        className="flex flex-col items-center bg-white dark:bg-[#1A1A19]"
+                                        href={`/categories/${item.slug}`}
+                                        className="flex flex-col items-center bg-white transition-colors hover:bg-gray-50/50 dark:bg-[#1A1A19] dark:hover:bg-[#252523]/50"
                                     >
                                         {/* ICON AREA (FIX HEIGHT) */}
-                                        <div className="flex items-center justify-center h-[104px]">
-                                            <div className="w-20 h-20 rounded-full bg-gray-100 dark:bg-[#1A1A19] flex items-center justify-center">
+                                        <div className="flex h-[104px] items-center justify-center">
+                                            <div className="flex h-20 w-20 items-center justify-center rounded-full bg-gray-100 dark:bg-[#1A1A19]">
                                                 <img
                                                     src={item.icon}
                                                     alt={item.label}
-                                                    className="max-w-full max-h-full object-contain"
+                                                    className="max-h-full max-w-full object-contain"
+                                                    onError={(e) => {
+                                                        // Fallback in case icon is missing
+                                                        (
+                                                            e.target as HTMLImageElement
+                                                        ).src =
+                                                            `images/category/000${String((index % 26) + 1).padStart(2, '0')}.webp`;
+                                                    }}
                                                 />
                                             </div>
                                         </div>
 
                                         {/* TEXT AREA (FIX HEIGHT) */}
-                                        <div className="h-[40px] px-2 mb-1.5 flex items-start justify-center text-center">
-                                            <p className="text-sm font-medium text-gray-800 dark:text-gray-200 leading-tight line-clamp-2">
+                                        <div className="mb-1.5 flex h-[40px] items-start justify-center px-2 text-center">
+                                            <p className="line-clamp-2 text-sm leading-tight font-medium text-gray-800 dark:text-gray-200">
                                                 {item.label}
                                             </p>
                                         </div>
-                                    </div>
+                                    </Link>
                                 ))}
                             </div>
                         </div>
@@ -749,9 +820,9 @@ export default function Home({
                 <section className="bg-white py-10 dark:bg-[#1A1A19]">
                     <div className="container mx-auto max-w-6xl rounded-xl">
                         {/* WRAPPER FLASH SALE */}
-                        <div className="bg-white dark:bg-[#1A1A19] rounded-xl p-4 shadow-sm border border-gray-200 dark:border-[#252523]">
+                        <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm dark:border-[#252523] dark:bg-[#1A1A19]">
                             {/* Header Flash Sale */}
-                            <div className="flex items-center justify-between mb-4">
+                            <div className="mb-4 flex items-center justify-between">
                                 <div className="flex items-center space-x-3">
                                     <img
                                         src="images/icon/flashsale.png"
@@ -760,11 +831,15 @@ export default function Home({
                                     />
 
                                     {/* Countdown */}
-                                    <div className="flex px-0.5 py-2 space-x-1 text-white font-medium -mt-1">
-                                        {[timeLeft.h, timeLeft.m, timeLeft.s].map((t, i) => (
+                                    <div className="-mt-1 flex space-x-1 px-0.5 py-2 font-medium text-white">
+                                        {[
+                                            timeLeft.h,
+                                            timeLeft.m,
+                                            timeLeft.s,
+                                        ].map((t, i) => (
                                             <span
                                                 key={i}
-                                                className="bg-[#191919] dark:bg-[#000] w-6 h-5 flex items-center justify-center rounded text-xs"
+                                                className="flex h-5 w-6 items-center justify-center rounded bg-[#191919] text-xs dark:bg-[#000]"
                                             >
                                                 {t}
                                             </span>
@@ -775,7 +850,7 @@ export default function Home({
                                 {/* Lihat Semua */}
                                 <Link
                                     href="/flash-sale"
-                                    className="text-green-600 text-sm font-bold flex items-center gap-1"
+                                    className="flex items-center gap-1 text-sm font-bold text-green-600"
                                 >
                                     <span>Lihat Semua</span>
                                     <svg
@@ -784,73 +859,113 @@ export default function Home({
                                         viewBox="0 0 24 24"
                                         strokeWidth={2}
                                         stroke="currentColor"
-                                        className="w-4 h-4"
+                                        className="h-4 w-4"
                                     >
-                                        <path strokeLinecap="round" strokeLinejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+                                        <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            d="m8.25 4.5 7.5 7.5-7.5 7.5"
+                                        />
                                     </svg>
                                 </Link>
                             </div>
 
-                            <div className="relative group pointer-events-none">
+                            <div className="group pointer-events-none relative">
                                 {/* Scroll Slider */}
                                 <div
                                     ref={flashSlider.ref}
-                                    className="flex overflow-x-auto overflow-y-hidden scroll-smooth will-change-transform translate-z-0 px-2 pb-4 gap-4 scrollbar-hide pointer-events-auto"
+                                    className="scrollbar-hide pointer-events-auto flex translate-z-0 gap-4 overflow-x-auto overflow-y-hidden scroll-smooth px-2 pb-4 will-change-transform"
                                 >
                                     {flashSale.length > 0 &&
                                         flashSale.map((prod) => {
-                                            const stock = Number(prod.stock ?? 0);
-                                            const maxStock = Number(prod.max_stock ?? 100);
+                                            const stock = Number(
+                                                prod.stock ?? 0,
+                                            );
+                                            const maxStock = Number(
+                                                prod.max_stock ?? 100,
+                                            );
 
                                             const stockPercent =
                                                 maxStock > 0
-                                                    ? Math.max(0, Math.min(100, Math.round((stock / maxStock) * 100)))
+                                                    ? Math.max(
+                                                          0,
+                                                          Math.min(
+                                                              100,
+                                                              Math.round(
+                                                                  (stock /
+                                                                      maxStock) *
+                                                                      100,
+                                                              ),
+                                                          ),
+                                                      )
                                                     : 0;
 
                                             const finalPrice =
-                                                typeof prod.discount_price === 'number'
+                                                typeof prod.discount_price ===
+                                                'number'
                                                     ? prod.discount_price
                                                     : prod.price;
 
                                             const discount =
-                                                typeof prod.discount_price === 'number' && prod.price > 0
-                                                    ? Math.round(((prod.price - prod.discount_price) / prod.price) * 100)
+                                                typeof prod.discount_price ===
+                                                    'number' && prod.price > 0
+                                                    ? Math.round(
+                                                          ((prod.price -
+                                                              prod.discount_price) /
+                                                              prod.price) *
+                                                              100,
+                                                      )
                                                     : null;
 
                                             return (
                                                 <Link
                                                     href={`/product/${prod.slug}`}
                                                     key={prod.id}
-                                                    className="min-w-[170px] max-w-[170px] snap-start bg-white dark:bg-[#1A1A19] rounded-lg border border-gray-300 dark:border-[#252523] flex flex-col"
+                                                    className="flex max-w-[170px] min-w-[170px] snap-start flex-col rounded-lg border border-gray-300 bg-white dark:border-[#252523] dark:bg-[#1A1A19]"
                                                 >
                                                     <div className="relative">
                                                         <img
-                                                            src={prod.image || ''}
+                                                            src={
+                                                                prod.image || ''
+                                                            }
                                                             alt={prod.name}
-                                                            className="w-full h-[150px] object-cover rounded-t-lg object-center"
+                                                            className="h-[150px] w-full rounded-t-lg object-cover object-center"
                                                         />
 
-                                                        {discount !== null && discount > 0 && (
-                                                            <div className="discount-wrapper">
-                                                                <span className="discount-dark"></span>
-                                                                <span className="discount-light">-{discount}%</span>
-                                                            </div>
-                                                        )}
+                                                        {discount !== null &&
+                                                            discount > 0 && (
+                                                                <div className="discount-wrapper">
+                                                                    <span className="discount-dark"></span>
+                                                                    <span className="discount-light">
+                                                                        -
+                                                                        {
+                                                                            discount
+                                                                        }
+                                                                        %
+                                                                    </span>
+                                                                </div>
+                                                            )}
                                                     </div>
 
-                                                    <div className="px-3 mb-[-15px] mt-2.5 flex flex-col min-h-[85px] items-center text-center">
-                                                        <p className="text-[19px] font-medium text-green-600 leading-tight">
-                                                            Rp{finalPrice.toLocaleString('id-ID')}
+                                                    <div className="mt-2.5 mb-[-15px] flex min-h-[85px] flex-col items-center px-3 text-center">
+                                                        <p className="text-[19px] leading-tight font-medium text-green-600">
+                                                            Rp
+                                                            {finalPrice.toLocaleString(
+                                                                'id-ID',
+                                                            )}
                                                         </p>
 
-                                                        <div className="w-full mt-2">
-                                                            <div className="w-full bg-green-200 dark:bg-green-600 h-3.5 rounded-sm overflow-hidden relative">
+                                                        <div className="mt-2 w-full">
+                                                            <div className="relative h-3.5 w-full overflow-hidden rounded-sm bg-green-200 dark:bg-green-600">
                                                                 <div
                                                                     className="h-full bg-green-600 transition-all duration-700"
-                                                                    style={{ width: `${stockPercent}%` }}
+                                                                    style={{
+                                                                        width: `${stockPercent}%`,
+                                                                    }}
                                                                 />
                                                                 <span className="absolute inset-0 flex items-center justify-center text-[11px] font-semibold text-white">
-                                                                    STOK TERBATAS
+                                                                    STOK
+                                                                    TERBATAS
                                                                 </span>
                                                             </div>
                                                         </div>
@@ -863,8 +978,10 @@ export default function Home({
                                 {/* CHEVRONS */}
                                 {flashSlider.canPrev && (
                                     <button
-                                        onClick={() => flashSlider.scroll('left')}
-                                        className="pointer-events-auto absolute left-0 top-1/2 -translate-y-1/2 bg-white/90 dark:bg-[#1A1A19]/90 shadow-md p-3 rounded-full opacity-0 scale-75 group-hover:opacity-100 group-hover:scale-100 hover:scale-110 transition-all duration-300"
+                                        onClick={() =>
+                                            flashSlider.scroll('left')
+                                        }
+                                        className="pointer-events-auto absolute top-1/2 left-0 -translate-y-1/2 scale-75 rounded-full bg-white/90 p-3 opacity-0 shadow-md transition-all duration-300 group-hover:scale-100 group-hover:opacity-100 hover:scale-110 dark:bg-[#1A1A19]/90"
                                     >
                                         <ChevronLeft className="h-5 w-5 text-gray-800 dark:text-gray-100" />
                                     </button>
@@ -872,8 +989,10 @@ export default function Home({
 
                                 {flashSlider.canNext && (
                                     <button
-                                        onClick={() => flashSlider.scroll('right')}
-                                        className="pointer-events-auto absolute right-0 top-1/2 -translate-y-1/2 bg-white/90 dark:bg-[#1A1A19]/90 shadow-md p-3 rounded-full opacity-0 scale-75 group-hover:opacity-100 group-hover:scale-100 hover:scale-110 transition-all duration-300"
+                                        onClick={() =>
+                                            flashSlider.scroll('right')
+                                        }
+                                        className="pointer-events-auto absolute top-1/2 right-0 -translate-y-1/2 scale-75 rounded-full bg-white/90 p-3 opacity-0 shadow-md transition-all duration-300 group-hover:scale-100 group-hover:opacity-100 hover:scale-110 dark:bg-[#1A1A19]/90"
                                     >
                                         <ChevronRight className="h-5 w-5 text-gray-800 dark:text-gray-100" />
                                     </button>
@@ -884,10 +1003,9 @@ export default function Home({
                 </section>
 
                 {/* Top Product Section */}
-                < section className="bg-white py-0 mb-10 dark:bg-[#1A1A19]" >
+                <section className="mb-10 bg-white py-0 dark:bg-[#1A1A19]">
                     <div className="container mx-auto max-w-6xl rounded-xl">
-                        <div className="bg-white dark:bg-[#1A1A19] rounded-xl px-6 py-4 shadow-sm border border-gray-200 dark:border-[#252523]">
-
+                        <div className="rounded-xl border border-gray-200 bg-white px-6 py-4 shadow-sm dark:border-[#252523] dark:bg-[#1A1A19]">
                             {/* HEADER */}
                             <div className="mb-6 flex items-center justify-between">
                                 <h2 className="text-xl font-bold text-gray-900 dark:text-white">
@@ -896,7 +1014,7 @@ export default function Home({
 
                                 <Link
                                     href="/top-product"
-                                    className="text-green-600 text-sm font-bold flex items-center gap-1"
+                                    className="flex items-center gap-1 text-sm font-bold text-green-600"
                                 >
                                     Lihat Semua
                                     <svg
@@ -905,21 +1023,24 @@ export default function Home({
                                         viewBox="0 0 24 24"
                                         strokeWidth={2}
                                         stroke="currentColor"
-                                        className="w-4 h-4"
+                                        className="h-4 w-4"
                                     >
-                                        <path strokeLinecap="round" strokeLinejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+                                        <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            d="m8.25 4.5 7.5 7.5-7.5 7.5"
+                                        />
                                     </svg>
                                 </Link>
                             </div>
 
                             {/* WRAPPER */}
-                            <div className="relative group">
-
+                            <div className="group relative">
                                 {/* SCROLL VIEW */}
                                 <div
                                     ref={topProductSlider.ref}
                                     id="top-products-scroll"
-                                    className="flex overflow-x-auto overflow-y-hidden scroll-smooth will-change-transform translate-z-0 pb-4 gap-6 scrollbar-hide"
+                                    className="scrollbar-hide flex translate-z-0 gap-6 overflow-x-auto overflow-y-hidden scroll-smooth pb-4 will-change-transform"
                                 >
                                     {topProducts.map((prod) => (
                                         <Link
@@ -928,15 +1049,29 @@ export default function Home({
                                             className="w-[calc((100%-5*1.5rem)/6)] flex-shrink-0"
                                         >
                                             {/* IMAGE */}
-                                            <div className="relative w-full h-[160px] overflow-hidden rounded-t-xl">
-
+                                            <div className="relative h-[160px] w-full overflow-hidden rounded-t-xl">
                                                 {/* BADGE TOP */}
-                                                <div className="absolute top-0 left-0 z-20 w-[35px] h-[44px] pointer-events-none">
-                                                    <svg className="absolute inset-0" viewBox="0 0 60 60">
+                                                <div className="pointer-events-none absolute top-0 left-0 z-20 h-[44px] w-[35px]">
+                                                    <svg
+                                                        className="absolute inset-0"
+                                                        viewBox="0 0 60 60"
+                                                    >
                                                         <defs>
-                                                            <linearGradient id="topGradient" x1="0" y1="0" x2="0" y2="1">
-                                                                <stop offset="0%" stopColor="#22c55e" />
-                                                                <stop offset="100%" stopColor="#16a34a" />
+                                                            <linearGradient
+                                                                id="topGradient"
+                                                                x1="0"
+                                                                y1="0"
+                                                                x2="0"
+                                                                y2="1"
+                                                            >
+                                                                <stop
+                                                                    offset="0%"
+                                                                    stopColor="#22c55e"
+                                                                />
+                                                                <stop
+                                                                    offset="100%"
+                                                                    stopColor="#16a34a"
+                                                                />
                                                             </linearGradient>
                                                         </defs>
                                                         <path
@@ -944,26 +1079,27 @@ export default function Home({
                                                             fill="url(#topGradient)"
                                                         />
                                                     </svg>
-                                                    <span className="absolute top-[8px] left-1/2 -translate-x-1/2 text-white text-[11px] font-bold tracking-wider">
+                                                    <span className="absolute top-[8px] left-1/2 -translate-x-1/2 text-[11px] font-bold tracking-wider text-white">
                                                         TOP
                                                     </span>
                                                 </div>
 
                                                 <img
                                                     src={prod.image}
-                                                    className="w-full h-full object-cover"
+                                                    className="h-full w-full object-cover"
                                                     alt={prod.name}
                                                 />
 
-                                                <div className="absolute bottom-0 left-0 w-full bg-black/60 text-white text-[12px] px-2 py-1">
-                                                    Penjualan / Bulan {prod.sold}
+                                                <div className="absolute bottom-0 left-0 w-full bg-black/60 px-2 py-1 text-[12px] text-white">
+                                                    Penjualan / Bulan{' '}
+                                                    {prod.sold}
                                                 </div>
                                             </div>
 
                                             {/* CONTENT */}
-                                            <div className="bg-white dark:bg-[#1A1A19] rounded-b-xl px-1 pt-4">
+                                            <div className="rounded-b-xl bg-white px-1 pt-4 dark:bg-[#1A1A19]">
                                                 <p
-                                                    className="text-sm font-medium text-gray-900 dark:text-white line-clamp-1"
+                                                    className="line-clamp-1 text-sm font-medium text-gray-900 dark:text-white"
                                                     title={prod.name}
                                                 >
                                                     {prod.name}
@@ -976,8 +1112,10 @@ export default function Home({
                                 {/* CHEVRONS */}
                                 {topProductSlider.canPrev && (
                                     <button
-                                        onClick={() => topProductSlider.scroll("left")}
-                                        className="pointer-events-auto absolute left-0 top-1/2 -translate-y-1/2 bg-white/90 dark:bg-[#1A1A19]/90 shadow-md p-3 rounded-full opacity-0 scale-75 group-hover:opacity-100 group-hover:scale-100 hover:scale-110 transition-all duration-300"
+                                        onClick={() =>
+                                            topProductSlider.scroll('left')
+                                        }
+                                        className="pointer-events-auto absolute top-1/2 left-0 -translate-y-1/2 scale-75 rounded-full bg-white/90 p-3 opacity-0 shadow-md transition-all duration-300 group-hover:scale-100 group-hover:opacity-100 hover:scale-110 dark:bg-[#1A1A19]/90"
                                     >
                                         <ChevronLeft className="h-5 w-5 text-gray-800 dark:text-gray-100" />
                                     </button>
@@ -985,8 +1123,10 @@ export default function Home({
 
                                 {topProductSlider.canNext && (
                                     <button
-                                        onClick={() => topProductSlider.scroll("right")}
-                                        className="pointer-events-auto absolute right-0 top-1/2 -translate-y-1/2 bg-white/90 dark:bg-[#1A1A19]/90 shadow-md p-3 rounded-full opacity-0 scale-75 group-hover:opacity-100 group-hover:scale-100 hover:scale-110 transition-all duration-300"
+                                        onClick={() =>
+                                            topProductSlider.scroll('right')
+                                        }
+                                        className="pointer-events-auto absolute top-1/2 right-0 -translate-y-1/2 scale-75 rounded-full bg-white/90 p-3 opacity-0 shadow-md transition-all duration-300 group-hover:scale-100 group-hover:opacity-100 hover:scale-110 dark:bg-[#1A1A19]/90"
                                     >
                                         <ChevronRight className="h-5 w-5 text-gray-800 dark:text-gray-100" />
                                     </button>
@@ -994,7 +1134,7 @@ export default function Home({
                             </div>
                         </div>
                     </div>
-                </section >
+                </section>
 
                 <section className="mt-10">
                     <CardProducts />
@@ -1002,15 +1142,20 @@ export default function Home({
 
                 {/* FOOTER */}
                 <NavFooter />
-            </div >
+            </div>
         </>
     );
 }
 
 // Product Card Component
-function ProductCard({ product }: { product: HomePageProps['featuredProducts'][0] }) {
+function ProductCard({
+    product,
+}: {
+    product: HomePageProps['featuredProducts'][0];
+}) {
     const finalPrice = product.discount_price || product.price;
-    const hasDiscount = product.discount_price && product.discount_price < product.price;
+    const hasDiscount =
+        product.discount_price && product.discount_price < product.price;
 
     return (
         <Link href={`/products/${product.slug}`} className="group">
@@ -1022,7 +1167,7 @@ function ProductCard({ product }: { product: HomePageProps['featuredProducts'][0
                         className="h-full w-full object-cover transition-transform group-hover:scale-105"
                     />
                     {hasDiscount && (
-                        <span className="absolute left-2 top-2 rounded bg-[#F53003] px-2 py-1 text-xs font-medium text-white">
+                        <span className="absolute top-2 left-2 rounded bg-[#F53003] px-2 py-1 text-xs font-medium text-white">
                             Sale
                         </span>
                     )}
@@ -1031,7 +1176,7 @@ function ProductCard({ product }: { product: HomePageProps['featuredProducts'][0
                     <span className="mb-1 block text-xs text-[#706f6c] dark:text-[#A1A09A]">
                         {product.category.name}
                     </span>
-                    <h3 className="mb-2 line-clamp-1 font-medium group-hover:text-[#F53003] dark:group-hover:text-[#FF4433] dark:text-white">
+                    <h3 className="mb-2 line-clamp-1 font-medium group-hover:text-[#F53003] dark:text-white dark:group-hover:text-[#FF4433]">
                         {product.name}
                     </h3>
                     <div className="flex items-center justify-between">
@@ -1056,14 +1201,18 @@ function ProductCard({ product }: { product: HomePageProps['featuredProducts'][0
 }
 
 // Category Card Component
-function CategoryCard({ category }: { category: HomePageProps['categories'][0] }) {
+function CategoryCard({
+    category,
+}: {
+    category: HomePageProps['categories'][0];
+}) {
     return (
         <Link href={`/categories/${category.slug}`} className="group">
             <div className="rounded-lg border border-[#19140035] bg-white p-6 text-center transition-all hover:border-[#F53003] hover:shadow-md dark:border-[#3E3E3A] dark:bg-[#252523] dark:hover:border-[#FF4433]">
-                <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-[#F53003]/10 mx-auto dark:bg-[#FF4433]/10">
+                <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-[#F53003]/10 dark:bg-[#FF4433]/10">
                     <span className="text-xl">🛍️</span>
                 </div>
-                <h3 className="font-semibold group-hover:text-[#F53003] dark:group-hover:text-[#FF4433] dark:text-white">
+                <h3 className="font-semibold group-hover:text-[#F53003] dark:text-white dark:group-hover:text-[#FF4433]">
                     {category.name}
                 </h3>
                 <p className="mt-1 text-sm text-[#706f6c] dark:text-[#A1A09A]">

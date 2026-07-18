@@ -32,7 +32,6 @@ class HomeController extends Controller
             ->with(['children' => function ($query) {
                 $query->withCount('products');
             }])
-            ->limit(6)
             ->get();
 
         $topProducts = Product::with('category')

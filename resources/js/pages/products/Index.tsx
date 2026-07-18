@@ -37,7 +37,7 @@ function formatRupiah(amount: number | null | undefined) {
 }
 
 interface ProductCardProps {
-    product: any;
+    product: Product & { category?: Category; brand?: Brand };
     handleBuyNow: (id: number) => void;
 }
 
@@ -65,20 +65,30 @@ function ProductCard({ product, handleBuyNow }: ProductCardProps) {
 
     const handleAddToCart = (e: React.MouseEvent) => {
         e.preventDefault();
+        e.stopPropagation();
         router.post('/cart/add', { product_id: product.id });
+    };
+
+    const handleFavorite = (e: React.MouseEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+        // Tambahkan logika favorit di sini
+        router.post('/favorites/toggle', { product_id: product.id });
     };
 
     return (
         <Link
             href={`/product/${product.slug}`}
-            className="relative rounded-xl border border-gray-200 bg-white transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-sm dark:border-[#252523] dark:bg-[#1A1A19]"
+            className="group relative rounded-xl border border-gray-200 bg-white transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-sm dark:border-[#252523] dark:bg-[#1A1A19]"
         >
             {hasDiscount && (
-                <div className="discount-wrapper">
-                    <span className="discount-dark"></span>
-                    <span className="discount-light">
-                        -{discountPercent}%
-                    </span>
+                <div className="absolute top-2 left-2 z-10">
+                    <div className="discount-wrapper">
+                        <span className="discount-dark"></span>
+                        <span className="discount-light">
+                            -{discountPercent}%
+                        </span>
+                    </div>
                 </div>
             )}
 
@@ -86,7 +96,7 @@ function ProductCard({ product, handleBuyNow }: ProductCardProps) {
                 <img
                     src={imageUrl}
                     alt={product.name ?? '-'}
-                    className="h-full w-full object-cover"
+                    className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
                     loading="lazy"
                     onError={(e) => {
                         (e.target as HTMLImageElement).src =
@@ -96,7 +106,7 @@ function ProductCard({ product, handleBuyNow }: ProductCardProps) {
             </div>
 
             <div className="mb-3 px-2.5 py-2.5">
-                <h3 className="mb-1.5 line-clamp-2 min-h-[40px] text-sm font-medium text-gray-800 transition-colors group-hover:text-green-600 dark:text-gray-100">
+                <h3 className="mb-1.5 line-clamp-2 min-h-[40px] text-sm font-medium text-gray-800 transition-colors group-hover:text-green-600 dark:text-gray-100 dark:group-hover:text-green-400">
                     {product.name ?? '-'}
                 </h3>
 
@@ -113,17 +123,17 @@ function ProductCard({ product, handleBuyNow }: ProductCardProps) {
                                 </div>
                             )}
 
-                            <div className="text-[18px] leading-tight font-semibold text-green-600">
+                            <div className="text-[18px] leading-tight font-semibold text-green-600 dark:text-green-400">
                                 {finalPriceFormatted}
                             </div>
                         </div>
 
                         <div>
-                            <div className="mb-0.5 text-[11px] text-gray-500">
+                            <div className="mb-0.5 text-[11px] text-gray-500 dark:text-gray-400">
                                 Terjual {sold} / {product.stock}
                             </div>
 
-                            <div className="h-2 w-[100px] max-w-full rounded-full bg-gray-200">
+                            <div className="h-2 w-[100px] max-w-full rounded-full bg-gray-200 dark:bg-gray-700">
                                 <div
                                     className="h-2 rounded-full bg-gradient-to-r from-green-500 to-green-600"
                                     style={{
@@ -140,7 +150,8 @@ function ProductCard({ product, handleBuyNow }: ProductCardProps) {
                         <div className="flex gap-3 px-1 pt-1">
                             <button
                                 type="button"
-                                className="flex h-7.5 w-7.5 items-center justify-center rounded-md border border-green-600/50 transition hover:bg-gray-100 dark:hover:bg-gray-800"
+                                onClick={handleFavorite}
+                                className="flex h-7.5 w-7.5 items-center justify-center rounded-md border border-green-600/50 transition hover:bg-green-50 dark:hover:bg-green-950/20"
                                 title="Favorit"
                             >
                                 <svg
@@ -162,7 +173,7 @@ function ProductCard({ product, handleBuyNow }: ProductCardProps) {
                             <button
                                 type="button"
                                 onClick={handleAddToCart}
-                                className="flex h-7.5 w-7.5 items-center justify-center rounded-md border border-green-600/50 transition hover:bg-gray-100 dark:hover:bg-gray-800"
+                                className="flex h-7.5 w-7.5 items-center justify-center rounded-md border border-green-600/50 transition hover:bg-green-50 dark:hover:bg-green-950/20"
                                 title="Tambah ke Keranjang"
                             >
                                 <svg
@@ -185,12 +196,13 @@ function ProductCard({ product, handleBuyNow }: ProductCardProps) {
                         <button
                             onClick={(e) => {
                                 e.preventDefault();
+                                e.stopPropagation();
                                 handleBuyNow(product.id);
                             }}
                             disabled={product.stock <= 0}
-                            className="w-full rounded-md bg-green-600 py-1.5 text-xs font-semibold text-white transition hover:bg-green-700 disabled:bg-gray-400"
+                            className="w-full rounded-md bg-green-600 py-1.5 text-xs font-semibold text-white transition hover:bg-green-700 disabled:cursor-not-allowed disabled:bg-gray-400 dark:disabled:bg-gray-600"
                         >
-                            BELI
+                            {product.stock <= 0 ? 'HABIS' : 'BELI'}
                         </button>
                     </div>
                 </div>
@@ -255,7 +267,7 @@ export default function Index({
 
             <Head title="Jelajahi Produk - Groceria" />
 
-            <div className="container mx-auto max-w-6xl flex-1 px-4 py-8">
+            <div className="max-w-8xl container mx-auto flex-1 px-4 py-8">
                 {/* Header Section */}
                 <div className="mb-6 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                     <div>
@@ -402,7 +414,7 @@ export default function Index({
                             </div>
                         ) : (
                             <div className="space-y-6">
-                                <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-3">
+                                <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
                                     {products.data.map((p) => (
                                         <ProductCard
                                             key={p.id}

@@ -62,4 +62,26 @@ class CategoryController extends Controller
 
         return back()->with('success', 'Kategori berhasil dihapus!');
     }
+
+    public function show(string $slug)
+    {
+        $category = Category::where('slug', $slug)->firstOrFail();
+
+        // Get this category and child category IDs to include all subcategory products
+        $categoryIds = [$category->id];
+        $childIds = $category->children()->pluck('id')->toArray();
+        $categoryIds = array_merge($categoryIds, $childIds);
+
+        $products = \App\Models\Product::with(['category', 'brand'])
+            ->whereIn('category_id', $categoryIds)
+            ->where('is_active', true)
+            ->latest()
+            ->paginate(12);
+
+        return Inertia::render('categories/Show', [
+            'category' => $category,
+            'products' => $products,
+            'categories' => Category::whereNull('parent_id')->with('children')->get(),
+        ]);
+    }
 }

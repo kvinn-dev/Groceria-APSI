@@ -150,6 +150,7 @@ export interface Product {
     meta_keywords?: string;
     reviews_count?: number;
     average_rating?: number;
+    sold?: number;
     created_at: string;
     updated_at: string;
     deleted_at?: string;
