@@ -23,6 +23,10 @@ class User extends Authenticatable
         'email',
         'password',
         'is_admin',
+        'avatar',
+        'phone',
+        'birth_date',
+        'gender',
     ];
 
     /**
@@ -60,5 +64,16 @@ class User extends Authenticatable
     public function reviews()
     {
         return $this->hasMany(Review::class);
+    }
+
+    public function getAvatarAttribute($value)
+    {
+        if (!$value) {
+            return null;
+        }
+        if (str_starts_with($value, 'http://') || str_starts_with($value, 'https://')) {
+            return $value;
+        }
+        return asset('storage/' . $value);
     }
 }

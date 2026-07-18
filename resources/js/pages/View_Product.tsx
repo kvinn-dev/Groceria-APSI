@@ -227,11 +227,11 @@ export default function ProductView({
         <>
             <Head title={`${product.name} - Groceria`} />
             <ToasterProvider />
-            <div className="min-h-screen bg-white text-gray-900">
+            <div className="min-h-screen bg-white text-gray-900 dark:bg-[#1A1A19] dark:text-gray-100">
                 <NavMain />
 
                 {/* Breadcrumb */}
-                <div className="border-b">
+                <div className="border-b dark:border-gray-800">
                     <div className="mx-auto flex max-w-6xl items-center px-6 py-3 text-[12.5px] text-green-600">
                         {breadcrumbItems.map((item, i) => (
                             <div key={i} className="flex items-center">
@@ -240,8 +240,8 @@ export default function ProductView({
                                     href={item.href}
                                     className={
                                         i === breadcrumbItems.length - 1
-                                            ? 'text-gray-900'
-                                            : 'hover:text-gray-900'
+                                            ? 'text-gray-900 dark:text-gray-100'
+                                            : 'hover:text-gray-900 dark:hover:text-gray-300'
                                     }
                                 >
                                     {item.label}
@@ -259,7 +259,7 @@ export default function ProductView({
                             <div className="lg:col-span-4">
                                 <div className="sticky top-24 mx-auto w-[340px]">
                                     {/* Main Image */}
-                                    <div className="mb-2 flex h-[320px] w-[340px] items-center justify-center rounded-xl border">
+                                    <div className="mb-2 flex h-[320px] w-[340px] items-center justify-center rounded-xl border dark:border-[#252523] dark:bg-[#1A1A19]">
                                         <img
                                             src={images[selectedImage]}
                                             alt={product.name}
@@ -356,7 +356,7 @@ export default function ProductView({
                                 <div className="mt-1 flex items-center gap-2 text-sm">
                                     {/* Sold */}
                                     <div className="flex items-center gap-1 leading-none">
-                                        <span className="text-gray-900">
+                                        <span className="text-gray-900 dark:text-gray-100">
                                             Terjual
                                         </span>
                                         <span className="text-gray-400">
@@ -370,7 +370,7 @@ export default function ProductView({
                                                 viewBox="0 0 24 24"
                                                 width="16"
                                                 height="16"
-                                                fill="#1E2025"
+                                                fill="currentColor"
                                                 aria-hidden="true"
                                             >
                                                 <path
@@ -417,8 +417,8 @@ export default function ProductView({
                                     </div>
                                 </div>
 
-                                <div className="flex-1 border-b pb-2">
-                                    <div className="mt-4 mb-1 text-[26px] font-black text-gray-900">
+                                <div className="flex-1 border-b pb-2 dark:border-gray-800">
+                                    <div className="mt-4 mb-1 text-[26px] font-black text-gray-900 dark:text-white">
                                         {mainProductPrice.finalPriceFormatted}
                                     </div>
 
@@ -443,7 +443,7 @@ export default function ProductView({
                                 </div>
 
                                 {/* Tabs */}
-                                <div className="mt-8 flex gap-6 border-b text-sm font-bold">
+                                <div className="mt-8 flex gap-6 border-b text-sm font-bold dark:border-gray-800">
                                     {(['detail', 'spec', 'info'] as const).map(
                                         (tab) => (
                                             <button
@@ -477,7 +477,7 @@ export default function ProductView({
                                                     <span className="text-gray-500">
                                                         Kondisi:{' '}
                                                     </span>
-                                                    <span className="text-gray-900">
+                                                    <span className="text-gray-900 dark:text-gray-100">
                                                         {condition}
                                                     </span>
                                                 </div>
@@ -486,7 +486,7 @@ export default function ProductView({
                                                     <span className="text-gray-500">
                                                         Min. Pemesanan:{' '}
                                                     </span>
-                                                    <span className="text-gray-900">
+                                                    <span className="text-gray-900 dark:text-gray-100">
                                                         {minOrder} Buah
                                                     </span>
                                                 </div>
@@ -540,7 +540,7 @@ export default function ProductView({
                                                         className="space-y-1"
                                                     >
                                                         {/* JUDUL */}
-                                                        <h3 className="text-[15px] font-semibold text-gray-900">
+                                                        <h3 className="text-[15px] font-semibold text-gray-900 dark:text-white">
                                                             {item.title}
                                                         </h3>
 
@@ -572,7 +572,7 @@ export default function ProductView({
 
                                 {showInfoModal && (
                                     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-                                        <div className="relative flex h-[80vh] w-[65vw] max-w-5xl overflow-hidden rounded-md bg-white shadow-lg">
+                                        <div className="relative flex h-[80vh] w-[65vw] max-w-5xl overflow-hidden rounded-md bg-white shadow-lg dark:border dark:border-gray-800 dark:bg-[#1A1A19]">
                                             {/* CLOSE */}
                                             <button
                                                 onClick={() =>
@@ -635,7 +635,7 @@ export default function ProductView({
 
                             {/* RIGHT — BUY BOX */}
                             <div className="sticky top-24 lg:col-span-3">
-                                <div className="rounded-xl border bg-white p-4">
+                                <div className="rounded-xl border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-[#1e1e1d]">
                                     <div className="mb-4 text-[16px] font-bold">
                                         Atur jumlah dan catatan
                                     </div>
@@ -721,7 +721,7 @@ export default function ProductView({
                                             Subtotal
                                         </span>
 
-                                        <div className="px-2 text-[19px] font-black text-gray-900">
+                                        <div className="px-2 text-[19px] font-black text-gray-900 dark:text-white">
                                             {mainProductPrice.subtotalFormatted}
                                         </div>
                                     </div>
@@ -758,7 +758,7 @@ export default function ProductView({
                                     </button>
 
                                     {/* ACTION MENU */}
-                                    <div className="mt-4 flex items-center justify-between text-gray-900">
+                                    <div className="mt-4 flex items-center justify-between text-gray-900 dark:text-white">
                                         {/* CHAT */}
                                         <button className="flex items-center gap-0.5">
                                             <svg
@@ -766,7 +766,7 @@ export default function ProductView({
                                                 viewBox="0 0 24 24"
                                                 width="18"
                                                 height="18"
-                                                fill="#080808"
+                                                fill="currentColor"
                                                 aria-hidden="true"
                                             >
                                                 <path
@@ -840,7 +840,7 @@ export default function ProductView({
                                     <Link
                                         key={p.id}
                                         href={`/product/${p.slug}`}
-                                        className="relative rounded-xl border border-gray-200 bg-white transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-sm"
+                                        className="relative rounded-xl border border-gray-200 bg-white transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-sm dark:border-[#252523] dark:bg-[#1A1A19]"
                                     >
                                         {/* Badge Diskon */}
                                         {p.hasDiscount && (
@@ -866,7 +866,7 @@ export default function ProductView({
 
                                         {/* Info */}
                                         <div className="mb-3 px-2.5 py-2.5">
-                                            <h3 className="mb-1.5 line-clamp-2 min-h-[40px] text-sm font-medium text-gray-800">
+                                            <h3 className="mb-1.5 line-clamp-2 min-h-[40px] text-sm font-medium text-gray-800 dark:text-gray-100">
                                                 {p.name ?? '-'}
                                             </h3>
 

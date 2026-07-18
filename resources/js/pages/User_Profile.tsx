@@ -1,7 +1,8 @@
 import { NavFooter } from '@/components/nav-footer';
 import NavMain from '@/components/nav-main';
-import { Head, Link, useForm, usePage } from '@inertiajs/react';
+import { Head, Link, router, useForm, usePage } from '@inertiajs/react';
 import { Avatar, AvatarFallback, AvatarImage } from '@radix-ui/react-avatar';
+import { Calendar, Clock, DollarSign, Eye, ShoppingBag } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 
 type User = {
@@ -13,6 +14,29 @@ type User = {
     birth_date?: string;
     gender?: string;
 };
+
+interface OrderItem {
+    id: number;
+    product_name: string;
+    product_price: number;
+    quantity: number;
+    subtotal: number;
+    product?: {
+        image_url: string;
+    };
+}
+
+interface Order {
+    id: number;
+    order_number: string;
+    customer_name: string;
+    total: number;
+    status: 'pending' | 'processing' | 'shipped' | 'delivered' | 'cancelled';
+    payment_status: 'pending' | 'paid' | 'failed' | 'refunded';
+    payment_method: string;
+    created_at: string;
+    items: OrderItem[];
+}
 
 const ChevronIcon = ({ open }: { open: boolean }) => (
     <svg
@@ -80,92 +104,142 @@ const SECTION_TABS = {
     pembelian: ['Menunggu Pembayaran', 'Daftar Transaksi'],
 } as const;
 
-const TabBiodata = ({ user }: { user: User }) => (
-    <div className="grid grid-cols-1 gap-5 md:grid-cols-[260px_1fr]">
-        {/* LEFT */}
-        <div>
-            {/* PHOTO CARD */}
-            <div className="mb-6 space-y-2 rounded-sm border bg-white p-3 shadow-sm dark:border-[#3E3E3A] dark:bg-[#252523]">
-                <div className="aspect-square overflow-hidden rounded-lg bg-gray-100 dark:bg-[#1A1A19]">
-                    <Avatar className="h-full w-full">
-                        <AvatarImage
-                            src={user.avatar ?? '/images/login-illus.png'}
-                            alt={user.name}
-                            className="h-full w-full object-cover"
-                        />
-                        <AvatarFallback className="flex h-full w-full items-center justify-center bg-gray-200 text-3xl font-bold text-gray-500">
-                            {user.name?.charAt(0).toUpperCase()}
-                        </AvatarFallback>
-                    </Avatar>
+const TabBiodata = ({
+    user,
+    onOpenEditModal,
+    onUploadAvatar,
+    avatarError,
+}: {
+    user: User;
+    onOpenEditModal: () => void;
+    onUploadAvatar: (file: File) => void;
+    avatarError?: string;
+}) => {
+    const fileInputRef = useRef<HTMLInputElement>(null);
+
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            onUploadAvatar(file);
+        }
+    };
+
+    return (
+        <div className="grid grid-cols-1 gap-5 md:grid-cols-[260px_1fr]">
+            {/* LEFT */}
+            <div>
+                {/* PHOTO CARD */}
+                <div className="mb-6 space-y-2 rounded-sm border bg-white p-3 shadow-sm dark:border-[#3E3E3A] dark:bg-[#252523]">
+                    <div className="aspect-square overflow-hidden rounded-lg bg-gray-100 dark:bg-[#1A1A19]">
+                        <Avatar className="h-full w-full">
+                            <AvatarImage
+                                src={user.avatar || undefined}
+                                alt={user.name}
+                                className="h-full w-full object-cover"
+                            />
+                            <AvatarFallback className="flex h-full w-full items-center justify-center bg-gray-200 text-3xl font-bold text-gray-500 dark:bg-[#1A1A19] dark:text-white">
+                                {user.name?.charAt(0).toUpperCase()}
+                            </AvatarFallback>
+                        </Avatar>
+                    </div>
+
+                    <input
+                        type="file"
+                        ref={fileInputRef}
+                        onChange={handleFileChange}
+                        accept="image/*"
+                        className="hidden"
+                    />
+
+                    <button
+                        type="button"
+                        onClick={() => fileInputRef.current?.click()}
+                        className="block w-full cursor-pointer rounded-sm border py-1.5 text-center text-sm font-semibold hover:bg-gray-50 dark:border-[#3E3E3A] dark:hover:bg-[#1A1A19]"
+                    >
+                        Pilih Foto
+                    </button>
+
+                    <p className="text-center text-xs text-gray-500 dark:text-gray-400">
+                        Besar file maksimum 10 MB
+                        <br />
+                        JPG, JPEG, PNG
+                    </p>
+
+                    {avatarError && (
+                        <p className="mt-1 text-center text-xs font-semibold text-red-500">
+                            {avatarError}
+                        </p>
+                    )}
                 </div>
 
-                <label className="block cursor-pointer rounded-sm border py-1.5 text-center text-sm font-semibold hover:bg-gray-50 dark:border-[#3E3E3A] dark:hover:bg-[#1A1A19]">
-                    Pilih Foto
-                </label>
+                {/* BUTTON GROUP */}
+                <div className="space-y-1">
+                    <button className="w-full rounded-sm border py-1.5 text-sm font-semibold hover:bg-gray-50 dark:border-[#3E3E3A] dark:hover:bg-[#252523]">
+                        Buat Kata Sandi
+                    </button>
 
-                <p className="text-center text-xs text-gray-500 dark:text-gray-400">
-                    Besar file maksimum 10 MB
-                    <br />
-                    JPG, JPEG, PNG
-                </p>
+                    <button className="w-full rounded-sm border py-1.5 text-sm font-semibold hover:bg-gray-50 dark:border-[#3E3E3A] dark:hover:bg-[#252523]">
+                        PIN Groceria
+                    </button>
+
+                    <button className="w-full rounded-sm border py-1.5 text-sm font-semibold hover:bg-gray-50 dark:border-[#3E3E3A] dark:hover:bg-[#252523]">
+                        Verifikasi Instan
+                    </button>
+                </div>
             </div>
 
-            {/* BUTTON GROUP */}
-            <div className="space-y-1">
-                <button className="w-full rounded-sm border py-1.5 text-sm font-semibold hover:bg-gray-50 dark:border-[#3E3E3A] dark:hover:bg-[#252523]">
-                    Buat Kata Sandi
-                </button>
+            {/* RIGHT */}
+            <div className="space-y-6 py-2 text-sm">
+                <div>
+                    <h3 className="mb-4 border-b pb-2 text-lg font-bold dark:border-[#3E3E3A]">
+                        Ubah Biodata Diri
+                    </h3>
 
-                <button className="w-full rounded-sm border py-1.5 text-sm font-semibold hover:bg-gray-50 dark:border-[#3E3E3A] dark:hover:bg-[#252523]">
-                    PIN Groceria
-                </button>
+                    <BioRow
+                        label="Nama"
+                        value={user.name}
+                        action="Ubah"
+                        onClick={onOpenEditModal}
+                    />
+                    <BioRow
+                        label="Tanggal Lahir"
+                        value={user.birth_date || 'Tambah Tanggal Lahir'}
+                        action={user.birth_date ? 'Ubah' : 'Tambah'}
+                        onClick={onOpenEditModal}
+                    />
+                    <BioRow
+                        label="Jenis Kelamin"
+                        value={user.gender || 'Tambah Jenis Kelamin'}
+                        action={user.gender ? 'Ubah' : 'Tambah'}
+                        onClick={onOpenEditModal}
+                    />
+                </div>
 
-                <button className="w-full rounded-sm border py-1.5 text-sm font-semibold hover:bg-gray-50 dark:border-[#3E3E3A] dark:hover:bg-[#252523]">
-                    Verifikasi Instan
-                </button>
+                <div>
+                    <h3 className="mb-4 border-b pb-2 text-lg font-bold dark:border-[#3E3E3A]">
+                        Ubah Kontak
+                    </h3>
+
+                    <BioRow
+                        label="Email"
+                        value={user.email}
+                        badge="Terverifikasi"
+                    />
+                    <BioRow
+                        label="Nomor HP"
+                        value={user.phone || 'Tambah Nomor HP'}
+                        action={user.phone ? 'Ubah' : 'Tambah'}
+                        onClick={onOpenEditModal}
+                    />
+                </div>
             </div>
         </div>
-
-        {/* RIGHT */}
-        <div className="space-y-6 py-2 text-sm">
-            <div>
-                <h3 className="mb-4 font-bold">Ubah Biodata Diri</h3>
-
-                <BioRow label="Nama" value={user.name} action="Ubah" />
-                <BioRow
-                    label="Tanggal Lahir"
-                    value="Tambah Tanggal Lahir"
-                    action="Tambah"
-                />
-                <BioRow
-                    label="Jenis Kelamin"
-                    value="Tambah Jenis Kelamin"
-                    action="Tambah"
-                />
-            </div>
-
-            <div>
-                <h3 className="mb-4 font-bold">Ubah Kontak</h3>
-
-                <BioRow
-                    label="Email"
-                    value={user.email}
-                    badge="Terverifikasi"
-                    action="Ubah"
-                />
-                <BioRow
-                    label="Nomor HP"
-                    value="Tambah Nomor HP"
-                    action="Tambah"
-                />
-            </div>
-        </div>
-    </div>
-);
+    );
+};
 
 const TabPembayaran = () => (
     <div className="grid grid-cols-1 gap-6 md:grid-cols-[260px_1fr]">
-        {/* LEFT MENU */} 
+        {/* LEFT MENU */}
         <div className="overflow-hidden rounded-xl border bg-white text-sm dark:border-[#3E3E3A] dark:bg-[#1A1A19]">
             {[
                 'GoPay',
@@ -232,21 +306,210 @@ const TabChat = () => (
     </div>
 );
 
-const TabMenungguPembayaran = () => (
-    <div className="rounded-xl border bg-white p-6 dark:border-[#3E3E3A] dark:bg-[#1A1A19]">
-        Menunggu Pembayaran
-    </div>
-);
+const OrderList = ({ orders }: { orders: Order[] }) => {
+    const formatCurrency = (amount: number) => {
+        return new Intl.NumberFormat('id-ID', {
+            style: 'currency',
+            currency: 'IDR',
+            minimumFractionDigits: 0,
+        }).format(amount);
+    };
 
-const TabDaftarTransaksi = () => (
-    <div className="rounded-xl border bg-white p-6 dark:border-[#3E3E3A] dark:bg-[#1A1A19]">
-        Transaksi
-    </div>
-);
+    const formatDate = (dateString: string) => {
+        return new Date(dateString).toLocaleDateString('id-ID', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+        });
+    };
+
+    const getStatusBadge = (status: Order['status']) => {
+        switch (status) {
+            case 'pending':
+                return 'bg-yellow-50 text-yellow-700 border-yellow-200 dark:bg-yellow-950/20 dark:text-yellow-400 dark:border-yellow-900/50';
+            case 'processing':
+                return 'bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-950/20 dark:text-blue-400 dark:border-blue-900/50';
+            case 'shipped':
+                return 'bg-indigo-50 text-indigo-700 border-indigo-200 dark:bg-indigo-950/20 dark:text-indigo-400 dark:border-indigo-900/50';
+            case 'delivered':
+                return 'bg-green-50 text-green-700 border-green-200 dark:bg-green-950/20 dark:text-green-400 dark:border-green-900/50';
+            case 'cancelled':
+                return 'bg-red-50 text-red-700 border-red-200 dark:bg-red-950/20 dark:text-red-400 dark:border-red-900/50';
+            default:
+                return 'bg-gray-50 text-gray-700 border-gray-200 dark:bg-[#1A1A19] dark:text-gray-400';
+        }
+    };
+
+    const getPaymentStatusBadge = (status: Order['payment_status']) => {
+        switch (status) {
+            case 'pending':
+                return 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400';
+            case 'paid':
+                return 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400';
+            case 'failed':
+                return 'bg-rose-100 text-rose-800 dark:bg-rose-900/30 dark:text-rose-400';
+            case 'refunded':
+                return 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400';
+            default:
+                return 'bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-400';
+        }
+    };
+
+    const statusLabels: Record<string, string> = {
+        pending: 'Menunggu',
+        processing: 'Diproses',
+        shipped: 'Dikirim',
+        delivered: 'Selesai',
+        cancelled: 'Dibatalkan',
+    };
+
+    const paymentStatusLabels: Record<string, string> = {
+        pending: 'Menunggu',
+        paid: 'Dibayar',
+        failed: 'Gagal',
+        refunded: 'Dikembalikan',
+    };
+
+    if (orders.length === 0) {
+        return (
+            <div className="flex flex-col items-center justify-center rounded-xl border bg-white p-12 text-center shadow-sm dark:border-[#3E3E3A] dark:bg-[#1A1A19]">
+                <ShoppingBag className="mx-auto mb-4 h-12 w-12 text-gray-400" />
+                <h2 className="text-xl font-bold">Belum Ada Transaksi</h2>
+                <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
+                    Anda belum memiliki transaksi pada kategori ini.
+                </p>
+                <Link href="/products" className="mt-6">
+                    <button className="rounded-lg bg-green-600 px-6 py-2.5 text-sm font-semibold text-white transition hover:bg-green-700">
+                        Mulai Belanja
+                    </button>
+                </Link>
+            </div>
+        );
+    }
+
+    return (
+        <div className="space-y-4">
+            {orders.map((order) => (
+                <div
+                    key={order.id}
+                    className="flex flex-col items-start justify-between gap-6 rounded-xl border bg-white p-6 shadow-sm transition-all hover:shadow-md md:flex-row md:items-center dark:border-[#3E3E3A] dark:bg-[#1A1A19]"
+                >
+                    {/* Order Meta */}
+                    <div className="flex-1 space-y-3">
+                        <div className="flex flex-wrap items-center gap-3">
+                            <span className="text-lg font-extrabold text-gray-900 dark:text-white">
+                                {order.order_number}
+                            </span>
+                            <span
+                                className={`rounded-full border px-3 py-0.5 text-xs font-semibold ${getStatusBadge(order.status)}`}
+                            >
+                                {statusLabels[order.status]}
+                            </span>
+                            <span
+                                className={`rounded-md px-2 py-0.5 text-xs font-medium ${getPaymentStatusBadge(order.payment_status)}`}
+                            >
+                                Pembayaran:{' '}
+                                {paymentStatusLabels[order.payment_status]}
+                            </span>
+                        </div>
+
+                        <div className="flex flex-wrap gap-x-6 gap-y-1 text-sm text-gray-500 dark:text-gray-400">
+                            <div className="flex items-center gap-1.5">
+                                <Calendar className="h-4 w-4" />
+                                <span>{formatDate(order.created_at)}</span>
+                            </div>
+                            <div className="flex items-center gap-1.5">
+                                <DollarSign className="h-4 w-4" />
+                                <span>
+                                    {order.payment_method.toUpperCase()}
+                                </span>
+                            </div>
+                            <div className="flex items-center gap-1.5">
+                                <Clock className="h-4 w-4" />
+                                <span>
+                                    {order.items.reduce(
+                                        (acc, i) => acc + i.quantity,
+                                        0,
+                                    )}{' '}
+                                    Barang
+                                </span>
+                            </div>
+                        </div>
+
+                        {/* Product Preview Snippet */}
+                        <div className="flex items-center gap-2 overflow-x-auto py-1">
+                            {order.items.slice(0, 3).map((item) => (
+                                <div
+                                    key={item.id}
+                                    className="flex items-center gap-2 rounded-lg border bg-gray-50 p-2 dark:border-[#3E3E3A] dark:bg-[#252523]"
+                                >
+                                    <img
+                                        src={
+                                            item.product?.image_url ||
+                                            '/images/placeholder.png'
+                                        }
+                                        alt={item.product_name}
+                                        className="h-8 w-8 rounded object-cover"
+                                    />
+                                    <div className="max-w-[120px] text-xs">
+                                        <p className="truncate font-semibold">
+                                            {item.product_name}
+                                        </p>
+                                        <p className="text-[10px] text-gray-400">
+                                            {item.quantity}x
+                                        </p>
+                                    </div>
+                                </div>
+                            ))}
+                            {order.items.length > 3 && (
+                                <span className="pl-2 text-xs text-gray-400">
+                                    +{order.items.length - 3} lainnya
+                                </span>
+                            )}
+                        </div>
+                    </div>
+
+                    {/* Action & Total Price */}
+                    <div className="flex w-full items-end justify-between gap-3 border-t pt-4 md:w-auto md:flex-col md:border-t-0 md:pt-0 dark:border-[#3E3E3A]">
+                        <div className="text-right">
+                            <p className="text-xs text-gray-400">
+                                Total Belanja
+                            </p>
+                            <p className="text-lg font-black text-green-600 dark:text-green-500">
+                                {formatCurrency(order.total)}
+                            </p>
+                        </div>
+
+                        <Link href={`/orders/${order.id}`}>
+                            <button className="flex items-center gap-2 rounded-lg border border-green-600 px-4 py-2 text-sm font-semibold text-green-600 hover:bg-green-50 dark:border-green-500 dark:text-green-400 dark:hover:bg-green-950/20">
+                                <Eye className="h-4 w-4" />
+                                <span>Detail</span>
+                            </button>
+                        </Link>
+                    </div>
+                </div>
+            ))}
+        </div>
+    );
+};
+
+const TabMenungguPembayaran = ({ orders = [] }: { orders: Order[] }) => {
+    const pendingOrders = orders.filter(
+        (order) =>
+            order.payment_status === 'pending' && order.status !== 'cancelled',
+    );
+    return <OrderList orders={pendingOrders} />;
+};
+
+const TabDaftarTransaksi = ({ orders = [] }: { orders: Order[] }) => {
+    return <OrderList orders={orders} />;
+};
 
 export default function UserProfile() {
-    const { props, url } = usePage<{ user: User }>();
-    const { user } = props;
+    const { props, url } = usePage<any>();
+    const { user, errors, orders = [] } = props;
 
     const profileForm = useForm({
         name: user.name || '',
@@ -255,6 +518,35 @@ export default function UserProfile() {
         birth_date: user.birth_date || '',
         gender: user.gender || '',
     });
+
+    const [showEditModal, setShowEditModal] = useState(false);
+
+    const handleUploadAvatar = (file: File) => {
+        router.post(
+            '/user-profile',
+            {
+                name: user.name,
+                phone: user.phone || '',
+                birth_date: user.birth_date || '',
+                gender: user.gender || '',
+                avatar: file,
+            },
+            {
+                preserveScroll: true,
+            },
+        );
+    };
+
+    const handleSubmitProfile = (e: React.FormEvent) => {
+        e.preventDefault();
+        profileForm.post('/user-profile', {
+            preserveScroll: true,
+            forceFormData: true,
+            onSuccess: () => {
+                setShowEditModal(false);
+            },
+        });
+    };
 
     const passwordForm = useForm({
         current_password: '',
@@ -284,7 +576,7 @@ export default function UserProfile() {
     const tabRefs = useRef<Record<string, HTMLButtonElement | null>>({});
 
     const [indicator, setIndicator] = useState({
-        left: 0, 
+        left: 0,
         width: 0,
     });
 
@@ -347,8 +639,8 @@ export default function UserProfile() {
                                                 <Avatar className="h-10 w-10 shrink-0 overflow-hidden rounded-full">
                                                     <AvatarImage
                                                         src={
-                                                            user.avatar ??
-                                                            '/images/login-illus.png'
+                                                            user.avatar ||
+                                                            undefined
                                                         }
                                                         alt={user.name}
                                                         className="h-full w-full object-cover"
@@ -615,7 +907,20 @@ export default function UserProfile() {
                                             <>
                                                 {activeTab ===
                                                     'Biodata Diri' && (
-                                                    <TabBiodata user={user} />
+                                                    <TabBiodata
+                                                        user={user}
+                                                        onOpenEditModal={() =>
+                                                            setShowEditModal(
+                                                                true,
+                                                            )
+                                                        }
+                                                        onUploadAvatar={
+                                                            handleUploadAvatar
+                                                        }
+                                                        avatarError={
+                                                            errors?.avatar
+                                                        }
+                                                    />
                                                 )}
                                                 {activeTab ===
                                                     'Daftar Alamat' && (
@@ -655,11 +960,15 @@ export default function UserProfile() {
                                             <>
                                                 {activeTab ===
                                                     'Menunggu Pembayaran' && (
-                                                    <TabMenungguPembayaran />
+                                                    <TabMenungguPembayaran
+                                                        orders={orders}
+                                                    />
                                                 )}
                                                 {activeTab ===
                                                     'Daftar Transaksi' && (
-                                                    <TabDaftarTransaksi />
+                                                    <TabDaftarTransaksi
+                                                        orders={orders}
+                                                    />
                                                 )}
                                             </>
                                         )}
@@ -672,6 +981,216 @@ export default function UserProfile() {
 
                 {/* FOOTER */}
                 <NavFooter />
+
+                {/* EDIT BIODATA MODAL */}
+                {showEditModal && (
+                    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+                        <div className="w-full max-w-md rounded-xl bg-white shadow-xl dark:border dark:border-[#3E3E3A] dark:bg-[#1A1A19]">
+                            {/* Header */}
+                            <div className="flex items-center justify-between border-b px-6 py-4 dark:border-[#3E3E3A]">
+                                <h3 className="text-lg font-bold text-gray-900 dark:text-white">
+                                    Ubah Biodata Diri
+                                </h3>
+                                <button
+                                    onClick={() => setShowEditModal(false)}
+                                    className="rounded-lg p-1 text-gray-400 transition hover:bg-gray-100 hover:text-gray-600 dark:hover:bg-[#252523] dark:hover:text-gray-200"
+                                >
+                                    <svg
+                                        className="h-5 w-5"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                        stroke="currentColor"
+                                    >
+                                        <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            strokeWidth={2}
+                                            d="M6 18L18 6M6 6l12 12"
+                                        />
+                                    </svg>
+                                </button>
+                            </div>
+
+                            {/* Form */}
+                            <form
+                                onSubmit={handleSubmitProfile}
+                                className="px-6 py-5"
+                            >
+                                <div className="space-y-5">
+                                    {/* Nama Input */}
+                                    <div className="space-y-2">
+                                        <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300">
+                                            Nama
+                                        </label>
+                                        <input
+                                            type="text"
+                                            value={profileForm.data.name}
+                                            onChange={(e) =>
+                                                profileForm.setData(
+                                                    'name',
+                                                    e.target.value,
+                                                )
+                                            }
+                                            placeholder="Masukkan nama lengkap"
+                                            className="flex h-10 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm placeholder:text-gray-400 focus:border-green-600 focus:ring-2 focus:ring-green-600/20 focus:outline-none dark:border-gray-700 dark:bg-[#252523] dark:text-white dark:placeholder:text-gray-500"
+                                            required
+                                        />
+                                        {profileForm.errors.name && (
+                                            <p className="text-xs text-red-500">
+                                                {profileForm.errors.name}
+                                            </p>
+                                        )}
+                                    </div>
+
+                                    {/* Tanggal Lahir Input */}
+                                    <div className="space-y-2">
+                                        <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300">
+                                            Tanggal Lahir
+                                        </label>
+                                        <div className="relative">
+                                            <input
+                                                type="date"
+                                                value={
+                                                    profileForm.data
+                                                        .birth_date || ''
+                                                }
+                                                onChange={(e) =>
+                                                    profileForm.setData(
+                                                        'birth_date',
+                                                        e.target.value,
+                                                    )
+                                                }
+                                                className="flex h-10 w-full rounded-lg border border-gray-300 bg-white py-2 pr-10 pl-3 text-sm focus:border-green-600 focus:ring-2 focus:ring-green-600/20 focus:outline-none dark:border-gray-700 dark:bg-[#252523] dark:text-white dark:[color-scheme:dark] [&::-webkit-calendar-picker-indicator]:absolute [&::-webkit-calendar-picker-indicator]:right-0 [&::-webkit-calendar-picker-indicator]:h-full [&::-webkit-calendar-picker-indicator]:w-10 [&::-webkit-calendar-picker-indicator]:cursor-pointer [&::-webkit-calendar-picker-indicator]:opacity-0"
+                                            />
+                                            <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
+                                                <svg
+                                                    className="h-4 w-4 text-gray-400 dark:text-gray-500"
+                                                    fill="none"
+                                                    viewBox="0 0 24 24"
+                                                    stroke="currentColor"
+                                                >
+                                                    <path
+                                                        strokeLinecap="round"
+                                                        strokeLinejoin="round"
+                                                        strokeWidth={2}
+                                                        d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                                                    />
+                                                </svg>
+                                            </div>
+                                        </div>
+                                        {profileForm.errors.birth_date && (
+                                            <p className="text-xs text-red-500">
+                                                {profileForm.errors.birth_date}
+                                            </p>
+                                        )}
+                                    </div>
+
+                                    {/* Jenis Kelamin Input */}
+                                    <div className="space-y-2">
+                                        <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300">
+                                            Jenis Kelamin
+                                        </label>
+                                        <div className="flex gap-6">
+                                            <label className="inline-flex cursor-pointer items-center gap-2.5">
+                                                <input
+                                                    type="radio"
+                                                    name="gender"
+                                                    value="Laki-laki"
+                                                    checked={
+                                                        profileForm.data
+                                                            .gender ===
+                                                        'Laki-laki'
+                                                    }
+                                                    onChange={(e) =>
+                                                        profileForm.setData(
+                                                            'gender',
+                                                            e.target.value,
+                                                        )
+                                                    }
+                                                    className="h-4 w-4 border-gray-300 text-green-600 focus:ring-2 focus:ring-green-600/20 dark:border-gray-600 dark:bg-[#252523]"
+                                                />
+                                                <span className="text-sm text-gray-700 dark:text-gray-300">
+                                                    Laki-laki
+                                                </span>
+                                            </label>
+                                            <label className="inline-flex cursor-pointer items-center gap-2.5">
+                                                <input
+                                                    type="radio"
+                                                    name="gender"
+                                                    value="Perempuan"
+                                                    checked={
+                                                        profileForm.data
+                                                            .gender ===
+                                                        'Perempuan'
+                                                    }
+                                                    onChange={(e) =>
+                                                        profileForm.setData(
+                                                            'gender',
+                                                            e.target.value,
+                                                        )
+                                                    }
+                                                    className="h-4 w-4 border-gray-300 text-green-600 focus:ring-2 focus:ring-green-600/20 dark:border-gray-600 dark:bg-[#252523]"
+                                                />
+                                                <span className="text-sm text-gray-700 dark:text-gray-300">
+                                                    Perempuan
+                                                </span>
+                                            </label>
+                                        </div>
+                                        {profileForm.errors.gender && (
+                                            <p className="text-xs text-red-500">
+                                                {profileForm.errors.gender}
+                                            </p>
+                                        )}
+                                    </div>
+
+                                    {/* Nomor HP Input */}
+                                    <div className="space-y-2">
+                                        <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300">
+                                            Nomor HP
+                                        </label>
+                                        <input
+                                            type="text"
+                                            value={profileForm.data.phone || ''}
+                                            onChange={(e) =>
+                                                profileForm.setData(
+                                                    'phone',
+                                                    e.target.value,
+                                                )
+                                            }
+                                            placeholder="Contoh: 08123456789"
+                                            className="flex h-10 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm placeholder:text-gray-400 focus:border-green-600 focus:ring-2 focus:ring-green-600/20 focus:outline-none dark:border-gray-700 dark:bg-[#252523] dark:text-white dark:placeholder:text-gray-500"
+                                        />
+                                        {profileForm.errors.phone && (
+                                            <p className="text-xs text-red-500">
+                                                {profileForm.errors.phone}
+                                            </p>
+                                        )}
+                                    </div>
+                                </div>
+
+                                {/* Footer Buttons */}
+                                <div className="mt-6 flex justify-end gap-3 border-t pt-5 dark:border-[#3E3E3A]">
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowEditModal(false)}
+                                        className="rounded-lg border border-gray-300 px-5 py-2.5 text-sm font-semibold text-gray-700 transition hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-[#252523]"
+                                    >
+                                        Batal
+                                    </button>
+                                    <button
+                                        type="submit"
+                                        disabled={profileForm.processing}
+                                        className="rounded-lg bg-green-600 px-6 py-2.5 text-sm font-semibold text-white transition hover:bg-green-700 disabled:cursor-not-allowed disabled:opacity-50"
+                                    >
+                                        {profileForm.processing
+                                            ? 'Menyimpan...'
+                                            : 'Simpan'}
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                )}
             </div>
         </>
     );

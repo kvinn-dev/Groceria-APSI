@@ -7,12 +7,21 @@ use Illuminate\Support\Facades\Hash;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Auth;
 
+use App\Models\Order;
+
 class UserProfileController extends Controller
 {
     public function index(Request $request)
     {
+        $user = $request->user();
+        $orders = Order::with(['items.product'])
+            ->where('user_id', $user->id)
+            ->latest()
+            ->get();
+
         return Inertia::render('User_Profile', [
-            'user' => $request->user(),
+            'user' => $user,
+            'orders' => $orders,
         ]);
     }
 
@@ -20,14 +29,24 @@ class UserProfileController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'avatar' => 'nullable|image|max:2048',
+            'avatar' => 'nullable|image|max:10240',
+            'phone' => 'nullable|string|max:20',
+            'birth_date' => 'nullable|date',
+            'gender' => 'nullable|string|max:20',
         ]);
 
         $user = $request->user();
 
         $user->name = $request->name;
+        $user->phone = $request->phone;
+        $user->birth_date = $request->birth_date;
+        $user->gender = $request->gender;
 
         if ($request->hasFile('avatar')) {
+            // Delete old avatar file if exists
+            if ($user->getRawOriginal('avatar')) {
+                \Illuminate\Support\Facades\Storage::disk('public')->delete($user->getRawOriginal('avatar'));
+            }
             $user->avatar = $request->file('avatar')->store('avatars', 'public');
         }
 

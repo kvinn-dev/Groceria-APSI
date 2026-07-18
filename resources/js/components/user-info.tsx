@@ -20,7 +20,7 @@ export function UserInfo({ user, onLogout }: UserInfoProps) {
             >
                 <Avatar className="h-8 w-8">
                     <AvatarImage
-                        src={user.avatar ?? '/images/login-illus.png'}
+                        src={user.avatar || undefined}
                         alt={user.name}
                         className="object-cover"
                     />
