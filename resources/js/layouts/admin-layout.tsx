@@ -1,5 +1,5 @@
 import { AdminSidebar } from '@/components/admin-sidebar';
-import { usePage } from '@inertiajs/react';
+import { usePage, router } from '@inertiajs/react';
 import { Toaster, toast } from 'sonner';
 import { type PropsWithChildren, useEffect } from 'react';
 
@@ -8,20 +8,33 @@ interface FlashMessage {
     error?: string;
 }
 
+let lastShownSuccess: string | null = null;
+let lastShownError: string | null = null;
+
 export default function AdminLayout({ children }: PropsWithChildren) {
     const { flash } = usePage<{ flash: FlashMessage }>().props;
 
     useEffect(() => {
-        if (flash.success) {
+        const unsubscribe = router.on('start', () => {
+            lastShownSuccess = null;
+            lastShownError = null;
+        });
+
+        if (flash.success && flash.success !== lastShownSuccess) {
             toast.success('Success', {
                 description: flash.success,
             });
+            lastShownSuccess = flash.success;
         }
-        if (flash.error) {
+
+        if (flash.error && flash.error !== lastShownError) {
             toast.error('Error', {
                 description: flash.error,
             });
+            lastShownError = flash.error;
         }
+
+        return () => unsubscribe();
     }, [flash]);
 
     return (
@@ -36,3 +49,4 @@ export default function AdminLayout({ children }: PropsWithChildren) {
         </>
     );
 }
+

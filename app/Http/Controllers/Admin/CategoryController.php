@@ -16,6 +16,7 @@ class CategoryController extends Controller
     {
         return Inertia::render('Admin/Categories/Index', [
             'categories' => $this->service->getPaginated(),
+            'filters' => request()->only(['search']),
         ]);
     }
 

@@ -13,6 +13,10 @@ class CategoryService
     {
         return Category::withCount('products')
             ->with('parent')
+            ->when(request('search'), function ($query, $search) {
+                $query->where('name', 'like', "%{$search}%")
+                    ->orWhere('description', 'like', "%{$search}%");
+            })
             ->latest()
             ->paginate(15);
     }

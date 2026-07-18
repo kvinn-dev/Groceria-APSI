@@ -1,5 +1,11 @@
 import { Link, usePage } from '@inertiajs/react';
-import { LayoutDashboard, LogOut, Package, Zap } from 'lucide-react';
+import {
+    FolderTree,
+    LayoutDashboard,
+    LogOut,
+    Package,
+    Zap,
+} from 'lucide-react';
 
 const navLinks = [
     {
@@ -13,6 +19,12 @@ const navLinks = [
         icon: Package,
         label: 'Products',
         routeName: 'admin.products.index',
+    },
+    {
+        href: '/admin/categories',
+        icon: FolderTree,
+        label: 'Categories',
+        routeName: 'admin.categories.index',
     },
     {
         href: '/admin/flash-sale',
@@ -37,7 +49,11 @@ export function AdminSidebar() {
             </div>
             <nav className="flex flex-col gap-2">
                 {navLinks.map((link) => {
-                    const isMatch = component.toLowerCase().startsWith(`admin/${link.label.toLowerCase().replace(/\s+/g, '')}`);
+                    const isMatch = component
+                        .toLowerCase()
+                        .startsWith(
+                            `admin/${link.label.toLowerCase().replace(/\s+/g, '')}`,
+                        );
                     return (
                         <Link
                             key={link.href}
