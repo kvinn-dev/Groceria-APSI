@@ -1,17 +1,3 @@
-import AdminLayout from '@/layouts/admin-layout';
-import { Button } from '@/components/ui/button';
-import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
-} from '@/components/ui/table';
-import { Head, router, useForm } from '@inertiajs/react';
-import { type Category, type Product } from '@/types';
-import { Badge } from '@/components/ui/badge';
-import { Edit, PlusCircle, Trash2, Calendar, Zap, AlertCircle } from 'lucide-react';
 import {
     AlertDialog,
     AlertDialogAction,
@@ -23,6 +9,20 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from '@/components/ui/table';
+import AdminLayout from '@/layouts/admin-layout';
+import { type Category, type Product } from '@/types';
+import { Head, router, useForm } from '@inertiajs/react';
+import { AlertCircle, Calendar, Edit, PlusCircle, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 
 interface FlashSale {
@@ -44,7 +44,10 @@ interface FlashSaleIndexProps {
     products: Product[];
 }
 
-export default function Index({ flashSales = [], products = [] }: FlashSaleIndexProps) {
+export default function Index({
+    flashSales = [],
+    products = [],
+}: FlashSaleIndexProps) {
     const [isAddOpen, setIsAddOpen] = useState(false);
     const [isEditOpen, setIsEditOpen] = useState(false);
     const [currentFs, setCurrentFs] = useState<FlashSale | null>(null);
@@ -122,13 +125,17 @@ export default function Index({ flashSales = [], products = [] }: FlashSaleIndex
     };
 
     // Calculate discounted price dynamically
-    const selectedProductToAdd = products.find(p => p.id === Number(addForm.data.product_id));
-    const calculatedAddPrice = selectedProductToAdd 
-        ? Number(selectedProductToAdd.price) * (1 - addForm.data.discount_percentage / 100) 
+    const selectedProductToAdd = products.find(
+        (p) => p.id === Number(addForm.data.product_id),
+    );
+    const calculatedAddPrice = selectedProductToAdd
+        ? Number(selectedProductToAdd.price) *
+          (1 - addForm.data.discount_percentage / 100)
         : 0;
 
-    const calculatedEditPrice = currentFs 
-        ? Number(currentFs.product?.price ?? currentFs.original_price) * (1 - editForm.data.discount_percentage / 100) 
+    const calculatedEditPrice = currentFs
+        ? Number(currentFs.product?.price ?? currentFs.original_price) *
+          (1 - editForm.data.discount_percentage / 100)
         : 0;
 
     return (
@@ -136,39 +143,53 @@ export default function Index({ flashSales = [], products = [] }: FlashSaleIndex
             <Head title="Manage Flash Sales" />
             <div className="flex items-center justify-between">
                 <div>
-                    <h1 className="text-2xl font-bold flex items-center gap-2">
-                        <Zap className="h-6 w-6 text-amber-500 fill-amber-500 animate-pulse" />
+                    <h1 className="flex items-center gap-2 text-2xl font-bold">
                         Flash Sales
                     </h1>
-                    <p className="text-sm text-gray-500 mt-1">Manage limited time flash sales discount campaigns.</p>
+                    <p className="mt-1 text-sm text-gray-500">
+                        Manage limited time flash sales discount campaigns.
+                    </p>
                 </div>
-                <Button onClick={() => setIsAddOpen(true)} className="bg-green-600 hover:bg-green-700 text-white">
+                <Button
+                    onClick={() => setIsAddOpen(true)}
+                    className="bg-green-600 text-white hover:bg-green-700"
+                >
                     <PlusCircle className="mr-2 h-4 w-4" />
                     Add Flash Sale
                 </Button>
             </div>
 
             {/* List Table */}
-            <div className="mt-6 rounded-lg border bg-white shadow-sm dark:bg-gray-800 dark:border-gray-700">
+            <div className="mt-6 rounded-lg border bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800">
                 <Table>
                     <TableHeader>
                         <TableRow className="bg-gray-50/50 dark:bg-gray-900/50">
-                            <TableHead className="w-[100px]">Product Image</TableHead>
+                            <TableHead className="w-[100px]">
+                                Product Image
+                            </TableHead>
                             <TableHead>Product Name</TableHead>
                             <TableHead>Discount Info</TableHead>
                             <TableHead>Stock (Sold / Limit)</TableHead>
                             <TableHead>Active Period</TableHead>
                             <TableHead>Status</TableHead>
-                            <TableHead className="text-right">Actions</TableHead>
+                            <TableHead className="text-right">
+                                Actions
+                            </TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
                         {flashSales.length === 0 ? (
                             <TableRow>
-                                <TableCell colSpan={7} className="text-center py-10 text-gray-500">
+                                <TableCell
+                                    colSpan={7}
+                                    className="py-10 text-center text-gray-500"
+                                >
                                     <div className="flex flex-col items-center gap-2">
                                         <AlertCircle className="h-8 w-8 text-gray-400" />
-                                        <span>No flash sales scheduled. Click "Add Flash Sale" to start.</span>
+                                        <span>
+                                            No flash sales scheduled. Click "Add
+                                            Flash Sale" to start.
+                                        </span>
                                     </div>
                                 </TableCell>
                             </TableRow>
@@ -177,10 +198,14 @@ export default function Index({ flashSales = [], products = [] }: FlashSaleIndex
                                 const now = new Date();
                                 const start = new Date(fs.start_time);
                                 const end = new Date(fs.end_time);
-                                
+
                                 let timeStatus = 'Upcoming';
-                                let statusVariant: 'default' | 'destructive' | 'secondary' | 'outline' = 'secondary';
-                                
+                                let statusVariant:
+                                    | 'default'
+                                    | 'destructive'
+                                    | 'secondary'
+                                    | 'outline' = 'secondary';
+
                                 if (now >= start && now <= end) {
                                     timeStatus = 'Ongoing';
                                     statusVariant = 'default'; // Green / Active
@@ -189,60 +214,111 @@ export default function Index({ flashSales = [], products = [] }: FlashSaleIndex
                                     statusVariant = 'destructive';
                                 }
 
-                                const productPrice = Number(fs.product?.price ?? fs.original_price);
-                                const discountPrice = Number(fs.discounted_price);
+                                const productPrice = Number(
+                                    fs.product?.price ?? fs.original_price,
+                                );
+                                const discountPrice = Number(
+                                    fs.discounted_price,
+                                );
 
                                 return (
-                                    <TableRow key={fs.id} className="hover:bg-gray-50/50 dark:hover:bg-gray-900/50">
+                                    <TableRow
+                                        key={fs.id}
+                                        className="hover:bg-gray-50/50 dark:hover:bg-gray-900/50"
+                                    >
                                         <TableCell>
-                                            <img 
-                                                src={fs.product?.image_url || '/images/placeholder.png'} 
-                                                alt={fs.product?.name || 'Product'} 
-                                                className="h-12 w-12 rounded-md object-cover border dark:border-gray-700" 
+                                            <img
+                                                src={
+                                                    fs.product?.image_url ||
+                                                    '/images/placeholder.png'
+                                                }
+                                                alt={
+                                                    fs.product?.name ||
+                                                    'Product'
+                                                }
+                                                className="h-12 w-12 rounded-md border object-cover dark:border-gray-700"
                                             />
                                         </TableCell>
                                         <TableCell>
-                                            <div className="font-medium text-gray-900 dark:text-white">{fs.product?.name || 'Deleted Product'}</div>
-                                            <div className="text-xs text-gray-500 mt-0.5">{fs.product?.category?.name || 'No Category'}</div>
+                                            <div className="font-medium text-gray-900 dark:text-white">
+                                                {fs.product?.name ||
+                                                    'Deleted Product'}
+                                            </div>
+                                            <div className="mt-0.5 text-xs text-gray-500">
+                                                {fs.product?.category?.name ||
+                                                    'No Category'}
+                                            </div>
                                         </TableCell>
                                         <TableCell>
                                             <div className="flex items-center gap-2">
-                                                <Badge className="bg-amber-500 text-white font-bold">-{fs.discount_percentage}%</Badge>
+                                                <Badge className="bg-amber-500 font-bold text-white">
+                                                    -{fs.discount_percentage}%
+                                                </Badge>
                                                 <div>
                                                     <span className="text-sm font-semibold text-green-600 dark:text-green-400">
-                                                        {formatRupiah(discountPrice)}
+                                                        {formatRupiah(
+                                                            discountPrice,
+                                                        )}
                                                     </span>
-                                                    <span className="text-xs text-gray-400 line-through block">
-                                                        {formatRupiah(productPrice)}
+                                                    <span className="block text-xs text-gray-400 line-through">
+                                                        {formatRupiah(
+                                                            productPrice,
+                                                        )}
                                                     </span>
                                                 </div>
                                             </div>
                                         </TableCell>
                                         <TableCell>
                                             <div className="text-sm font-medium">
-                                                {fs.sold_count} / {fs.stock_limit}
+                                                {fs.sold_count} /{' '}
+                                                {fs.stock_limit}
                                             </div>
-                                            <div className="w-24 bg-gray-200 rounded-full h-1.5 mt-1 dark:bg-gray-700">
-                                                <div 
-                                                    className="bg-amber-500 h-1.5 rounded-full" 
-                                                    style={{ width: `${Math.min(100, (fs.sold_count / fs.stock_limit) * 100)}%` }}
+                                            <div className="mt-1 h-1.5 w-24 rounded-full bg-gray-200 dark:bg-gray-700">
+                                                <div
+                                                    className="h-1.5 rounded-full bg-amber-500"
+                                                    style={{
+                                                        width: `${Math.min(100, (fs.sold_count / fs.stock_limit) * 100)}%`,
+                                                    }}
                                                 />
                                             </div>
                                         </TableCell>
                                         <TableCell className="text-xs text-gray-600 dark:text-gray-300">
                                             <div className="flex items-center gap-1">
                                                 <Calendar className="h-3 w-3 text-gray-400" />
-                                                <span>Start: {start.toLocaleString('id-ID')}</span>
+                                                <span>
+                                                    Start:{' '}
+                                                    {start.toLocaleString(
+                                                        'id-ID',
+                                                    )}
+                                                </span>
                                             </div>
-                                            <div className="flex items-center gap-1 mt-1 font-semibold text-amber-600 dark:text-amber-400">
+                                            <div className="mt-1 flex items-center gap-1 font-semibold text-amber-600 dark:text-amber-400">
                                                 <Calendar className="h-3 w-3" />
-                                                <span>End: {end.toLocaleString('id-ID')}</span>
+                                                <span>
+                                                    End:{' '}
+                                                    {end.toLocaleString(
+                                                        'id-ID',
+                                                    )}
+                                                </span>
                                             </div>
                                         </TableCell>
                                         <TableCell>
-                                            <div className="flex flex-col gap-1 items-start">
-                                                <Badge variant={fs.is_active ? 'default' : 'secondary'} className={fs.is_active ? 'bg-emerald-500 text-white' : ''}>
-                                                    {fs.is_active ? 'Active' : 'Disabled'}
+                                            <div className="flex flex-col items-start gap-1">
+                                                <Badge
+                                                    variant={
+                                                        fs.is_active
+                                                            ? 'default'
+                                                            : 'secondary'
+                                                    }
+                                                    className={
+                                                        fs.is_active
+                                                            ? 'bg-emerald-500 text-white'
+                                                            : ''
+                                                    }
+                                                >
+                                                    {fs.is_active
+                                                        ? 'Active'
+                                                        : 'Disabled'}
                                                 </Badge>
                                                 <Badge variant={statusVariant}>
                                                     {timeStatus}
@@ -251,25 +327,54 @@ export default function Index({ flashSales = [], products = [] }: FlashSaleIndex
                                         </TableCell>
                                         <TableCell className="text-right">
                                             <div className="flex items-center justify-end gap-2">
-                                                <Button onClick={() => openEdit(fs)} variant="outline" size="icon" className="hover:text-amber-500 hover:border-amber-500">
+                                                <Button
+                                                    onClick={() => openEdit(fs)}
+                                                    variant="outline"
+                                                    size="icon"
+                                                    className="hover:border-amber-500 hover:text-amber-500"
+                                                >
                                                     <Edit className="h-4 w-4" />
                                                 </Button>
                                                 <AlertDialog>
                                                     <AlertDialogTrigger asChild>
-                                                        <Button variant="destructive" size="icon" className="hover:bg-red-700">
+                                                        <Button
+                                                            variant="destructive"
+                                                            size="icon"
+                                                            className="hover:bg-red-700"
+                                                        >
                                                             <Trash2 className="h-4 w-4" />
                                                         </Button>
                                                     </AlertDialogTrigger>
-                                                    <AlertDialogContent className="dark:bg-gray-800 dark:border-gray-700">
+                                                    <AlertDialogContent className="dark:border-gray-700 dark:bg-gray-800">
                                                         <AlertDialogHeader>
-                                                            <AlertDialogTitle className="dark:text-white">Remove Flash Sale?</AlertDialogTitle>
+                                                            <AlertDialogTitle className="dark:text-white">
+                                                                Remove Flash
+                                                                Sale?
+                                                            </AlertDialogTitle>
                                                             <AlertDialogDescription className="dark:text-gray-400">
-                                                                This action will permanently delete the flash sale campaign for this product. Product pricing will return to normal.
+                                                                This action will
+                                                                permanently
+                                                                delete the flash
+                                                                sale campaign
+                                                                for this
+                                                                product. Product
+                                                                pricing will
+                                                                return to
+                                                                normal.
                                                             </AlertDialogDescription>
                                                         </AlertDialogHeader>
                                                         <AlertDialogFooter>
-                                                            <AlertDialogCancel className="dark:bg-gray-700 dark:text-white">Cancel</AlertDialogCancel>
-                                                            <AlertDialogAction onClick={() => handleDelete(fs.id)} className="bg-red-600 hover:bg-red-700 text-white">
+                                                            <AlertDialogCancel className="dark:bg-gray-700 dark:text-white">
+                                                                Cancel
+                                                            </AlertDialogCancel>
+                                                            <AlertDialogAction
+                                                                onClick={() =>
+                                                                    handleDelete(
+                                                                        fs.id,
+                                                                    )
+                                                                }
+                                                                className="bg-red-600 text-white hover:bg-red-700"
+                                                            >
                                                                 Delete
                                                             </AlertDialogAction>
                                                         </AlertDialogFooter>
@@ -287,124 +392,214 @@ export default function Index({ flashSales = [], products = [] }: FlashSaleIndex
 
             {/* ADD FLASH SALE MODAL */}
             {isAddOpen && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 animate-in fade-in duration-200">
-                    <div className="relative w-full max-w-lg rounded-xl border border-gray-200 bg-white p-6 shadow-lg dark:bg-gray-800 dark:border-gray-700 animate-in zoom-in-95 duration-200">
-                        <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2 border-b pb-2 dark:border-gray-700">
+                <div className="fixed inset-0 z-50 flex animate-in items-center justify-center bg-black/50 p-4 duration-200 fade-in">
+                    <div className="relative w-full max-w-lg animate-in rounded-xl border border-gray-200 bg-white p-6 shadow-lg duration-200 zoom-in-95 dark:border-gray-700 dark:bg-gray-800">
+                        <h2 className="mb-4 flex items-center gap-2 border-b pb-2 text-lg font-bold text-gray-900 dark:border-gray-700 dark:text-white">
                             <PlusCircle className="h-5 w-5 text-green-500" />
                             Create Flash Sale
                         </h2>
                         <form onSubmit={handleAddSubmit} className="space-y-4">
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Select Product</label>
-                                <select 
+                                <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                    Select Product
+                                </label>
+                                <select
                                     value={addForm.data.product_id}
-                                    onChange={e => addForm.setData('product_id', e.target.value)}
-                                    className="w-full rounded-md border border-gray-300 p-2 bg-white dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+                                    onChange={(e) =>
+                                        addForm.setData(
+                                            'product_id',
+                                            e.target.value,
+                                        )
+                                    }
+                                    className="w-full rounded-md border border-gray-300 bg-white p-2 text-sm focus:ring-2 focus:ring-green-500 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-white"
                                     required
                                 >
-                                    <option value="">-- Choose Product --</option>
-                                    {products.map(p => (
+                                    <option value="">
+                                        -- Choose Product --
+                                    </option>
+                                    {products.map((p) => (
                                         <option key={p.id} value={p.id}>
-                                            {p.name} ({formatRupiah(Number(p.price))})
+                                            {p.name} (
+                                            {formatRupiah(Number(p.price))})
                                         </option>
                                     ))}
                                 </select>
                                 {addForm.errors.product_id && (
-                                    <p className="text-xs text-red-500 mt-1">{addForm.errors.product_id}</p>
+                                    <p className="mt-1 text-xs text-red-500">
+                                        {addForm.errors.product_id}
+                                    </p>
                                 )}
                             </div>
 
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Discount (%)</label>
-                                    <input 
+                                    <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                        Discount (%)
+                                    </label>
+                                    <input
                                         type="number"
                                         min="1"
                                         max="99"
                                         value={addForm.data.discount_percentage}
-                                        onChange={e => addForm.setData('discount_percentage', Math.max(1, Math.min(99, Number(e.target.value))))}
-                                        className="w-full rounded-md border border-gray-300 p-2 bg-white dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+                                        onChange={(e) =>
+                                            addForm.setData(
+                                                'discount_percentage',
+                                                Math.max(
+                                                    1,
+                                                    Math.min(
+                                                        99,
+                                                        Number(e.target.value),
+                                                    ),
+                                                ),
+                                            )
+                                        }
+                                        className="w-full rounded-md border border-gray-300 bg-white p-2 text-sm focus:ring-2 focus:ring-green-500 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-white"
                                         required
                                     />
                                     {addForm.errors.discount_percentage && (
-                                        <p className="text-xs text-red-500 mt-1">{addForm.errors.discount_percentage}</p>
+                                        <p className="mt-1 text-xs text-red-500">
+                                            {addForm.errors.discount_percentage}
+                                        </p>
                                     )}
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Stock Limit</label>
-                                    <input 
+                                    <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                        Stock Limit
+                                    </label>
+                                    <input
                                         type="number"
                                         min="1"
                                         value={addForm.data.stock_limit}
-                                        onChange={e => addForm.setData('stock_limit', Math.max(1, Number(e.target.value)))}
-                                        className="w-full rounded-md border border-gray-300 p-2 bg-white dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+                                        onChange={(e) =>
+                                            addForm.setData(
+                                                'stock_limit',
+                                                Math.max(
+                                                    1,
+                                                    Number(e.target.value),
+                                                ),
+                                            )
+                                        }
+                                        className="w-full rounded-md border border-gray-300 bg-white p-2 text-sm focus:ring-2 focus:ring-green-500 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-white"
                                         required
                                     />
                                     {addForm.errors.stock_limit && (
-                                        <p className="text-xs text-red-500 mt-1">{addForm.errors.stock_limit}</p>
+                                        <p className="mt-1 text-xs text-red-500">
+                                            {addForm.errors.stock_limit}
+                                        </p>
                                     )}
                                 </div>
                             </div>
 
                             {selectedProductToAdd && (
-                                <div className="p-3 bg-gray-50 rounded-lg dark:bg-gray-900 border dark:border-gray-700 text-xs space-y-1.5">
+                                <div className="space-y-1.5 rounded-lg border bg-gray-50 p-3 text-xs dark:border-gray-700 dark:bg-gray-900">
                                     <div className="flex justify-between">
-                                        <span className="text-gray-500">Original Price:</span>
-                                        <span className="font-semibold text-gray-700 dark:text-gray-300">{formatRupiah(Number(selectedProductToAdd.price))}</span>
+                                        <span className="text-gray-500">
+                                            Original Price:
+                                        </span>
+                                        <span className="font-semibold text-gray-700 dark:text-gray-300">
+                                            {formatRupiah(
+                                                Number(
+                                                    selectedProductToAdd.price,
+                                                ),
+                                            )}
+                                        </span>
                                     </div>
                                     <div className="flex justify-between">
-                                        <span className="text-gray-500">Discounted Price:</span>
-                                        <span className="font-bold text-green-600 dark:text-green-400">{formatRupiah(calculatedAddPrice)}</span>
+                                        <span className="text-gray-500">
+                                            Discounted Price:
+                                        </span>
+                                        <span className="font-bold text-green-600 dark:text-green-400">
+                                            {formatRupiah(calculatedAddPrice)}
+                                        </span>
                                     </div>
                                 </div>
                             )}
 
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Start Time</label>
-                                    <input 
+                                    <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                        Start Time
+                                    </label>
+                                    <input
                                         type="datetime-local"
                                         value={addForm.data.start_time}
-                                        onChange={e => addForm.setData('start_time', e.target.value)}
-                                        className="w-full rounded-md border border-gray-300 p-2 bg-white dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+                                        onChange={(e) =>
+                                            addForm.setData(
+                                                'start_time',
+                                                e.target.value,
+                                            )
+                                        }
+                                        className="w-full rounded-md border border-gray-300 bg-white p-2 text-sm focus:ring-2 focus:ring-green-500 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-white"
                                         required
                                     />
                                     {addForm.errors.start_time && (
-                                        <p className="text-xs text-red-500 mt-1">{addForm.errors.start_time}</p>
+                                        <p className="mt-1 text-xs text-red-500">
+                                            {addForm.errors.start_time}
+                                        </p>
                                     )}
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">End Time</label>
-                                    <input 
+                                    <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                        End Time
+                                    </label>
+                                    <input
                                         type="datetime-local"
                                         value={addForm.data.end_time}
-                                        onChange={e => addForm.setData('end_time', e.target.value)}
-                                        className="w-full rounded-md border border-gray-300 p-2 bg-white dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+                                        onChange={(e) =>
+                                            addForm.setData(
+                                                'end_time',
+                                                e.target.value,
+                                            )
+                                        }
+                                        className="w-full rounded-md border border-gray-300 bg-white p-2 text-sm focus:ring-2 focus:ring-green-500 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-white"
                                         required
                                     />
                                     {addForm.errors.end_time && (
-                                        <p className="text-xs text-red-500 mt-1">{addForm.errors.end_time}</p>
+                                        <p className="mt-1 text-xs text-red-500">
+                                            {addForm.errors.end_time}
+                                        </p>
                                     )}
                                 </div>
                             </div>
 
                             <div className="flex items-center gap-2 pt-2">
-                                <input 
+                                <input
                                     type="checkbox"
                                     id="add_is_active"
                                     checked={addForm.data.is_active}
-                                    onChange={e => addForm.setData('is_active', e.target.checked)}
+                                    onChange={(e) =>
+                                        addForm.setData(
+                                            'is_active',
+                                            e.target.checked,
+                                        )
+                                    }
                                     className="h-4 w-4 rounded border-gray-300 text-green-600 focus:ring-green-500"
                                 />
-                                <label htmlFor="add_is_active" className="text-sm font-medium text-gray-700 dark:text-gray-300">Set Active Immediately</label>
+                                <label
+                                    htmlFor="add_is_active"
+                                    className="text-sm font-medium text-gray-700 dark:text-gray-300"
+                                >
+                                    Set Active Immediately
+                                </label>
                             </div>
 
                             <div className="flex items-center justify-end gap-2 border-t pt-4 dark:border-gray-700">
-                                <Button type="button" variant="outline" onClick={() => setIsAddOpen(false)} disabled={addForm.processing}>
+                                <Button
+                                    type="button"
+                                    variant="outline"
+                                    onClick={() => setIsAddOpen(false)}
+                                    disabled={addForm.processing}
+                                >
                                     Cancel
                                 </Button>
-                                <Button type="submit" className="bg-green-600 hover:bg-green-700 text-white" disabled={addForm.processing}>
-                                    {addForm.processing ? 'Creating...' : 'Create Campaign'}
+                                <Button
+                                    type="submit"
+                                    className="bg-green-600 text-white hover:bg-green-700"
+                                    disabled={addForm.processing}
+                                >
+                                    {addForm.processing
+                                        ? 'Creating...'
+                                        : 'Create Campaign'}
                                 </Button>
                             </div>
                         </form>
@@ -414,104 +609,189 @@ export default function Index({ flashSales = [], products = [] }: FlashSaleIndex
 
             {/* EDIT FLASH SALE MODAL */}
             {isEditOpen && currentFs && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 animate-in fade-in duration-200">
-                    <div className="relative w-full max-w-lg rounded-xl border border-gray-200 bg-white p-6 shadow-lg dark:bg-gray-800 dark:border-gray-700 animate-in zoom-in-95 duration-200">
-                        <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2 border-b pb-2 dark:border-gray-700">
+                <div className="fixed inset-0 z-50 flex animate-in items-center justify-center bg-black/50 p-4 duration-200 fade-in">
+                    <div className="relative w-full max-w-lg animate-in rounded-xl border border-gray-200 bg-white p-6 shadow-lg duration-200 zoom-in-95 dark:border-gray-700 dark:bg-gray-800">
+                        <h2 className="mb-4 flex items-center gap-2 border-b pb-2 text-lg font-bold text-gray-900 dark:border-gray-700 dark:text-white">
                             <Edit className="h-5 w-5 text-amber-500" />
                             Edit Flash Sale: {currentFs.product?.name}
                         </h2>
                         <form onSubmit={handleEditSubmit} className="space-y-4">
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Discount (%)</label>
-                                    <input 
+                                    <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                        Discount (%)
+                                    </label>
+                                    <input
                                         type="number"
                                         min="1"
                                         max="99"
-                                        value={editForm.data.discount_percentage}
-                                        onChange={e => editForm.setData('discount_percentage', Math.max(1, Math.min(99, Number(e.target.value))))}
-                                        className="w-full rounded-md border border-gray-300 p-2 bg-white dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+                                        value={
+                                            editForm.data.discount_percentage
+                                        }
+                                        onChange={(e) =>
+                                            editForm.setData(
+                                                'discount_percentage',
+                                                Math.max(
+                                                    1,
+                                                    Math.min(
+                                                        99,
+                                                        Number(e.target.value),
+                                                    ),
+                                                ),
+                                            )
+                                        }
+                                        className="w-full rounded-md border border-gray-300 bg-white p-2 text-sm focus:ring-2 focus:ring-green-500 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-white"
                                         required
                                     />
                                     {editForm.errors.discount_percentage && (
-                                        <p className="text-xs text-red-500 mt-1">{editForm.errors.discount_percentage}</p>
+                                        <p className="mt-1 text-xs text-red-500">
+                                            {
+                                                editForm.errors
+                                                    .discount_percentage
+                                            }
+                                        </p>
                                     )}
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Stock Limit</label>
-                                    <input 
+                                    <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                        Stock Limit
+                                    </label>
+                                    <input
                                         type="number"
                                         min="1"
                                         value={editForm.data.stock_limit}
-                                        onChange={e => editForm.setData('stock_limit', Math.max(1, Number(e.target.value)))}
-                                        className="w-full rounded-md border border-gray-300 p-2 bg-white dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+                                        onChange={(e) =>
+                                            editForm.setData(
+                                                'stock_limit',
+                                                Math.max(
+                                                    1,
+                                                    Number(e.target.value),
+                                                ),
+                                            )
+                                        }
+                                        className="w-full rounded-md border border-gray-300 bg-white p-2 text-sm focus:ring-2 focus:ring-green-500 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-white"
                                         required
                                     />
                                     {editForm.errors.stock_limit && (
-                                        <p className="text-xs text-red-500 mt-1">{editForm.errors.stock_limit}</p>
+                                        <p className="mt-1 text-xs text-red-500">
+                                            {editForm.errors.stock_limit}
+                                        </p>
                                     )}
                                 </div>
                             </div>
 
-                            <div className="p-3 bg-gray-50 rounded-lg dark:bg-gray-900 border dark:border-gray-700 text-xs space-y-1.5">
+                            <div className="space-y-1.5 rounded-lg border bg-gray-50 p-3 text-xs dark:border-gray-700 dark:bg-gray-900">
                                 <div className="flex justify-between">
-                                    <span className="text-gray-500">Original Price:</span>
+                                    <span className="text-gray-500">
+                                        Original Price:
+                                    </span>
                                     <span className="font-semibold text-gray-700 dark:text-gray-300">
-                                        {formatRupiah(Number(currentFs.product?.price ?? currentFs.original_price))}
+                                        {formatRupiah(
+                                            Number(
+                                                currentFs.product?.price ??
+                                                    currentFs.original_price,
+                                            ),
+                                        )}
                                     </span>
                                 </div>
                                 <div className="flex justify-between">
-                                    <span className="text-gray-500">New Discounted Price:</span>
-                                    <span className="font-bold text-green-600 dark:text-green-400">{formatRupiah(calculatedEditPrice)}</span>
+                                    <span className="text-gray-500">
+                                        New Discounted Price:
+                                    </span>
+                                    <span className="font-bold text-green-600 dark:text-green-400">
+                                        {formatRupiah(calculatedEditPrice)}
+                                    </span>
                                 </div>
                             </div>
 
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Start Time</label>
-                                    <input 
+                                    <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                        Start Time
+                                    </label>
+                                    <input
                                         type="datetime-local"
                                         value={editForm.data.start_time}
-                                        onChange={e => editForm.setData('start_time', e.target.value)}
-                                        className="w-full rounded-md border border-gray-300 p-2 bg-white dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+                                        onChange={(e) =>
+                                            editForm.setData(
+                                                'start_time',
+                                                e.target.value,
+                                            )
+                                        }
+                                        className="w-full rounded-md border border-gray-300 bg-white p-2 text-sm focus:ring-2 focus:ring-green-500 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-white"
                                         required
                                     />
                                     {editForm.errors.start_time && (
-                                        <p className="text-xs text-red-500 mt-1">{editForm.errors.start_time}</p>
+                                        <p className="mt-1 text-xs text-red-500">
+                                            {editForm.errors.start_time}
+                                        </p>
                                     )}
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">End Time</label>
-                                    <input 
+                                    <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                        End Time
+                                    </label>
+                                    <input
                                         type="datetime-local"
                                         value={editForm.data.end_time}
-                                        onChange={e => editForm.setData('end_time', e.target.value)}
-                                        className="w-full rounded-md border border-gray-300 p-2 bg-white dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+                                        onChange={(e) =>
+                                            editForm.setData(
+                                                'end_time',
+                                                e.target.value,
+                                            )
+                                        }
+                                        className="w-full rounded-md border border-gray-300 bg-white p-2 text-sm focus:ring-2 focus:ring-green-500 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-white"
                                         required
                                     />
                                     {editForm.errors.end_time && (
-                                        <p className="text-xs text-red-500 mt-1">{editForm.errors.end_time}</p>
+                                        <p className="mt-1 text-xs text-red-500">
+                                            {editForm.errors.end_time}
+                                        </p>
                                     )}
                                 </div>
                             </div>
 
                             <div className="flex items-center gap-2 pt-2">
-                                <input 
+                                <input
                                     type="checkbox"
                                     id="edit_is_active"
                                     checked={editForm.data.is_active}
-                                    onChange={e => editForm.setData('is_active', e.target.checked)}
+                                    onChange={(e) =>
+                                        editForm.setData(
+                                            'is_active',
+                                            e.target.checked,
+                                        )
+                                    }
                                     className="h-4 w-4 rounded border-gray-300 text-green-600 focus:ring-green-500"
                                 />
-                                <label htmlFor="edit_is_active" className="text-sm font-medium text-gray-700 dark:text-gray-300">Set Active</label>
+                                <label
+                                    htmlFor="edit_is_active"
+                                    className="text-sm font-medium text-gray-700 dark:text-gray-300"
+                                >
+                                    Set Active
+                                </label>
                             </div>
 
                             <div className="flex items-center justify-end gap-2 border-t pt-4 dark:border-gray-700">
-                                <Button type="button" variant="outline" onClick={() => { setIsEditOpen(false); setCurrentFs(null); }} disabled={editForm.processing}>
+                                <Button
+                                    type="button"
+                                    variant="outline"
+                                    onClick={() => {
+                                        setIsEditOpen(false);
+                                        setCurrentFs(null);
+                                    }}
+                                    disabled={editForm.processing}
+                                >
                                     Cancel
                                 </Button>
-                                <Button type="submit" className="bg-green-600 hover:bg-green-700 text-white" disabled={editForm.processing}>
-                                    {editForm.processing ? 'Saving...' : 'Save Changes'}
+                                <Button
+                                    type="submit"
+                                    className="bg-green-600 text-white hover:bg-green-700"
+                                    disabled={editForm.processing}
+                                >
+                                    {editForm.processing
+                                        ? 'Saving...'
+                                        : 'Save Changes'}
                                 </Button>
                             </div>
                         </form>

@@ -159,11 +159,63 @@ Route::middleware(['auth', 'verified', 'admin'])
 
         // Dashboard
         Route::get('/dashboard', function () {
+            $totalProducts = \App\Models\Product::count();
+            $totalCategories = \App\Models\Category::count();
+            $totalOrders = \App\Models\Order::count();
+            $totalRevenue = \App\Models\Order::where('payment_status', 'paid')->sum('total');
+
+            // Order Status counts
+            $statuses = ['pending', 'processing', 'shipped', 'delivered', 'cancelled'];
+            $statusCountsRaw = \App\Models\Order::selectRaw('status, count(*) as count')
+                ->groupBy('status')
+                ->pluck('count', 'status')
+                ->toArray();
+            
+            $orderStatusCounts = [];
+            foreach ($statuses as $status) {
+                $orderStatusCounts[$status] = $statusCountsRaw[$status] ?? 0;
+            }
+
+            // Recent Orders
+            $recentOrders = \App\Models\Order::latest()
+                ->limit(5)
+                ->get()
+                ->map(function ($order) {
+                    return [
+                        'id' => $order->id,
+                        'order_number' => $order->order_number,
+                        'customer_name' => $order->customer_name,
+                        'total' => (float) $order->total,
+                        'status' => $order->status,
+                        'payment_status' => $order->payment_status,
+                        'created_at' => $order->created_at->toIso8601String(),
+                    ];
+                });
+
+            // Top Products
+            $topProducts = \App\Models\OrderItem::selectRaw('product_id, product_name, sum(quantity) as total_sold, sum(subtotal) as total_revenue')
+                ->groupBy('product_id', 'product_name')
+                ->orderByDesc('total_sold')
+                ->limit(5)
+                ->get()
+                ->map(function ($item) {
+                    return [
+                        'product_id' => $item->product_id,
+                        'product_name' => $item->product_name,
+                        'total_sold' => (int) $item->total_sold,
+                        'total_revenue' => (float) $item->total_revenue,
+                    ];
+                });
+
             return Inertia::render('Admin/Dashboard', [
                 'stats' => [
-                    'total_products' => \App\Models\Product::count(),
-                    'total_categories' => \App\Models\Category::count(),
-                    'total_orders' => \App\Models\Order::count(),
+                    'total_products' => $totalProducts,
+                    'total_categories' => $totalCategories,
+                    'total_orders' => $totalOrders,
+                    'total_revenue' => (float) $totalRevenue,
+                    'order_status_counts' => $orderStatusCounts,
+                    'recent_orders' => $recentOrders,
+                    'top_products' => $topProducts,
                 ]
             ]);
         })->name('dashboard');
@@ -217,6 +269,7 @@ Route::middleware(['auth', 'verified', 'admin'])
 
         // Order Management
         Route::prefix('orders')->group(function () {
+            Route::get('/', [OrderController::class, 'adminIndex'])->name('orders.index');
             Route::put('/{order}', [OrderController::class, 'update'])->name('orders.update');
             Route::delete('/{order}', [OrderController::class, 'destroy'])->name('orders.destroy');
         });

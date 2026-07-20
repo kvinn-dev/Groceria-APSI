@@ -229,9 +229,7 @@ class OrderController extends Controller
 
         $order->update($validated);
 
-        return redirect()
-            ->route('orders.show', $order)
-            ->with('success', 'Pesanan berhasil diperbarui!');
+        return back()->with('success', 'Pesanan berhasil diperbarui!');
     }
 
     /**
@@ -402,5 +400,54 @@ class OrderController extends Controller
             'notes' => $validated['notes'] ?? null,
             'items' => $items,
         ]));
+    }
+
+    /**
+     * Display a listing of orders for administration.
+     */
+    public function adminIndex(Request $request)
+    {
+        $query = Order::with(['user', 'items.product'])
+            ->latest();
+
+        // Search
+        if ($request->has('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('order_number', 'like', "%{$search}%")
+                  ->orWhere('customer_name', 'like', "%{$search}%")
+                  ->orWhere('customer_email', 'like', "%{$search}%");
+            });
+        }
+
+        // Filter by status
+        if ($request->has('status')) {
+            $query->where('status', $request->status);
+        }
+
+        // Filter by payment status
+        if ($request->has('payment_status')) {
+            $query->where('payment_status', $request->payment_status);
+        }
+
+        $orders = $query->paginate(20)->withQueryString();
+
+        return Inertia::render('admin/orders/Index', [
+            'orders' => $orders,
+            'filters' => $request->only(['search', 'status', 'payment_status']),
+            'statusOptions' => [
+                'pending' => 'Menunggu Verifikasi',
+                'processing' => 'Diproses',
+                'shipped' => 'Dikirim',
+                'delivered' => 'Selesai',
+                'cancelled' => 'Dibatalkan',
+            ],
+            'paymentStatusOptions' => [
+                'pending' => 'Menunggu Pembayaran',
+                'paid' => 'Dibayar',
+                'failed' => 'Gagal',
+                'refunded' => 'Dikembalikan',
+            ],
+        ]);
     }
 }
