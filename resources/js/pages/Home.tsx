@@ -3,7 +3,7 @@ import { NavFooter } from '@/components/nav-footer';
 import NavMain from '@/components/nav-main';
 import { type SharedData } from '@/types';
 import { Head, Link, usePage } from '@inertiajs/react';
-import { ChevronLeft, ChevronRight, ShoppingCart } from 'lucide-react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 
 const bannerData = [
@@ -572,7 +572,7 @@ export default function Home({
                                 href="/lokal"
                                 className="flex flex-col items-center"
                             >
-                                <div className="rounded-xl border border-gray-200 bg-white p-3 dark:border-[#252523] dark:bg-[#1A1A19]">
+                                <div className="rounded-xl border border-gray-200 bg-white p-3 dark:border-gray-200/15 dark:bg-[#1A1A19]">
                                     <img
                                         src="images/icon/icon_local.png"
                                         alt="Groceria Pilih Lokal"
@@ -589,7 +589,7 @@ export default function Home({
                                 href="/mall"
                                 className="flex flex-col items-center"
                             >
-                                <div className="rounded-xl border border-gray-200 bg-white p-3 dark:border-[#252523] dark:bg-[#1A1A19]">
+                                <div className="rounded-xl border border-gray-200 bg-white p-3 dark:border-gray-200/15 dark:bg-[#1A1A19]">
                                     <img
                                         src="images/icon/icon_bag.png"
                                         alt="Groceria Mall"
@@ -606,7 +606,7 @@ export default function Home({
                                 href="/pulsa"
                                 className="flex flex-col items-center"
                             >
-                                <div className="rounded-xl border border-gray-200 bg-white p-3 dark:border-[#252523] dark:bg-[#1A1A19]">
+                                <div className="rounded-xl border border-gray-200 bg-white p-3 dark:border-gray-200/15 dark:bg-[#1A1A19]">
                                     <img
                                         src="images/icon/icon_pulsa.png"
                                         alt="Pulsa Tagihan Tiket"
@@ -623,7 +623,7 @@ export default function Home({
                                 href="/flash-sale"
                                 className="flex flex-col items-center"
                             >
-                                <div className="rounded-xl border border-gray-200 bg-white p-3 dark:border-[#252523] dark:bg-[#1A1A19]">
+                                <div className="rounded-xl border border-gray-200 bg-white p-3 dark:border-gray-200/15 dark:bg-[#1A1A19]">
                                     <img
                                         src="images/icon/icon_flashsale.png"
                                         alt="Flash Sale"
@@ -640,7 +640,7 @@ export default function Home({
                                 href="/supermarket"
                                 className="flex flex-col items-center"
                             >
-                                <div className="rounded-xl border border-gray-200 bg-white p-3 dark:border-[#252523] dark:bg-[#1A1A19]">
+                                <div className="rounded-xl border border-gray-200 bg-white p-3 dark:border-gray-200/15 dark:bg-[#1A1A19]">
                                     <img
                                         src="images/icon/icon_supermarket.png"
                                         alt="Supermarket"
@@ -657,7 +657,7 @@ export default function Home({
                                 href="/kelola"
                                 className="flex flex-col items-center"
                             >
-                                <div className="rounded-xl border border-gray-200 bg-white p-3 dark:border-[#252523] dark:bg-[#1A1A19]">
+                                <div className="rounded-xl border border-gray-200 bg-white p-3 dark:border-gray-200/15 dark:bg-[#1A1A19]">
                                     <img
                                         src="images/icon/icon_kelola.png"
                                         alt="Dikelola Groceria"
@@ -674,7 +674,7 @@ export default function Home({
                                 href="/diskon"
                                 className="flex flex-col items-center"
                             >
-                                <div className="rounded-xl border border-gray-200 bg-white p-3 dark:border-[#252523] dark:bg-[#1A1A19]">
+                                <div className="rounded-xl border border-gray-200 bg-white p-3 dark:border-gray-200/15 dark:bg-[#1A1A19]">
                                     <img
                                         src="images/icon/icon_fitcheck.png"
                                         alt="FitCheck Diskon"
@@ -691,7 +691,7 @@ export default function Home({
                                 href="/gratis-ongkir"
                                 className="flex flex-col items-center"
                             >
-                                <div className="rounded-xl border border-gray-200 bg-white p-3 dark:border-[#252523] dark:bg-[#1A1A19]">
+                                <div className="rounded-xl border border-gray-200 bg-white p-3 dark:border-gray-200/15 dark:bg-[#1A1A19]">
                                     <img
                                         src="images/icon/icon_voucher.png"
                                         alt="Gratis Ongkir"
@@ -708,7 +708,7 @@ export default function Home({
                                 href="/berkah"
                                 className="flex flex-col items-center"
                             >
-                                <div className="rounded-xl border border-gray-200 bg-white p-3 dark:border-[#252523] dark:bg-[#1A1A19]">
+                                <div className="rounded-xl border border-gray-200 bg-white p-3 dark:border-gray-200/15 dark:bg-[#1A1A19]">
                                     <img
                                         src="images/icon/icon_berkah.png"
                                         alt="Groceria Berkah"
@@ -725,7 +725,7 @@ export default function Home({
                                 href="/semua"
                                 className="flex flex-col items-center"
                             >
-                                <div className="rounded-xl border border-gray-200 bg-white p-3 dark:border-[#252523] dark:bg-[#1A1A19]">
+                                <div className="rounded-xl border border-gray-200 bg-white p-3 dark:border-gray-200/15 dark:bg-[#1A1A19]">
                                     <img
                                         src="images/icon/icon_promo.png"
                                         alt="Semua Promo"
@@ -742,9 +742,9 @@ export default function Home({
 
                 {/* Category Section */}
                 <section className="relative py-0">
-                    <div className="group relative mx-auto max-w-6xl overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm dark:border-[#252523] dark:bg-[#1A1A19]">
+                    <div className="group relative mx-auto max-w-6xl overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm dark:border-gray-200/15 dark:bg-[#1A1A19]">
                         {/* Header */}
-                        <div className="border-b border-gray-200 px-6 py-5 dark:border-[#252523]">
+                        <div className="border-b border-gray-200 px-6 py-5 dark:border-gray-200/15">
                             <h2 className="text-xl font-bold text-gray-900 dark:text-white">
                                 Kategori
                             </h2>
@@ -820,7 +820,7 @@ export default function Home({
                 <section className="bg-white py-10 dark:bg-[#1A1A19]">
                     <div className="container mx-auto max-w-6xl rounded-xl">
                         {/* WRAPPER FLASH SALE */}
-                        <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm dark:border-[#252523] dark:bg-[#1A1A19]">
+                        <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-200/15 dark:bg-[#1A1A19]">
                             {/* Header Flash Sale */}
                             <div className="mb-4 flex items-center justify-between">
                                 <div className="flex items-center space-x-3">
@@ -921,7 +921,7 @@ export default function Home({
                                                 <Link
                                                     href={`/product/${prod.slug}`}
                                                     key={prod.id}
-                                                    className="flex max-w-[170px] min-w-[170px] snap-start flex-col rounded-lg border border-gray-300 bg-white dark:border-[#252523] dark:bg-[#1A1A19]"
+                                                    className="flex max-w-[170px] min-w-[170px] snap-start flex-col rounded-lg border border-gray-300 bg-white dark:border-gray-200/15 dark:bg-[#1A1A19]"
                                                 >
                                                     <div className="relative">
                                                         <img
@@ -1005,7 +1005,7 @@ export default function Home({
                 {/* Top Product Section */}
                 <section className="mb-10 bg-white py-0 dark:bg-[#1A1A19]">
                     <div className="container mx-auto max-w-6xl rounded-xl">
-                        <div className="rounded-xl border border-gray-200 bg-white px-6 py-4 shadow-sm dark:border-[#252523] dark:bg-[#1A1A19]">
+                        <div className="rounded-xl border border-gray-200 bg-white px-6 py-4 shadow-sm dark:border-gray-200/15 dark:bg-[#1A1A19]">
                             {/* HEADER */}
                             <div className="mb-6 flex items-center justify-between">
                                 <h2 className="text-xl font-bold text-gray-900 dark:text-white">
@@ -1148,77 +1148,77 @@ export default function Home({
 }
 
 // Product Card Component
-function ProductCard({
-    product,
-}: {
-    product: HomePageProps['featuredProducts'][0];
-}) {
-    const finalPrice = product.discount_price || product.price;
-    const hasDiscount =
-        product.discount_price && product.discount_price < product.price;
+// function ProductCard({
+//     product,
+// }: {
+//     product: HomePageProps['featuredProducts'][0];
+// }) {
+//     const finalPrice = product.discount_price || product.price;
+//     const hasDiscount =
+//         product.discount_price && product.discount_price < product.price;
 
-    return (
-        <Link href={`/products/${product.slug}`} className="group">
-            <div className="overflow-hidden rounded-lg border border-[#19140035] bg-white transition-all hover:shadow-lg dark:border-[#3E3E3A] dark:bg-[#1A1A19]">
-                <div className="aspect-square overflow-hidden bg-gray-100 dark:bg-[#1A1A19]">
-                    <img
-                        src={product.image || '/images/placeholder.jpg'}
-                        alt={product.name}
-                        className="h-full w-full object-cover transition-transform group-hover:scale-105"
-                    />
-                    {hasDiscount && (
-                        <span className="absolute top-2 left-2 rounded bg-[#F53003] px-2 py-1 text-xs font-medium text-white">
-                            Sale
-                        </span>
-                    )}
-                </div>
-                <div className="p-4">
-                    <span className="mb-1 block text-xs text-[#706f6c] dark:text-[#A1A09A]">
-                        {product.category.name}
-                    </span>
-                    <h3 className="mb-2 line-clamp-1 font-medium group-hover:text-[#F53003] dark:text-white dark:group-hover:text-[#FF4433]">
-                        {product.name}
-                    </h3>
-                    <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                            <span className="text-lg font-bold text-[#1b1b18] dark:text-white">
-                                Rp {finalPrice.toLocaleString('id-ID')}
-                            </span>
-                            {hasDiscount && (
-                                <span className="text-sm text-[#706f6c] line-through dark:text-[#A1A09A]">
-                                    Rp {product.price.toLocaleString('id-ID')}
-                                </span>
-                            )}
-                        </div>
-                        <button className="rounded-full bg-[#1b1b18] p-2 text-white hover:bg-black dark:bg-[#EDEDEC] dark:text-[#1C1C1A] dark:hover:bg-white">
-                            <ShoppingCart className="h-4 w-4" />
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </Link>
-    );
-}
+//     return (
+//         <Link href={`/products/${product.slug}`} className="group">
+//             <div className="overflow-hidden rounded-lg border border-[#19140035] bg-white transition-all hover:shadow-lg dark:border-gray-200/15 dark:bg-[#1A1A19]">
+//                 <div className="aspect-square overflow-hidden bg-gray-100 dark:bg-[#1A1A19]">
+//                     <img
+//                         src={product.image || '/images/placeholder.jpg'}
+//                         alt={product.name}
+//                         className="h-full w-full object-cover transition-transform group-hover:scale-105"
+//                     />
+//                     {hasDiscount && (
+//                         <span className="absolute top-2 left-2 rounded bg-[#F53003] px-2 py-1 text-xs font-medium text-white">
+//                             Sale
+//                         </span>
+//                     )}
+//                 </div>
+//                 <div className="p-4">
+//                     <span className="mb-1 block text-xs text-[#706f6c] dark:text-[#A1A09A]">
+//                         {product.category.name}
+//                     </span>
+//                     <h3 className="mb-2 line-clamp-1 font-medium group-hover:text-[#F53003] dark:text-white dark:group-hover:text-[#FF4433]">
+//                         {product.name}
+//                     </h3>
+//                     <div className="flex items-center justify-between">
+//                         <div className="flex items-center gap-2">
+//                             <span className="text-lg font-bold text-[#1b1b18] dark:text-white">
+//                                 Rp {finalPrice.toLocaleString('id-ID')}
+//                             </span>
+//                             {hasDiscount && (
+//                                 <span className="text-sm text-[#706f6c] line-through dark:text-[#A1A09A]">
+//                                     Rp {product.price.toLocaleString('id-ID')}
+//                                 </span>
+//                             )}
+//                         </div>
+//                         <button className="rounded-full bg-[#1b1b18] p-2 text-white hover:bg-black dark:bg-[#EDEDEC] dark:text-[#1C1C1A] dark:hover:bg-white">
+//                             <ShoppingCart className="h-4 w-4" />
+//                         </button>
+//                     </div>
+//                 </div>
+//             </div>
+//         </Link>
+//     );
+// }
 
 // Category Card Component
-function CategoryCard({
-    category,
-}: {
-    category: HomePageProps['categories'][0];
-}) {
-    return (
-        <Link href={`/categories/${category.slug}`} className="group">
-            <div className="rounded-lg border border-[#19140035] bg-white p-6 text-center transition-all hover:border-[#F53003] hover:shadow-md dark:border-[#3E3E3A] dark:bg-[#252523] dark:hover:border-[#FF4433]">
-                <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-[#F53003]/10 dark:bg-[#FF4433]/10">
-                    <span className="text-xl">🛍️</span>
-                </div>
-                <h3 className="font-semibold group-hover:text-[#F53003] dark:text-white dark:group-hover:text-[#FF4433]">
-                    {category.name}
-                </h3>
-                <p className="mt-1 text-sm text-[#706f6c] dark:text-[#A1A09A]">
-                    {category.products_count} produk
-                </p>
-            </div>
-        </Link>
-    );
-}
+// function CategoryCard({
+//     category,
+// }: {
+//     category: HomePageProps['categories'][0];
+// }) {
+//     return (
+//         <Link href={`/categories/${category.slug}`} className="group">
+//             <div className="rounded-lg border border-[#19140035] bg-white p-6 text-center transition-all hover:border-[#F53003] hover:shadow-md dark:border-gray-200/15 dark:bg-[#252523] dark:hover:border-[#FF4433]">
+//                 <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-[#F53003]/10 dark:bg-[#FF4433]/10">
+//                     <span className="text-xl">🛍️</span>
+//                 </div>
+//                 <h3 className="font-semibold group-hover:text-[#F53003] dark:text-white dark:group-hover:text-[#FF4433]">
+//                     {category.name}
+//                 </h3>
+//                 <p className="mt-1 text-sm text-[#706f6c] dark:text-[#A1A09A]">
+//                     {category.products_count} produk
+//                 </p>
+//             </div>
+//         </Link>
+//     );
+// }
