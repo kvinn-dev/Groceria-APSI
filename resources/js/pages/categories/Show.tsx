@@ -83,7 +83,7 @@ export default function Show({ category, products, categories }: ShowProps) {
 
     return (
         <>
-            <Head title={`${category.name} - Groceria`} />
+            <Head title={`${category.name}`} />
             <div className="flex min-h-screen flex-col bg-[#FDFDFD] text-gray-900 dark:bg-[#121212] dark:text-gray-100">
                 {/* Navigation Header */}
                 <NavMain />

@@ -225,7 +225,7 @@ export default function ProductView({
 
     return (
         <>
-            <Head title={`${product.name} - Groceria`} />
+            <Head title={`${product.name}`} />
             <ToasterProvider />
             <div className="min-h-screen bg-white text-gray-900 dark:bg-[#1A1A19] dark:text-gray-100">
                 <NavMain />
@@ -502,7 +502,12 @@ export default function ProductView({
                                             </div>
 
                                             {/* Description */}
-                                            <div className="font-regular">
+                                            <div
+                                                className="font-regular whitespace-pre-wrap"
+                                                style={{
+                                                    whiteSpace: 'pre-wrap',
+                                                }}
+                                            >
                                                 {product.description || '-'}
                                             </div>
                                         </div>
@@ -584,7 +589,7 @@ export default function ProductView({
                                             </button>
 
                                             {/* SIDEBAR */}
-                                            <div className="w-1/4 space-y-0.5 border-r bg-gray-50 p-5">
+                                            <div className="w-1/4 space-y-0.5 border-r bg-gray-50 p-5 dark:bg-[#191919]">
                                                 <h3 className="mb-2 px-2 text-[20px] font-bold">
                                                     Info Penting
                                                 </h3>
@@ -619,7 +624,7 @@ export default function ProductView({
                                                     ]?.title ?? ''}
                                                 </h2>
 
-                                                <div className="custom-scroll mr-10 max-h-[55vh] overflow-y-auto pr-2 text-sm leading-normal whitespace-pre-line text-gray-700">
+                                                <div className="custom-scroll mr-10 max-h-[55vh] overflow-y-auto pr-2 text-sm leading-normal whitespace-pre-line text-gray-700 dark:text-gray-100">
                                                     {
                                                         product
                                                             .important_info?.[
