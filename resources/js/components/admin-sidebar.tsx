@@ -4,8 +4,8 @@ import {
     LayoutDashboard,
     LogOut,
     Package,
-    Zap,
     ShoppingCart,
+    Zap,
 } from 'lucide-react';
 
 const navLinks = [
@@ -48,7 +48,7 @@ export function AdminSidebar() {
         <aside className="flex w-64 flex-col border-r bg-white p-4 dark:border-gray-700 dark:bg-gray-800">
             <div className="mb-8 flex items-center gap-2">
                 <img
-                    src="/logo-ditoekoe.svg"
+                    src="/logo-groceria.svg"
                     alt="Logo"
                     className="h-8 w-auto"
                 />

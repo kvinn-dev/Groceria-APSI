@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\UserProfileController;
+use App\Http\Controllers\UserAddressController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
@@ -143,6 +144,12 @@ Route::middleware(['user.only'])->group(function () {
         // Delete account
         Route::delete('/user-profile', [UserProfileController::class, 'destroy'])
             ->name('user-profile.destroy');
+
+        // Address management
+        Route::post('/user-addresses', [UserAddressController::class, 'store'])->name('user-addresses.store');
+        Route::put('/user-addresses/{address}', [UserAddressController::class, 'update'])->name('user-addresses.update');
+        Route::delete('/user-addresses/{address}', [UserAddressController::class, 'destroy'])->name('user-addresses.destroy');
+        Route::patch('/user-addresses/{address}/set-default', [UserAddressController::class, 'setDefault'])->name('user-addresses.set-default');
     });
 });
 

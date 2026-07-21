@@ -18,10 +18,12 @@ class UserProfileController extends Controller
             ->where('user_id', $user->id)
             ->latest()
             ->get();
+        $addresses = $user->addresses()->latest()->get();
 
         return Inertia::render('User_Profile', [
             'user' => $user,
             'orders' => $orders,
+            'addresses' => $addresses,
         ]);
     }
 

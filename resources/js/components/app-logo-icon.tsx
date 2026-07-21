@@ -6,7 +6,7 @@ export default function AppLogoIcon({
 }: ImgHTMLAttributes<HTMLImageElement>) {
     return (
         <img
-            src="/logo-ditoekoe.svg"
+            src="/logo-groceria.svg"
             alt="Logo"
             className={`h-24 w-auto ${className}`}
             {...props}

@@ -170,11 +170,12 @@ export default function NavMain() {
             <div className="container mx-auto bg-white px-4 py-2 dark:bg-[#1A1A19]">
                 <div className="flex items-center justify-between gap-6">
                     {/* LOGO */}
-                    <Link
-                        href="/"
-                        className="text-2xl font-bold text-green-600"
-                    >
-                        Groceria
+                    <Link href="/" className="flex items-center">
+                        <img
+                            src="/logo-groceria-text.svg"
+                            alt="Groceria"
+                            className="h-5.5 w-auto"
+                        />
                     </Link>
 
                     {/* SEARCH BAR */}

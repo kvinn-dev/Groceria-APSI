@@ -61,8 +61,7 @@ export function UserInfo({ user, onLogout }: UserInfoProps) {
 
                     {/* Sesuai route dengan section parameter */}
                     <Link
-                        href="/user-profile"
-                        data={{ section: 'pembelian' }}
+                        href="/orders"
                         className="block px-4 py-2 text-sm hover:bg-gray-100 dark:text-white dark:hover:bg-[#1A1A19]"
                     >
                         Pesanan Saya

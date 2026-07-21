@@ -336,6 +336,7 @@ class OrderController extends Controller
         $total = $subtotal + $tax + $shippingCost;
 
         $user = Auth::user();
+        $addresses = $user->addresses()->latest()->get();
 
         return Inertia::render('Checkout', [
             'checkoutItems' => $checkoutItems,
@@ -349,11 +350,8 @@ class OrderController extends Controller
                 'name' => $user->name,
                 'email' => $user->email,
                 'phone' => $user->phone ?? '',
-                'address' => $user->address ?? '',
-                'city' => $user->city ?? '',
-                'province' => $user->province ?? '',
-                'postal_code' => $user->postal_code ?? '',
-            ]
+            ],
+            'addresses' => $addresses,
         ]);
     }
 

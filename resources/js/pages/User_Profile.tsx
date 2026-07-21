@@ -2,7 +2,20 @@ import { NavFooter } from '@/components/nav-footer';
 import NavMain from '@/components/nav-main';
 import { Head, Link, router, useForm, usePage } from '@inertiajs/react';
 import { Avatar, AvatarFallback, AvatarImage } from '@radix-ui/react-avatar';
-import { Calendar, Clock, DollarSign, Eye, ShoppingBag } from 'lucide-react';
+import {
+    Calendar,
+    Clock,
+    CreditCard,
+    DollarSign,
+    Edit,
+    Eye,
+    MapPin,
+    Plus,
+    ShoppingBag,
+    Trash2,
+    Wallet,
+    Zap,
+} from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 
 type User = {
@@ -237,44 +250,639 @@ const TabBiodata = ({
     );
 };
 
-const TabPembayaran = () => (
-    <div className="grid grid-cols-1 gap-6 md:grid-cols-[260px_1fr]">
-        {/* LEFT MENU */}
-        <div className="overflow-hidden rounded-xl border bg-white text-sm dark:border-[#3E3E3A] dark:bg-[#1A1A19]">
-            {[
-                'GoPay',
-                'DANA',
-                'Kartu Kredit / Debit',
-                'Kredivo Express',
-                'Debit Instan',
-            ].map((item) => (
-                <div
-                    key={item}
-                    className="cursor-pointer border-b px-4 py-3 font-medium hover:bg-gray-50 dark:border-[#3E3E3A] dark:hover:bg-[#252523]"
-                >
-                    {item}
+const TabPembayaran = () => {
+    const [activeMethod, setActiveMethod] = useState<
+        | 'GoPay'
+        | 'DANA'
+        | 'Kartu Kredit / Debit'
+        | 'Kredivo Express'
+        | 'Debit Instan'
+    >('GoPay');
+
+    const renderRightContent = () => {
+        switch (activeMethod) {
+            case 'GoPay':
+                return (
+                    <div className="flex flex-col items-center justify-center p-6 text-center">
+                        <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-blue-50 text-blue-600 dark:bg-blue-950/20 dark:text-blue-400">
+                            <Wallet className="h-8 w-8" />
+                        </div>
+                        <h2 className="mb-2 text-xl font-bold text-gray-900 dark:text-white">
+                            Yuk, Aktifkan GoPay!
+                        </h2>
+                        <p className="mb-6 max-w-sm text-sm text-gray-500 dark:text-gray-400">
+                            Hubungkan akun GoPay kamu untuk pembayaran lebih
+                            cepat, aman, dan nikmati berbagai promo cashback
+                            menarik.
+                        </p>
+                        <button className="rounded-lg bg-green-600 px-6 py-2.5 text-sm font-semibold text-white transition hover:bg-green-700">
+                            Aktifkan GoPay
+                        </button>
+                    </div>
+                );
+            case 'DANA':
+                return (
+                    <div className="flex flex-col items-center justify-center p-6 text-center">
+                        <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-sky-50 text-sky-600 dark:bg-sky-950/20 dark:text-sky-400">
+                            <Wallet className="h-8 w-8" />
+                        </div>
+                        <h2 className="mb-2 text-xl font-bold text-gray-900 dark:text-white">
+                            Hubungkan Akun DANA
+                        </h2>
+                        <p className="mb-6 max-w-sm text-sm text-gray-500 dark:text-gray-400">
+                            Bayar belanjaan online kamu dengan mudah menggunakan
+                            DANA. Cukup hubungkan akun kamu sekali saja.
+                        </p>
+                        <button className="rounded-lg bg-green-600 px-6 py-2.5 text-sm font-semibold text-white transition hover:bg-green-700">
+                            Hubungkan DANA
+                        </button>
+                    </div>
+                );
+            case 'Kartu Kredit / Debit':
+                return (
+                    <div className="flex flex-col items-center justify-center p-6 text-center">
+                        <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-purple-50 text-purple-600 dark:bg-purple-950/20 dark:text-purple-400">
+                            <CreditCard className="h-8 w-8" />
+                        </div>
+                        <h2 className="mb-2 text-xl font-bold text-gray-900 dark:text-white">
+                            Tambah Kartu Kredit / Debit
+                        </h2>
+                        <p className="mb-6 max-w-sm text-sm text-gray-500 dark:text-gray-400">
+                            Simpan kartu Visa, Mastercard, JCB, atau Amex kamu
+                            secara aman untuk kemudahan checkout instan
+                            berikutnya.
+                        </p>
+                        <div className="mb-6 flex gap-2">
+                            <span className="rounded border px-2.5 py-1 text-xs font-semibold text-gray-500 dark:border-gray-700 dark:text-gray-400">
+                                Visa
+                            </span>
+                            <span className="rounded border px-2.5 py-1 text-xs font-semibold text-gray-500 dark:border-gray-700 dark:text-gray-400">
+                                Mastercard
+                            </span>
+                            <span className="rounded border px-2.5 py-1 text-xs font-semibold text-gray-500 dark:border-gray-700 dark:text-gray-400">
+                                JCB
+                            </span>
+                        </div>
+                        <button className="rounded-lg bg-green-600 px-6 py-2.5 text-sm font-semibold text-white transition hover:bg-green-700">
+                            Tambah Kartu Baru
+                        </button>
+                    </div>
+                );
+            case 'Kredivo Express':
+                return (
+                    <div className="flex flex-col items-center justify-center p-6 text-center">
+                        <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-orange-50 text-orange-600 dark:bg-orange-950/20 dark:text-orange-400">
+                            <Zap className="h-8 w-8" />
+                        </div>
+                        <h2 className="mb-2 text-xl font-bold text-gray-900 dark:text-white">
+                            Hubungkan Kredivo Express
+                        </h2>
+                        <p className="mb-6 max-w-sm text-sm text-gray-500 dark:text-gray-400">
+                            Beli sekarang, bayar nanti dengan Kredivo Express.
+                            Nikmati tenor pembayaran hingga 12 bulan.
+                        </p>
+                        <button className="rounded-lg bg-green-600 px-6 py-2.5 text-sm font-semibold text-white transition hover:bg-green-700">
+                            Hubungkan Kredivo
+                        </button>
+                    </div>
+                );
+            case 'Debit Instan':
+                return (
+                    <div className="flex flex-col items-center justify-center p-6 text-center">
+                        <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-emerald-50 text-emerald-600 dark:bg-emerald-950/20 dark:text-emerald-400">
+                            <CreditCard className="h-8 w-8" />
+                        </div>
+                        <h2 className="mb-2 text-xl font-bold text-gray-900 dark:text-white">
+                            Daftarkan Debit Instan
+                        </h2>
+                        <p className="mb-6 max-w-sm text-sm text-gray-500 dark:text-gray-400">
+                            Hubungkan kartu debit bank favoritmu (BCA, Mandiri,
+                            BNI, BRI) untuk pembayaran langsung tanpa transfer
+                            manual.
+                        </p>
+                        <button className="rounded-lg bg-green-600 px-6 py-2.5 text-sm font-semibold text-white transition hover:bg-green-700">
+                            Daftar Debit Instan
+                        </button>
+                    </div>
+                );
+            default:
+                return null;
+        }
+    };
+
+    return (
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-[260px_1fr]">
+            {/* LEFT MENU */}
+            <div className="h-fit overflow-hidden rounded-xl border bg-white text-sm dark:border-[#3E3E3A] dark:bg-[#1A1A19]">
+                {(
+                    [
+                        'GoPay',
+                        'DANA',
+                        'Kartu Kredit / Debit',
+                        'Kredivo Express',
+                        'Debit Instan',
+                    ] as const
+                ).map((item) => {
+                    const isActive = activeMethod === item;
+                    return (
+                        <div
+                            key={item}
+                            onClick={() => setActiveMethod(item)}
+                            className={`cursor-pointer border-b px-4 py-3 font-semibold transition-all last:border-b-0 dark:border-[#3E3E3A] ${
+                                isActive
+                                    ? 'border-l-4 border-l-green-600 bg-green-50/30 pl-3 text-green-600 dark:border-l-green-500 dark:bg-green-950/10 dark:text-green-400'
+                                    : 'border-l-4 border-l-transparent text-gray-600 hover:bg-gray-50 dark:text-gray-400 dark:hover:bg-[#252523]'
+                            }`}
+                        >
+                            {item}
+                        </div>
+                    );
+                })}
+            </div>
+
+            {/* RIGHT CONTENT */}
+            <div className="flex min-h-[300px] items-center justify-center rounded-xl border bg-white p-8 dark:border-[#3E3E3A] dark:bg-[#1A1A19]">
+                {renderRightContent()}
+            </div>
+        </div>
+    );
+};
+
+interface Address {
+    id: number;
+    name: string;
+    phone: string;
+    address: string;
+    city: string;
+    province: string;
+    postal_code: string;
+    is_default: boolean;
+}
+
+const TabAlamat = ({ addresses = [] }: { addresses: Address[] }) => {
+    const [showModal, setShowModal] = useState(false);
+    const [editingAddress, setEditingAddress] = useState<Address | null>(null);
+
+    const form = useForm({
+        name: '',
+        phone: '',
+        address: '',
+        city: '',
+        province: '',
+        postal_code: '',
+        is_default: false,
+    });
+
+    const formErrors = form.errors as Record<string, string>;
+
+    const openAddModal = () => {
+        form.reset();
+        form.setData({
+            name: '',
+            phone: '',
+            address: '',
+            city: '',
+            province: '',
+            postal_code: '',
+            is_default: addresses.length === 0,
+        });
+        setEditingAddress(null);
+        setShowModal(true);
+    };
+
+    const openEditModal = (addr: Address) => {
+        setEditingAddress(addr);
+        form.setData({
+            name: addr.name,
+            phone: addr.phone,
+            address: addr.address,
+            city: addr.city,
+            province: addr.province,
+            postal_code: addr.postal_code,
+            is_default: addr.is_default,
+        });
+        setShowModal(true);
+    };
+
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+
+        // Validation: Must have at least one default address
+        if (!form.data.is_default) {
+            const hasOtherDefault = addresses.some(
+                (addr) =>
+                    addr.is_default &&
+                    (!editingAddress || addr.id !== editingAddress.id),
+            );
+            if (!hasOtherDefault) {
+                form.setError(
+                    'is_default',
+                    'Harus ada minimal satu alamat utama. Silakan tandai alamat ini sebagai alamat utama.',
+                );
+                return;
+            }
+        }
+
+        if (editingAddress) {
+            form.put(`/user-addresses/${editingAddress.id}`, {
+                preserveScroll: true,
+                onSuccess: () => {
+                    setShowModal(false);
+                },
+            });
+        } else {
+            form.post('/user-addresses', {
+                preserveScroll: true,
+                onSuccess: () => {
+                    setShowModal(false);
+                },
+            });
+        }
+    };
+
+    const handleDelete = (id: number) => {
+        if (confirm('Apakah Anda yakin ingin menghapus alamat ini?')) {
+            router.delete(`/user-addresses/${id}`, {
+                preserveScroll: true,
+            });
+        }
+    };
+
+    const handleSetDefault = (id: number) => {
+        router.patch(
+            `/user-addresses/${id}/set-default`,
+            {},
+            {
+                preserveScroll: true,
+            },
+        );
+    };
+
+    return (
+        <div className="space-y-6">
+            {/* Header */}
+            <div className="flex items-center justify-between border-b pb-4 dark:border-[#3E3E3A]">
+                <div>
+                    <h2 className="flex items-center gap-2 text-lg font-bold text-gray-900 dark:text-white">
+                        <MapPin className="h-5 w-5 text-green-600" />
+                        Daftar Alamat
+                    </h2>
+                    <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                        Kelola alamat pengiriman Anda (maksimal 3 alamat)
+                    </p>
                 </div>
-            ))}
-        </div>
+                <button
+                    onClick={openAddModal}
+                    disabled={addresses.length >= 3}
+                    className="flex items-center gap-1.5 rounded-lg bg-green-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-green-700 disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                    <Plus className="h-4 w-4" />
+                    Tambah Alamat
+                </button>
+            </div>
 
-        {/* RIGHT CONTENT */}
-        <div className="rounded-xl border bg-white p-6 text-center dark:border-[#3E3E3A] dark:bg-[#1A1A19]">
-            <h2 className="mb-2 text-xl font-bold">Yuk, Aktifkan GoPay!</h2>
-            <p className="mb-4 text-sm text-gray-500">
-                GoPay kamu belum tersambung.
-            </p>
-            <button className="rounded-lg bg-green-600 px-6 py-2 font-semibold text-white">
-                Aktifkan
-            </button>
-        </div>
-    </div>
-);
+            {/* Error address limit */}
+            {formErrors.address_limit && (
+                <div className="rounded-lg bg-red-50 p-4 text-sm font-semibold text-red-600 dark:bg-red-950/20 dark:text-red-400">
+                    {formErrors.address_limit}
+                </div>
+            )}
 
-const TabAlamat = () => (
-    <div className="rounded-xl border bg-white p-6 dark:border-[#3E3E3A] dark:bg-[#1A1A19]">
-        Daftar Alamat
-    </div>
-);
+            {/* Address List */}
+            {addresses.length === 0 ? (
+                <div className="flex flex-col items-center justify-center py-12 text-center">
+                    <MapPin className="mb-4 h-16 w-16 text-gray-300 dark:text-gray-700" />
+                    <p className="font-medium text-gray-500 dark:text-gray-400">
+                        Belum ada alamat tersimpan
+                    </p>
+                    <p className="mt-1 text-xs text-gray-400 dark:text-gray-500">
+                        Tambahkan alamat pengiriman untuk mempermudah checkout
+                    </p>
+                </div>
+            ) : (
+                <div className="grid grid-cols-1 gap-4">
+                    {addresses.map((addr) => (
+                        <div
+                            key={addr.id}
+                            className={`rounded-xl border p-5 transition-all ${
+                                addr.is_default
+                                    ? 'border-green-600 bg-green-50/10 dark:border-green-500 dark:bg-green-950/5'
+                                    : 'border-gray-200 bg-white hover:border-gray-300 dark:border-[#3E3E3A] dark:bg-[#1A1A19] dark:hover:border-gray-700'
+                            }`}
+                        >
+                            <div className="flex flex-col justify-between gap-4 md:flex-row md:items-start">
+                                <div className="space-y-2">
+                                    <div className="flex flex-wrap items-center gap-2">
+                                        <span className="font-bold text-gray-900 dark:text-white">
+                                            {addr.name}
+                                        </span>
+                                        <span className="text-sm text-gray-500 dark:text-gray-400">
+                                            ({addr.phone})
+                                        </span>
+                                        {addr.is_default && (
+                                            <span className="rounded bg-green-100 px-2 py-0.5 text-xs font-semibold text-green-700 dark:bg-green-900/30 dark:text-green-400">
+                                                Utama
+                                            </span>
+                                        )}
+                                    </div>
+                                    <p className="max-w-2xl text-sm leading-relaxed text-gray-700 dark:text-gray-300">
+                                        {addr.address}
+                                    </p>
+                                    <p className="text-xs text-gray-500 dark:text-gray-400">
+                                        {addr.city}, {addr.province},{' '}
+                                        {addr.postal_code}
+                                    </p>
+                                </div>
+
+                                <div className="flex items-center gap-2 self-end md:self-start">
+                                    {!addr.is_default && (
+                                        <button
+                                            onClick={() =>
+                                                handleSetDefault(addr.id)
+                                            }
+                                            className="rounded-lg border border-gray-300 px-3 py-1.5 text-xs font-semibold text-gray-700 transition hover:bg-gray-50 dark:border-[#3E3E3A] dark:text-gray-300 dark:hover:bg-[#252523]"
+                                        >
+                                            Jadikan Utama
+                                        </button>
+                                    )}
+                                    <button
+                                        onClick={() => openEditModal(addr)}
+                                        className="rounded-lg border border-gray-200 p-2 text-gray-500 hover:bg-gray-50 hover:text-gray-700 dark:border-[#3E3E3A] dark:text-gray-400 dark:hover:bg-[#252523] dark:hover:text-gray-200"
+                                        title="Ubah Alamat"
+                                    >
+                                        <Edit className="h-4 w-4" />
+                                    </button>
+                                    <button
+                                        onClick={() => handleDelete(addr.id)}
+                                        className="rounded-lg border border-red-200 p-2 text-red-500 hover:bg-red-50 dark:border-red-950/30 dark:text-red-400 dark:hover:bg-red-950/20"
+                                        title="Hapus Alamat"
+                                    >
+                                        <Trash2 className="h-4 w-4" />
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            )}
+
+            {/* MODAL TAMBAH/UBAH ALAMAT */}
+            {showModal && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+                    <div className="w-full max-w-lg overflow-hidden rounded-xl bg-white shadow-xl dark:border dark:border-[#3E3E3A] dark:bg-[#1A1A19]">
+                        {/* Header */}
+                        <div className="flex items-center justify-between border-b px-6 py-4 dark:border-[#3E3E3A]">
+                            <h3 className="text-lg font-bold text-gray-900 dark:text-white">
+                                {editingAddress
+                                    ? 'Ubah Alamat Pengiriman'
+                                    : 'Tambah Alamat Baru'}
+                            </h3>
+                            <button
+                                onClick={() => setShowModal(false)}
+                                className="rounded-lg p-1 text-gray-400 transition hover:bg-gray-100 hover:text-gray-600 dark:hover:bg-[#252523] dark:hover:text-gray-200"
+                            >
+                                <svg
+                                    className="h-5 w-5"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    stroke="currentColor"
+                                >
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth={2}
+                                        d="M6 18L18 6M6 6l12 12"
+                                    />
+                                </svg>
+                            </button>
+                        </div>
+
+                        {/* Form */}
+                        <form onSubmit={handleSubmit} className="px-6 py-5">
+                            <div className="max-h-[60vh] space-y-4 overflow-y-auto pr-1">
+                                {/* Nama Penerima */}
+                                <div className="space-y-1.5">
+                                    <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300">
+                                        Nama Penerima
+                                    </label>
+                                    <input
+                                        type="text"
+                                        value={form.data.name}
+                                        onChange={(e) =>
+                                            form.setData('name', e.target.value)
+                                        }
+                                        placeholder="Contoh: Budi Santoso"
+                                        className="flex h-10 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm placeholder:text-gray-400 focus:border-green-600 focus:ring-2 focus:ring-green-600/20 focus:outline-none dark:border-gray-700 dark:bg-[#252523] dark:text-white dark:placeholder:text-gray-500"
+                                        required
+                                    />
+                                    {form.errors.name && (
+                                        <p className="text-xs text-red-500">
+                                            {form.errors.name}
+                                        </p>
+                                    )}
+                                </div>
+
+                                {/* Nomor HP */}
+                                <div className="space-y-1.5">
+                                    <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300">
+                                        Nomor Telepon / HP Penerima
+                                    </label>
+                                    <input
+                                        type="text"
+                                        value={form.data.phone}
+                                        onChange={(e) =>
+                                            form.setData(
+                                                'phone',
+                                                e.target.value,
+                                            )
+                                        }
+                                        placeholder="Contoh: 08123456789"
+                                        className="flex h-10 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm placeholder:text-gray-400 focus:border-green-600 focus:ring-2 focus:ring-green-600/20 focus:outline-none dark:border-gray-700 dark:bg-[#252523] dark:text-white dark:placeholder:text-gray-500"
+                                        required
+                                    />
+                                    {form.errors.phone && (
+                                        <p className="text-xs text-red-500">
+                                            {form.errors.phone}
+                                        </p>
+                                    )}
+                                </div>
+
+                                {/* Alamat Lengkap */}
+                                <div className="space-y-1.5">
+                                    <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300">
+                                        Alamat Lengkap
+                                    </label>
+                                    <textarea
+                                        value={form.data.address}
+                                        onChange={(e) =>
+                                            form.setData(
+                                                'address',
+                                                e.target.value,
+                                            )
+                                        }
+                                        placeholder="Nama jalan, nomor rumah, RT/RW, kelurahan, kecamatan"
+                                        rows={3}
+                                        className="flex w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm placeholder:text-gray-400 focus:border-green-600 focus:ring-2 focus:ring-green-600/20 focus:outline-none dark:border-gray-700 dark:bg-[#252523] dark:text-white dark:placeholder:text-gray-500"
+                                        required
+                                    />
+                                    {form.errors.address && (
+                                        <p className="text-xs text-red-500">
+                                            {form.errors.address}
+                                        </p>
+                                    )}
+                                </div>
+
+                                <div className="grid grid-cols-2 gap-4">
+                                    {/* Kota */}
+                                    <div className="space-y-1.5">
+                                        <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300">
+                                            Kota / Kabupaten
+                                        </label>
+                                        <input
+                                            type="text"
+                                            value={form.data.city}
+                                            onChange={(e) =>
+                                                form.setData(
+                                                    'city',
+                                                    e.target.value,
+                                                )
+                                            }
+                                            placeholder="Contoh: Jakarta Selatan"
+                                            className="flex h-10 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm placeholder:text-gray-400 focus:border-green-600 focus:ring-2 focus:ring-green-600/20 focus:outline-none dark:border-gray-700 dark:bg-[#252523] dark:text-white dark:placeholder:text-gray-500"
+                                            required
+                                        />
+                                        {form.errors.city && (
+                                            <p className="text-xs text-red-500">
+                                                {form.errors.city}
+                                            </p>
+                                        )}
+                                    </div>
+
+                                    {/* Provinsi */}
+                                    <div className="space-y-1.5">
+                                        <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300">
+                                            Provinsi
+                                        </label>
+                                        <input
+                                            type="text"
+                                            value={form.data.province}
+                                            onChange={(e) =>
+                                                form.setData(
+                                                    'province',
+                                                    e.target.value,
+                                                )
+                                            }
+                                            placeholder="Contoh: DKI Jakarta"
+                                            className="flex h-10 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm placeholder:text-gray-400 focus:border-green-600 focus:ring-2 focus:ring-green-600/20 focus:outline-none dark:border-gray-700 dark:bg-[#252523] dark:text-white dark:placeholder:text-gray-500"
+                                            required
+                                        />
+                                        {form.errors.province && (
+                                            <p className="text-xs text-red-500">
+                                                {form.errors.province}
+                                            </p>
+                                        )}
+                                    </div>
+                                </div>
+
+                                {/* Kode Pos */}
+                                <div className="space-y-1.5">
+                                    <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300">
+                                        Kode Pos
+                                    </label>
+                                    <input
+                                        type="text"
+                                        value={form.data.postal_code}
+                                        onChange={(e) =>
+                                            form.setData(
+                                                'postal_code',
+                                                e.target.value,
+                                            )
+                                        }
+                                        placeholder="Contoh: 12345"
+                                        className="flex h-10 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm placeholder:text-gray-400 focus:border-green-600 focus:ring-2 focus:ring-green-600/20 focus:outline-none dark:border-gray-700 dark:bg-[#252523] dark:text-white dark:placeholder:text-gray-500"
+                                        required
+                                    />
+                                    {form.errors.postal_code && (
+                                        <p className="text-xs text-red-500">
+                                            {form.errors.postal_code}
+                                        </p>
+                                    )}
+                                </div>
+
+                                {/* Checkbox Utama */}
+                                <div className="mt-2 space-y-1">
+                                    <label className="inline-flex cursor-pointer items-center gap-2.5">
+                                        <input
+                                            type="checkbox"
+                                            checked={form.data.is_default}
+                                            onChange={(e) => {
+                                                const checked =
+                                                    e.target.checked;
+                                                form.setData(
+                                                    'is_default',
+                                                    checked,
+                                                );
+                                                if (checked) {
+                                                    form.clearErrors(
+                                                        'is_default',
+                                                    );
+                                                } else {
+                                                    const hasOtherDefault =
+                                                        addresses.some(
+                                                            (addr) =>
+                                                                addr.is_default &&
+                                                                (!editingAddress ||
+                                                                    addr.id !==
+                                                                        editingAddress.id),
+                                                        );
+                                                    if (!hasOtherDefault) {
+                                                        form.setError(
+                                                            'is_default',
+                                                            'Harus ada minimal satu alamat utama. Silakan tandai alamat ini sebagai alamat utama.',
+                                                        );
+                                                    }
+                                                }
+                                            }}
+                                            className="h-4 w-4 rounded border-gray-300 text-green-600 focus:ring-2 focus:ring-green-600/20 dark:border-gray-600 dark:bg-[#252523]"
+                                        />
+                                        <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                                            Jadikan Alamat Utama
+                                        </span>
+                                    </label>
+                                    {form.errors.is_default && (
+                                        <p className="mt-1 text-xs font-semibold text-red-500">
+                                            {form.errors.is_default}
+                                        </p>
+                                    )}
+                                </div>
+                            </div>
+
+                            {/* Footer Buttons */}
+                            <div className="mt-6 flex justify-end gap-3 border-t pt-5 dark:border-[#3E3E3A]">
+                                <button
+                                    type="button"
+                                    onClick={() => setShowModal(false)}
+                                    className="rounded-lg border border-gray-300 px-5 py-2.5 text-sm font-semibold text-gray-700 transition hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-[#252523]"
+                                >
+                                    Batal
+                                </button>
+                                <button
+                                    type="submit"
+                                    disabled={form.processing}
+                                    className="rounded-lg bg-green-600 px-6 py-2.5 text-sm font-semibold text-white transition hover:bg-green-700 disabled:cursor-not-allowed disabled:opacity-50"
+                                >
+                                    {form.processing
+                                        ? 'Menyimpan...'
+                                        : 'Simpan'}
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            )}
+        </div>
+    );
+};
 
 const TabRekening = () => (
     <div className="rounded-xl border bg-white p-6 dark:border-[#3E3E3A] dark:bg-[#1A1A19]">
@@ -509,7 +1117,7 @@ const TabDaftarTransaksi = ({ orders = [] }: { orders: Order[] }) => {
 
 export default function UserProfile() {
     const { props, url } = usePage<any>();
-    const { user, errors, orders = [] } = props;
+    const { user, errors, orders = [], addresses = [] } = props;
 
     const profileForm = useForm({
         name: user.name || '',
@@ -683,15 +1291,24 @@ export default function UserProfile() {
                                         <div className="mt-4 mb-1 space-y-3 px-2.5 text-sm">
                                             <div className="flex items-center justify-between">
                                                 <span>GoPay</span>
-                                                <span className="text-green-600">
+
+                                                <a
+                                                    href="https://gopay.co.id/"
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="text-green-600 hover:underline"
+                                                >
                                                     Aktifkan
-                                                </span>
+                                                </a>
                                             </div>
                                             <div className="flex items-center justify-between">
                                                 <span>Groceria Card</span>
-                                                <span className="text-green-600">
+                                                <a
+                                                    href="#"
+                                                    className="text-green-600 hover:underline"
+                                                >
                                                     Daftar
-                                                </span>
+                                                </a>
                                             </div>
                                             <div className="flex items-center justify-between">
                                                 <span>Saldo</span>
@@ -924,7 +1541,9 @@ export default function UserProfile() {
                                                 )}
                                                 {activeTab ===
                                                     'Daftar Alamat' && (
-                                                    <TabAlamat />
+                                                    <TabAlamat
+                                                        addresses={addresses}
+                                                    />
                                                 )}
                                                 {activeTab === 'Pembayaran' && (
                                                     <TabPembayaran />
