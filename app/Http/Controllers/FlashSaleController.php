@@ -18,7 +18,7 @@ class FlashSaleController extends Controller
         $perPage = $request->get('perPage', 30);
         $page = $request->get('page', 1);
 
-        $minDiscount = (int) $request->get('min_discount', 25);
+        $minDiscount = (int) $request->get('min_discount', 5);
 
         $query = FlashSale::with('product.category')
             ->active()
@@ -99,7 +99,7 @@ class FlashSaleController extends Controller
         $perPage = 30;
         $page = (int) $request->get('page', 1);
         $categorySlug = $request->get('category', null);
-        $minDiscount = (int) $request->get('min_discount', default: 25);
+        $minDiscount = (int) $request->get('min_discount', default: 5);
 
         $baseQuery = FlashSale::with('product.category')
             ->active()
@@ -163,7 +163,7 @@ class FlashSaleController extends Controller
     {
         return Inertia::render('Admin/flashsale/Index', [
             'flashSales' => FlashSale::with('product.category')->get(),
-            'products' => Product::all(),
+            'products' => Product::with('category')->get(),
         ]);
     }
 
@@ -177,6 +177,19 @@ class FlashSaleController extends Controller
             'stock_limit' => 'required|integer|min:1',
             'is_active' => 'nullable|boolean',
         ]);
+
+        $productId = $validated['product_id'];
+        $now = now();
+
+        // Check if there is an active or upcoming flash sale for this product
+        $activeFsExists = FlashSale::where('product_id', $productId)
+            ->where('is_active', true)
+            ->where('end_time', '>=', $now)
+            ->exists();
+
+        if ($activeFsExists) {
+            return back()->withErrors(['product_id' => 'Produk ini sedang memiliki campaign flash sale yang aktif atau terjadwal.']);
+        }
 
         $product = Product::findOrFail($validated['product_id']);
         $validated['original_price'] = $product->price;

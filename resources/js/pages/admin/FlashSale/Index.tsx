@@ -51,6 +51,43 @@ export default function Index({
     const [isAddOpen, setIsAddOpen] = useState(false);
     const [isEditOpen, setIsEditOpen] = useState(false);
     const [currentFs, setCurrentFs] = useState<FlashSale | null>(null);
+    const [selectedCategoryId, setSelectedCategoryId] = useState<string>('');
+
+    // Extract unique categories from products
+    const uniqueCategories = Array.from(
+        new Map(
+            products
+                .map((p) => p.category)
+                .filter((c): c is Category => !!c)
+                .map((c) => [c.id, c]),
+        ).values(),
+    );
+
+    // Compile a list of product IDs with active or upcoming flash sales
+    const activeFlashSaleProductIds = new Set(
+        flashSales
+            .filter((fs) => {
+                const isActive = Boolean(fs.is_active);
+                const isNotEnded = new Date(fs.end_time) >= new Date();
+                return isActive && isNotEnded;
+            })
+            .map((fs) => fs.product_id),
+    );
+
+    // Filter products based on selected category in the add form and exclude products with active campaigns
+    const filteredProducts = products.filter((p) => {
+        const matchesCategory = selectedCategoryId
+            ? p.category_id === Number(selectedCategoryId)
+            : true;
+        const hasNoActiveFs = !activeFlashSaleProductIds.has(p.id);
+        return matchesCategory && hasNoActiveFs;
+    });
+
+    const closeAddModal = () => {
+        setIsAddOpen(false);
+        setSelectedCategoryId('');
+        addForm.reset();
+    };
 
     // Form hooks from Inertia
     const addForm = useForm({
@@ -74,8 +111,7 @@ export default function Index({
         e.preventDefault();
         addForm.post('/admin/flash-sale', {
             onSuccess: () => {
-                setIsAddOpen(false);
-                addForm.reset();
+                closeAddModal();
             },
         });
     };
@@ -130,12 +166,12 @@ export default function Index({
     );
     const calculatedAddPrice = selectedProductToAdd
         ? Number(selectedProductToAdd.price) *
-          (1 - addForm.data.discount_percentage / 100)
+          (1 - Number(addForm.data.discount_percentage || 0) / 100)
         : 0;
 
     const calculatedEditPrice = currentFs
         ? Number(currentFs.product?.price ?? currentFs.original_price) *
-          (1 - editForm.data.discount_percentage / 100)
+          (1 - Number(editForm.data.discount_percentage || 0) / 100)
         : 0;
 
     return (
@@ -401,6 +437,29 @@ export default function Index({
                         <form onSubmit={handleAddSubmit} className="space-y-4">
                             <div>
                                 <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                    Select Category
+                                </label>
+                                <select
+                                    value={selectedCategoryId}
+                                    onChange={(e) => {
+                                        setSelectedCategoryId(e.target.value);
+                                        addForm.setData('product_id', '');
+                                    }}
+                                    className="w-full rounded-md border border-gray-300 bg-white p-2 text-sm focus:ring-2 focus:ring-green-500 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+                                >
+                                    <option value="">
+                                        -- All Categories --
+                                    </option>
+                                    {uniqueCategories.map((c) => (
+                                        <option key={c.id} value={c.id}>
+                                            {c.name}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+
+                            <div>
+                                <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
                                     Select Product
                                 </label>
                                 <select
@@ -417,7 +476,7 @@ export default function Index({
                                     <option value="">
                                         -- Choose Product --
                                     </option>
-                                    {products.map((p) => (
+                                    {filteredProducts.map((p) => (
                                         <option key={p.id} value={p.id}>
                                             {p.name} (
                                             {formatRupiah(Number(p.price))})
@@ -441,18 +500,25 @@ export default function Index({
                                         min="1"
                                         max="99"
                                         value={addForm.data.discount_percentage}
-                                        onChange={(e) =>
-                                            addForm.setData(
-                                                'discount_percentage',
-                                                Math.max(
-                                                    1,
-                                                    Math.min(
-                                                        99,
-                                                        Number(e.target.value),
-                                                    ),
-                                                ),
-                                            )
-                                        }
+                                        onChange={(e) => {
+                                            const val = e.target.value;
+                                            if (val === '') {
+                                                addForm.setData(
+                                                    'discount_percentage',
+                                                    '' as any,
+                                                );
+                                            } else {
+                                                const num = Number(val);
+                                                addForm.setData(
+                                                    'discount_percentage',
+                                                    num > 99
+                                                        ? 99
+                                                        : num < 0
+                                                          ? 0
+                                                          : num,
+                                                );
+                                            }
+                                        }}
                                         className="w-full rounded-md border border-gray-300 bg-white p-2 text-sm focus:ring-2 focus:ring-green-500 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-white"
                                         required
                                     />
@@ -470,15 +536,21 @@ export default function Index({
                                         type="number"
                                         min="1"
                                         value={addForm.data.stock_limit}
-                                        onChange={(e) =>
-                                            addForm.setData(
-                                                'stock_limit',
-                                                Math.max(
-                                                    1,
-                                                    Number(e.target.value),
-                                                ),
-                                            )
-                                        }
+                                        onChange={(e) => {
+                                            const val = e.target.value;
+                                            if (val === '') {
+                                                addForm.setData(
+                                                    'stock_limit',
+                                                    '' as any,
+                                                );
+                                            } else {
+                                                const num = Number(val);
+                                                addForm.setData(
+                                                    'stock_limit',
+                                                    num < 0 ? 0 : num,
+                                                );
+                                            }
+                                        }}
                                         className="w-full rounded-md border border-gray-300 bg-white p-2 text-sm focus:ring-2 focus:ring-green-500 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-white"
                                         required
                                     />
@@ -587,7 +659,7 @@ export default function Index({
                                 <Button
                                     type="button"
                                     variant="outline"
-                                    onClick={() => setIsAddOpen(false)}
+                                    onClick={closeAddModal}
                                     disabled={addForm.processing}
                                 >
                                     Cancel
@@ -628,18 +700,25 @@ export default function Index({
                                         value={
                                             editForm.data.discount_percentage
                                         }
-                                        onChange={(e) =>
-                                            editForm.setData(
-                                                'discount_percentage',
-                                                Math.max(
-                                                    1,
-                                                    Math.min(
-                                                        99,
-                                                        Number(e.target.value),
-                                                    ),
-                                                ),
-                                            )
-                                        }
+                                        onChange={(e) => {
+                                            const val = e.target.value;
+                                            if (val === '') {
+                                                editForm.setData(
+                                                    'discount_percentage',
+                                                    '' as any,
+                                                );
+                                            } else {
+                                                const num = Number(val);
+                                                editForm.setData(
+                                                    'discount_percentage',
+                                                    num > 99
+                                                        ? 99
+                                                        : num < 0
+                                                          ? 0
+                                                          : num,
+                                                );
+                                            }
+                                        }}
                                         className="w-full rounded-md border border-gray-300 bg-white p-2 text-sm focus:ring-2 focus:ring-green-500 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-white"
                                         required
                                     />
@@ -660,15 +739,21 @@ export default function Index({
                                         type="number"
                                         min="1"
                                         value={editForm.data.stock_limit}
-                                        onChange={(e) =>
-                                            editForm.setData(
-                                                'stock_limit',
-                                                Math.max(
-                                                    1,
-                                                    Number(e.target.value),
-                                                ),
-                                            )
-                                        }
+                                        onChange={(e) => {
+                                            const val = e.target.value;
+                                            if (val === '') {
+                                                editForm.setData(
+                                                    'stock_limit',
+                                                    '' as any,
+                                                );
+                                            } else {
+                                                const num = Number(val);
+                                                editForm.setData(
+                                                    'stock_limit',
+                                                    num < 0 ? 0 : num,
+                                                );
+                                            }
+                                        }}
                                         className="w-full rounded-md border border-gray-300 bg-white p-2 text-sm focus:ring-2 focus:ring-green-500 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-white"
                                         required
                                     />
