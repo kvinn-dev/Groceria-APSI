@@ -43,7 +43,7 @@ class ProductController extends Controller
                 $query->latest();
             }
 
-            return Inertia::render('Admin/Products/Index', [
+            return Inertia::render('admin/products/Index', [
                 'products' => $query->paginate(10)->withQueryString(),
                 'filters' => $request->only(['search']),
             ]);
@@ -106,7 +106,7 @@ class ProductController extends Controller
 
     public function create()
     {
-        return Inertia::render('Admin/Products/Create', [
+        return Inertia::render('admin/products/Create', [
             'categories' => Category::all(),
             'brands' => Brand::where('is_active', true)->get(),
         ]);
@@ -147,7 +147,7 @@ class ProductController extends Controller
      */
     public function edit(Product $product)
     {
-        return Inertia::render('Admin/Products/Edit', [
+        return Inertia::render('admin/products/Edit', [
             'product' => $product,
             'categories' => Category::all(),
             'brands' => Brand::where('is_active', true)->get(),

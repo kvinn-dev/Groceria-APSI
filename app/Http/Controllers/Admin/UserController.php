@@ -30,7 +30,7 @@ class UserController extends Controller
             $query->where('status', $request->input('status'));
         }
 
-        return Inertia::render('Admin/Users/Index', [
+        return Inertia::render('admin/users/Index', [
             'users' => $query->latest()->paginate(10)->withQueryString(),
             'filters' => $request->only(['search', 'status']),
         ]);
@@ -49,7 +49,7 @@ class UserController extends Controller
         $totalOrders = $user->orders->count();
         $totalSpent = $user->orders->where('payment_status', 'paid')->sum('total');
 
-        return Inertia::render('Admin/Users/Show', [
+        return Inertia::render('admin/users/Show', [
             'userDetail' => $user,
             'orders' => $user->orders,
             'addresses' => $user->addresses,

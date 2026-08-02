@@ -161,7 +161,7 @@ class FlashSaleController extends Controller
     // ==============================
     public function manage()
     {
-        return Inertia::render('Admin/flashsale/Index', [
+        return Inertia::render('admin/flashsale/Index', [
             'flashSales' => FlashSale::with('product.category')->get(),
             'products' => Product::with('category')->get(),
         ]);

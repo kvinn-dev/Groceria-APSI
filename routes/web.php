@@ -224,7 +224,7 @@ Route::middleware(['auth', 'verified', 'admin'])
                     ];
                 });
 
-            return Inertia::render('Admin/Dashboard', [
+            return Inertia::render('admin/Dashboard', [
                 'stats' => [
                     'total_products' => $totalProducts,
                     'total_categories' => $totalCategories,

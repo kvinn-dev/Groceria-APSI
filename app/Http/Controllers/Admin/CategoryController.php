@@ -14,7 +14,7 @@ class CategoryController extends Controller
 
     public function index()
     {
-        return Inertia::render('Admin/Categories/Index', [
+        return Inertia::render('admin/categories/Index', [
             'categories' => $this->service->getPaginated(),
             'filters' => request()->only(['search']),
         ]);
@@ -22,7 +22,7 @@ class CategoryController extends Controller
 
     public function create()
     {
-        return Inertia::render('Admin/Categories/Create', [
+        return Inertia::render('admin/categories/Create', [
             'parentCategories' => $this->service->getParentsExcept(),
         ]);
     }
@@ -38,7 +38,7 @@ class CategoryController extends Controller
 
     public function edit(Category $category)
     {
-        return Inertia::render('Admin/Categories/Edit', [
+        return Inertia::render('admin/categories/Edit', [
             'category' => $category,
             'parentCategories' => $this->service->getParentsExcept($category->id),
         ]);
