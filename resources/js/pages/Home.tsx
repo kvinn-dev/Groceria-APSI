@@ -542,7 +542,7 @@ export default function Home({
 
                         {/* Button promo kecil kanan bawah */}
                         <Link
-                            href="/promotions"
+                            href="/products"
                             className="font-regular absolute right-4 bottom-4 z-20 rounded-sm bg-black px-2 py-1 text-xs text-white"
                         >
                             Lihat promo lainnya
@@ -569,7 +569,7 @@ export default function Home({
                         <div className="grid grid-cols-2 gap-3 text-center sm:grid-cols-5 lg:grid-cols-8">
                             {/* Item 1 */}
                             <Link
-                                href="/lokal"
+                                href="/products"
                                 className="flex flex-col items-center"
                             >
                                 <div className="rounded-xl border border-gray-200 bg-white p-3 dark:border-gray-200/15 dark:bg-[#1A1A19]">
@@ -586,7 +586,7 @@ export default function Home({
 
                             {/* Item 2 */}
                             <Link
-                                href="/mall"
+                                href="/products"
                                 className="flex flex-col items-center"
                             >
                                 <div className="rounded-xl border border-gray-200 bg-white p-3 dark:border-gray-200/15 dark:bg-[#1A1A19]">
@@ -637,7 +637,7 @@ export default function Home({
 
                             {/* Item 5 */}
                             <Link
-                                href="/supermarket"
+                                href="/products"
                                 className="flex flex-col items-center"
                             >
                                 <div className="rounded-xl border border-gray-200 bg-white p-3 dark:border-gray-200/15 dark:bg-[#1A1A19]">
@@ -654,7 +654,7 @@ export default function Home({
 
                             {/* Item 6 */}
                             <Link
-                                href="/kelola"
+                                href="/products"
                                 className="flex flex-col items-center"
                             >
                                 <div className="rounded-xl border border-gray-200 bg-white p-3 dark:border-gray-200/15 dark:bg-[#1A1A19]">
@@ -688,7 +688,7 @@ export default function Home({
 
                             {/* Item 8 */}
                             <Link
-                                href="/gratis-ongkir"
+                                href="/products"
                                 className="flex flex-col items-center"
                             >
                                 <div className="rounded-xl border border-gray-200 bg-white p-3 dark:border-gray-200/15 dark:bg-[#1A1A19]">
@@ -705,7 +705,7 @@ export default function Home({
 
                             {/* Item 9 */}
                             <Link
-                                href="/berkah"
+                                href="/products"
                                 className="flex flex-col items-center"
                             >
                                 <div className="rounded-xl border border-gray-200 bg-white p-3 dark:border-gray-200/15 dark:bg-[#1A1A19]">
@@ -722,7 +722,7 @@ export default function Home({
 
                             {/* Item 10 */}
                             <Link
-                                href="/semua"
+                                href="/products"
                                 className="flex flex-col items-center"
                             >
                                 <div className="rounded-xl border border-gray-200 bg-white p-3 dark:border-gray-200/15 dark:bg-[#1A1A19]">
