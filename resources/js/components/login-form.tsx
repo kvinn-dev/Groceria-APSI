@@ -9,6 +9,7 @@ import {
 } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
+import { Link } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
 
 export function LoginForm({
@@ -89,9 +90,17 @@ export function LoginForm({
                     <form className="p-6 md:p-8" onSubmit={handleLogin}>
                         <FieldGroup>
                             <div className="flex flex-col items-center gap-1 text-center">
-                                <h1 className="text-3xl font-bold text-green-600">
-                                    Groceria
-                                </h1>
+                                {/* LOGO */}
+                                <Link
+                                    href="/"
+                                    className="mb-2 flex items-center"
+                                >
+                                    <img
+                                        src="/logo-groceria-text.svg"
+                                        alt="Groceria"
+                                        className="h-5.5 w-auto"
+                                    />
+                                </Link>
                                 <p className="text-sm text-balance text-gray-900 dark:text-muted-foreground">
                                     Login to your account
                                 </p>
@@ -112,7 +121,7 @@ export function LoginForm({
                                     id="email"
                                     name="email"
                                     type="email"
-                                    placeholder=""
+                                    placeholder="your@example.com"
                                     required
                                 />
                             </Field>
@@ -133,6 +142,7 @@ export function LoginForm({
                                     id="password"
                                     name="password"
                                     type="password"
+                                    placeholder=""
                                     required
                                 />
                             </Field>

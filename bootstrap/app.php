@@ -20,11 +20,13 @@ return Application::configure(basePath: dirname(__DIR__))
             HandleAppearance::class,
             HandleInertiaRequests::class,
             AddLinkHeadersForPreloadedAssets::class,
+            \App\Http\Middleware\CheckUserStatus::class,
         ]);
 
         $middleware->alias([
             'admin' => \App\Http\Middleware\AdminMiddleware::class,
             'user.only' => \App\Http\Middleware\UserOnlyMiddleware::class,
+            'restricted.check' => \App\Http\Middleware\CheckUserRestriction::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

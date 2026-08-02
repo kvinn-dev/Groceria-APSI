@@ -72,6 +72,7 @@ export interface User {
     avatar?: string;
     email_verified_at: string | null;
     is_admin?: boolean;
+    status?: 'active' | 'suspended' | 'restricted';
     two_factor_enabled?: boolean;
     phone?: string;
     address?: string;
@@ -79,6 +80,8 @@ export interface User {
     province?: string;
     postal_code?: string;
     country?: string;
+    birth_date?: string | null;
+    gender?: string | null;
     created_at: string;
     updated_at: string;
     [key: string]: unknown;

@@ -16,6 +16,7 @@ use App\Http\Controllers\ViewProductController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\Web\CategoryController as WebCategoryController;
 use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
+use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\FlashSaleController;
 use App\Http\Controllers\TopProductController;
@@ -49,11 +50,20 @@ Route::post('/login', function (Request $request) {
     ]);
 
     if (Auth::attempt($request->only('email', 'password'))) {
+        $user = Auth::user();
+        
+        if ($user->status === 'suspended') {
+            Auth::logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+            return response()->json(['message' => 'Akun Anda dinonaktifkan sementara oleh admin.'], 422);
+        }
+
         $request->session()->regenerate();
 
         return response()->json([
             'message' => 'Login berhasil',
-            'user' => Auth::user(),
+            'user' => $user,
         ]);
     }
 
@@ -280,6 +290,13 @@ Route::middleware(['auth', 'verified', 'admin'])
             Route::put('/{order}', [OrderController::class, 'update'])->name('orders.update');
             Route::delete('/{order}', [OrderController::class, 'destroy'])->name('orders.destroy');
         });
+
+        // User Management
+        Route::prefix('users')->group(function () {
+            Route::get('/', [UserController::class, 'index'])->name('users.index');
+            Route::get('/{user}', [UserController::class, 'show'])->name('users.show');
+            Route::patch('/{user}/status', [UserController::class, 'updateStatus'])->name('users.update-status');
+        });
     });
 
 /*
@@ -300,14 +317,18 @@ Route::prefix('api')->group(function () {
 
     Route::middleware(['auth', 'verified', 'user.only'])->group(function () {
         Route::get('/cart', [App\Http\Controllers\CartController::class, 'index'])->name('cart.index');
-        Route::post('/cart/add', [App\Http\Controllers\CartController::class, 'add'])->name('cart.add');
-        Route::patch('/cart/update/{cart}', [App\Http\Controllers\CartController::class, 'update'])->name('cart.update');
         Route::delete('/cart/remove/{cart}', [App\Http\Controllers\CartController::class, 'remove'])->name('cart.remove');
 
-        // Checkout Routes
-        Route::post('/checkout', [OrderController::class, 'prepareCheckout'])->name('checkout.prepare');
-        Route::get('/checkout', [OrderController::class, 'checkoutPage'])->name('checkout.page');
-        Route::post('/checkout/process', [OrderController::class, 'checkout'])->name('checkout.process');
+        // Routes blocked if user account is restricted
+        Route::middleware(['restricted.check'])->group(function () {
+            Route::post('/cart/add', [App\Http\Controllers\CartController::class, 'add'])->name('cart.add');
+            Route::patch('/cart/update/{cart}', [App\Http\Controllers\CartController::class, 'update'])->name('cart.update');
+
+            // Checkout Routes
+            Route::post('/checkout', [OrderController::class, 'prepareCheckout'])->name('checkout.prepare');
+            Route::get('/checkout', [OrderController::class, 'checkoutPage'])->name('checkout.page');
+            Route::post('/checkout/process', [OrderController::class, 'checkout'])->name('checkout.process');
+        });
 
         // Customer Order Routes
         Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');

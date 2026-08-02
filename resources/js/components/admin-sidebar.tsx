@@ -5,6 +5,7 @@ import {
     LogOut,
     Package,
     ShoppingCart,
+    Users,
     Zap,
 } from 'lucide-react';
 
@@ -32,6 +33,12 @@ const navLinks = [
         icon: ShoppingCart,
         label: 'Orders',
         routeName: 'admin.orders.index',
+    },
+    {
+        href: '/admin/users',
+        icon: Users,
+        label: 'Users',
+        routeName: 'admin.users.index',
     },
     {
         href: '/admin/flash-sale',

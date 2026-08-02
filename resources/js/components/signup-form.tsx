@@ -106,7 +106,7 @@ export function SignupForm({
                     <form className="p-6 md:p-8" onSubmit={handleSignup}>
                         <FieldGroup>
                             <div className="flex flex-col items-center gap-1 text-center">
-                                <h1 className="text-2xl font-bold text-green-600">
+                                <h1 className="text-2xl font-medium text-green-600">
                                     Create your account
                                 </h1>
                                 <p className="text-sm text-balance text-gray-900 dark:text-muted-foreground">
@@ -130,6 +130,7 @@ export function SignupForm({
                                     id="name"
                                     name="name"
                                     type="text"
+                                    placeholder="Enter your name"
                                     required
                                 />
                             </Field>
@@ -140,6 +141,7 @@ export function SignupForm({
                                     id="email"
                                     name="email"
                                     type="email"
+                                    placeholder="your@example.com"
                                     required
                                 />
                             </Field>
@@ -153,6 +155,7 @@ export function SignupForm({
                                         id="password"
                                         name="password"
                                         type="password"
+                                        placeholder=""
                                         required
                                     />
                                 </Field>
