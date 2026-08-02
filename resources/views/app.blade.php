@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" @class(['dark'=> ($appearance ?? 'system') == 'dark'])>
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -16,6 +19,7 @@
         content="https://groceria-apsi.up.railway.app/">
     <meta property="og:site_name" content="Groceria">
 
+    {{-- Twitter / Social Media Preview --}}
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Groceria - E-Commerce Minimarket">
     <meta name="twitter:description"
@@ -62,3 +66,9 @@
     @vite(['resources/js/app.tsx', "resources/js/pages/{$page['component']}.tsx"])
     @inertiaHead
 </head>
+
+<body class="font-sans antialiased">
+    @inertia
+</body>
+
+</html>
