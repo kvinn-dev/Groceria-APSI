@@ -28,6 +28,11 @@ export default function Cart({
         cartItems.map((item) => item.id), // Default pilih semua
     );
 
+    const validSelectedItems = useMemo(() => {
+        const cartItemIds = cartItems.map((item) => item.id);
+        return selectedItems.filter((id) => cartItemIds.includes(id));
+    }, [selectedItems, cartItems]);
+
     const handleSelectItem = (itemId: number, checked: boolean) => {
         setSelectedItems((prev) =>
             checked ? [...prev, itemId] : prev.filter((id) => id !== itemId),
@@ -39,11 +44,11 @@ export default function Cart({
     };
 
     const isAllSelected =
-        cartItems.length > 0 && selectedItems.length === cartItems.length;
+        cartItems.length > 0 && validSelectedItems.length === cartItems.length;
 
     const summary = useMemo(() => {
         const itemsToSummarize = cartItems.filter((item) =>
-            selectedItems.includes(item.id),
+            validSelectedItems.includes(item.id),
         );
 
         const totalItems = itemsToSummarize.reduce(
@@ -64,7 +69,7 @@ export default function Cart({
                 minimumFractionDigits: 0,
             }).format(totalPrice),
         };
-    }, [selectedItems, cartItems]);
+    }, [validSelectedItems, cartItems]);
 
     const handleQuantityChange = (cartId: number, newQuantity: number) => {
         router.patch(
@@ -82,7 +87,7 @@ export default function Cart({
 
     const handleCheckout = () => {
         router.post('/checkout', {
-            cart_items: selectedItems,
+            cart_items: validSelectedItems,
         });
     };
 
@@ -135,7 +140,7 @@ export default function Cart({
                                             className="flex items-start gap-4 border-b py-4 dark:border-[#3E3E3A]"
                                         >
                                             <Checkbox
-                                                checked={selectedItems.includes(
+                                                checked={validSelectedItems.includes(
                                                     item.id,
                                                 )}
                                                 onCheckedChange={(checked) =>
@@ -248,10 +253,12 @@ export default function Cart({
 
                                     <Button
                                         onClick={handleCheckout}
-                                        disabled={selectedItems.length === 0}
+                                        disabled={
+                                            validSelectedItems.length === 0
+                                        }
                                         className="mt-6 w-full bg-green-600 text-white hover:bg-green-700 disabled:bg-gray-300"
                                     >
-                                        Beli ({selectedItems.length})
+                                        Beli ({validSelectedItems.length})
                                     </Button>
                                 </div>
                             </div>

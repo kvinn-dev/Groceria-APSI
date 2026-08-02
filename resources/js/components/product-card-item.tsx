@@ -1,5 +1,5 @@
 // components/ProductCardItem.tsx
-import { Link } from '@inertiajs/react';
+import { Link, router } from '@inertiajs/react';
 
 type Product = {
     id: number;
@@ -125,6 +125,18 @@ export default function ProductCardItem({
                             </button>
 
                             <button
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    router.post(
+                                        '/cart/add',
+                                        {
+                                            product_id: product.id,
+                                            quantity: 1,
+                                        },
+                                        { preserveScroll: true },
+                                    );
+                                }}
                                 type="button"
                                 className="flex h-7.5 w-7.5 items-center justify-center rounded-md border border-green-600/50 transition hover:bg-gray-100"
                                 title="Tambah ke Keranjang"

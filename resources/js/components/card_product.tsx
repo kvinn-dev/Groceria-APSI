@@ -68,7 +68,9 @@ export default function CardProducts() {
             discountPriceRaw < originalPrice;
 
         const discountPercent = hasDiscount
-            ? Math.round(((originalPrice - discountPriceRaw) / originalPrice) * 100)
+            ? Math.round(
+                  ((originalPrice - discountPriceRaw) / originalPrice) * 100,
+              )
             : 0;
 
         const finalPrice = hasDiscount ? discountPriceRaw : originalPrice;
@@ -111,7 +113,10 @@ export default function CardProducts() {
 
                                         <div className="relative h-44 w-full overflow-hidden rounded-t-xl">
                                             <img
-                                                src={p.image ?? '/images/placeholder.png'}
+                                                src={
+                                                    p.image ??
+                                                    '/images/placeholder.png'
+                                                }
                                                 alt={p.name ?? '-'}
                                                 className="h-full w-full object-cover"
                                                 loading="lazy"
@@ -128,7 +133,9 @@ export default function CardProducts() {
                                                     <div className="mb-1 flex flex-col gap-0.5">
                                                         {p.hasDiscount ? (
                                                             <div className="text-[12px] leading-tight text-gray-400 line-through">
-                                                                {p.originalPriceFormatted}
+                                                                {
+                                                                    p.originalPriceFormatted
+                                                                }
                                                             </div>
                                                         ) : (
                                                             <div className="invisible text-[12px] leading-tight">
@@ -137,13 +144,16 @@ export default function CardProducts() {
                                                         )}
 
                                                         <div className="text-[18px] leading-tight font-semibold text-green-600">
-                                                            {p.finalPriceFormatted}
+                                                            {
+                                                                p.finalPriceFormatted
+                                                            }
                                                         </div>
                                                     </div>
 
                                                     <div>
                                                         <div className="mb-0.5 text-[11px] text-gray-500">
-                                                            Terjual {sold} / {p.stock}
+                                                            Terjual {sold} /{' '}
+                                                            {p.stock}
                                                         </div>
 
                                                         <div className="h-2 w-[100px] max-w-full rounded-full bg-gray-200">
@@ -170,7 +180,9 @@ export default function CardProducts() {
                                                                 xmlns="http://www.w3.org/2000/svg"
                                                                 fill="none"
                                                                 viewBox="0 0 24 24"
-                                                                strokeWidth={1.5}
+                                                                strokeWidth={
+                                                                    1.5
+                                                                }
                                                                 stroke="#16a34a"
                                                                 className="size-5"
                                                             >
@@ -183,6 +195,21 @@ export default function CardProducts() {
                                                         </button>
 
                                                         <button
+                                                            onClick={(e) => {
+                                                                e.preventDefault();
+                                                                e.stopPropagation();
+                                                                router.post(
+                                                                    '/cart/add',
+                                                                    {
+                                                                        product_id:
+                                                                            p.id,
+                                                                        quantity: 1,
+                                                                    },
+                                                                    {
+                                                                        preserveScroll: true,
+                                                                    },
+                                                                );
+                                                            }}
                                                             type="button"
                                                             className="flex h-7.5 w-7.5 items-center justify-center rounded-md border border-green-600/50 transition hover:bg-gray-100"
                                                             title="Tambah ke Keranjang"
@@ -191,7 +218,9 @@ export default function CardProducts() {
                                                                 xmlns="http://www.w3.org/2000/svg"
                                                                 fill="none"
                                                                 viewBox="0 0 24 24"
-                                                                strokeWidth={1.5}
+                                                                strokeWidth={
+                                                                    1.5
+                                                                }
                                                                 stroke="#16a34a"
                                                                 className="size-5"
                                                             >
@@ -207,7 +236,14 @@ export default function CardProducts() {
                                                     <button
                                                         onClick={(e) => {
                                                             e.preventDefault();
-                                                            router.post('/checkout', { product_id: p.id, quantity: 1 });
+                                                            router.post(
+                                                                '/checkout',
+                                                                {
+                                                                    product_id:
+                                                                        p.id,
+                                                                    quantity: 1,
+                                                                },
+                                                            );
                                                         }}
                                                         disabled={p.stock <= 0}
                                                         className="w-full rounded-md bg-green-600 py-1.5 text-xs font-semibold text-white transition hover:bg-green-700 disabled:bg-gray-400"
@@ -225,7 +261,11 @@ export default function CardProducts() {
                         {canLoadMore && (
                             <div className="mt-8 flex justify-center">
                                 <button
-                                    onClick={() => setVisibleCount((prev) => prev + ITEMS_PER_LOAD)}
+                                    onClick={() =>
+                                        setVisibleCount(
+                                            (prev) => prev + ITEMS_PER_LOAD,
+                                        )
+                                    }
                                     className="rounded-lg border border-green-600 px-16 py-2.5 font-semibold text-green-700 transition hover:bg-green-100/50"
                                 >
                                     Muat Lebih Banyak
