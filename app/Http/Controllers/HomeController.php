@@ -32,7 +32,22 @@ class HomeController extends Controller
             ->with(['children' => function ($query) {
                 $query->withCount('products');
             }])
-            ->get();
+            ->get()
+            ->map(fn($cat) => [
+                'id'             => $cat->id,
+                'name'           => $cat->name,
+                'slug'           => $cat->slug,
+                'description'    => $cat->description,
+                'image'          => $cat->image_url, // accessor: uploaded image → default static → generic icon
+                'products_count' => $cat->products_count,
+                'children'       => $cat->children->map(fn($child) => [
+                    'id'             => $child->id,
+                    'name'           => $child->name,
+                    'slug'           => $child->slug,
+                    'products_count' => $child->products_count,
+                    'image'          => $child->image_url,
+                ]),
+            ]);
 
         $topProducts = Product::with('category')
             ->where('is_active', true)

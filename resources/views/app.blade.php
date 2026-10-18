@@ -14,9 +14,9 @@
     <meta property="og:description"
         content="Platform e-commerce minimarket Groceria untuk memudahkan pengguna berbelanja kebutuhan sehari-hari.">
     <meta property="og:image"
-        content="https://groceria-apsi.up.railway.app/images/groceria-preview.jpg">
+        content="{{ url('/images/groceria-preview.jpg') }}">
     <meta property="og:url"
-        content="https://groceria-apsi.up.railway.app/">
+        content="{{ url('/') }}">
     <meta property="og:site_name" content="Groceria">
 
     {{-- Twitter / Social Media Preview --}}
@@ -25,7 +25,7 @@
     <meta name="twitter:description"
         content="Platform e-commerce minimarket Groceria untuk memudahkan pengguna berbelanja kebutuhan sehari-hari.">
     <meta name="twitter:image"
-        content="https://groceria-apsi.up.railway.app/images/groceria-preview.jpg">
+        content="{{ url('/images/groceria-preview.jpg') }}">
 
     {{-- Inline script to detect system dark mode preference and apply it immediately --}}
     <script>

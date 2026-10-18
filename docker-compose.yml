@@ -1,0 +1,24 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: groceria:production
+    container_name: groceria-app
+    restart: unless-stopped
+    ports:
+      - "${LOCAL_PORT:-8090}:8080"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    env_file:
+      - .env
+    environment:
+      - PORT=8080
+      - LOG_CHANNEL=stderr
+      # Di dalam container Docker lokal, MySQL di komputer host dijangkau via host.docker.internal (bukan 127.0.0.1)
+      - DB_HOST=host.docker.internal
+    volumes:
+      - storage_data:/var/www/html/storage/app/public
+
+volumes:
+  storage_data:
