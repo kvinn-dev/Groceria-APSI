@@ -224,20 +224,63 @@ export default function Home({
 
     const categorySlider = useCategorySlider(ITEM_WIDTH, ITEM_GAP);
 
-    const categoryItems = categories.map((cat, index) => {
-        const icon = cat.image
-            ? cat.image.startsWith('http')
-                ? cat.image
-                : `/storage/${cat.image}`
-            : `images/category/000${String((index % 26) + 1).padStart(2, '0')}.webp`;
-        return {
-            id: cat.id,
-            slug: cat.slug,
-            label: cat.name,
-            icon: icon,
-            products_count: cat.products_count,
-        };
-    });
+    // Peta slug → gambar statis yang pasti ada di public/images/category/
+    // Digunakan sebagai fallback onError di <img> jika URL dari server gagal dimuat.
+    const DEFAULT_CATEGORY_IMAGES: Record<string, string> = {
+        sayuran: '/images/category/carousel-sayuran_18062025075356.png',
+        'buah-buahan': '/images/category/carousel-buah_18112025083456.png',
+        daging: '/images/category/carousel-daging_10112023060536.png',
+        ikan: '/images/category/carousel-seafood_10112023060709.png',
+        seafood: '/images/category/carousel-seafood_10112023060709.png',
+        'frozen-food':
+            '/images/category/carousel-produk_beku_10112023060820.png',
+        'produk-beku':
+            '/images/category/carousel-produk_beku_10112023060820.png',
+        snack: '/images/category/carousel-makanan_ringan_10112023023122.png',
+        'makanan-ringan':
+            '/images/category/carousel-makanan_ringan_10112023023122.png',
+        minuman: '/images/category/carousel-minuman_07122023034203.png',
+        'perlengkapan-mandi':
+            '/images/category/carousel-perawatan_diri_04122023025211.png',
+        'perawatan-diri':
+            '/images/category/carousel-perawatan_diri_04122023025211.png',
+        pembersih:
+            '/images/category/carousel-kebersihan_rumah_04122023025235.png',
+        'kebersihan-rumah':
+            '/images/category/carousel-kebersihan_rumah_04122023025235.png',
+        'siap-saji':
+            "/images/category/carousel-segari's_kitchen_03022025024415.png",
+        'bumbu-saus':
+            '/images/category/carousel-bumbu_&_saus_10112023023032.png',
+        bumbu: '/images/category/carousel-bumbu_&_saus_10112023023032.png',
+        kesehatan: '/images/category/carousel-kesehatan_10112023062037.png',
+        'susu-olahan':
+            '/images/category/carousel-susu_&_dairy_12032024040721.png',
+        susu: '/images/category/carousel-susu_&_dairy_12032024040721.png',
+        'perlengkapan-bayi':
+            '/images/category/carousel-ibu,_bayi,_&_anak_19022026093637.png',
+        'popok-tisu': '/images/category/carousel-mpasi_03032026115330.png',
+        sembako: '/images/category/carousel-sembako_24072025101106.png',
+        elektronik: '/images/category/carousel-elektronik_07122023034334.png',
+    };
+
+    const getCategoryFallback = (slug: string): string =>
+        DEFAULT_CATEGORY_IMAGES[slug] ??
+        DEFAULT_CATEGORY_IMAGES[
+            slug.replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
+        ] ??
+        '/images/icon/icon_supermarket.png';
+
+    // Backend selalu mengembalikan URL gambar yang valid via accessor image_url:
+    // 1. Gambar upload admin  →  2. Gambar statis per slug  →  3. Icon generik
+    const categoryItems = categories.map((cat) => ({
+        id: cat.id,
+        slug: cat.slug,
+        label: cat.name,
+        icon: cat.image, // URL lengkap dari server
+        fallback: getCategoryFallback(cat.slug), // gambar statis spesifik untuk onError
+        products_count: cat.products_count,
+    }));
 
     const ITEMS_PER_PAGE = 20;
     const [page, setPage] = useState(0);
@@ -789,15 +832,18 @@ export default function Home({
                                         <div className="flex h-[104px] items-center justify-center">
                                             <div className="flex h-20 w-20 items-center justify-center rounded-full bg-gray-100 dark:bg-[#1A1A19]">
                                                 <img
-                                                    src={item.icon}
+                                                    src={
+                                                        item.icon ??
+                                                        item.fallback
+                                                    }
                                                     alt={item.label}
                                                     className="max-h-full max-w-full object-contain"
                                                     onError={(e) => {
-                                                        // Fallback in case icon is missing
-                                                        (
-                                                            e.target as HTMLImageElement
-                                                        ).src =
-                                                            `images/category/000${String((index % 26) + 1).padStart(2, '0')}.webp`;
+                                                        const target =
+                                                            e.target as HTMLImageElement;
+                                                        target.onerror = null;
+                                                        target.src =
+                                                            item.fallback;
                                                     }}
                                                 />
                                             </div>

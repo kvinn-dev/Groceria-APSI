@@ -65,10 +65,10 @@ export default function NavMain() {
     return (
         <header className="sticky top-0 z-50 border-b border-gray-200 bg-white dark:border-[#3E3E3A] dark:bg-[#1A1A19]">
             {/* TOP PROMO BAR */}
-            <div className="border-b border-gray-200 bg-gray-100 px-4 text-[13px] dark:border-[#3E3E3A] dark:bg-[#252523]">
+            {/* <div className="border-b border-gray-200 bg-gray-100 px-4 text-[13px] dark:border-[#3E3E3A] dark:bg-[#252523]">
                 <div className="mx-auto flex max-w-7xl items-center justify-between text-gray-600 dark:text-gray-300">
                     <div className="group relative inline-block">
-                        {/* TEXT / TRIGGER */}
+                        TEXT / TRIGGER
                         <Link
                             href="/promo-aplikasi"
                             className="flex items-center gap-1 py-1 text-gray-900 dark:text-white"
@@ -111,7 +111,7 @@ export default function NavMain() {
                             </svg>
                         </Link>
 
-                        {/* POPUP */}
+                        POPUP
                         <div className="invisible absolute top-full left-1/2 z-50 mt-2 w-64 -translate-x-1/2 rounded-sm border bg-white p-4 opacity-0 shadow-lg transition-all duration-200 group-hover:visible group-hover:opacity-100 dark:border-[#3E3E3A] dark:bg-[#252523]">
                             <p className="mb-1 text-center text-xs text-gray-900 dark:text-white">
                                 Scan QR ini untuk download aplikasi dan dapatkan
@@ -131,7 +131,7 @@ export default function NavMain() {
                             </p>
 
                             <div className="grid grid-cols-2 gap-2">
-                                {/* BARIS ATAS */}
+                                BARIS ATAS
                                 <img
                                     src="/images/nav/google-play.svg"
                                     className="h-10 justify-self-center object-contain"
@@ -143,7 +143,7 @@ export default function NavMain() {
                                     alt="App Store"
                                 />
 
-                                {/* BARIS BAWAH - TENGAH */}
+                                BARIS BAWAH - TENGAH
                                 <img
                                     src="/images/nav/app-gallery.svg"
                                     className="col-span-2 h-8 justify-self-center object-contain"
@@ -153,7 +153,7 @@ export default function NavMain() {
                         </div>
                     </div>
 
-                    {/* <div className="flex items-center gap-6">
+                    <div className="flex items-center gap-6">
                         {["Tentang Groceria", "Mulai Berjualan", "Promo", "Groceria Care"].map((item) => (
                             <Link
                                 key={item}
@@ -163,9 +163,9 @@ export default function NavMain() {
                                 {item}
                             </Link>
                         ))}
-                    </div> */}
+                    </div>
                 </div>
-            </div>
+            </div> */}
 
             <div className="container mx-auto bg-white px-4 py-2 dark:bg-[#1A1A19]">
                 <div className="flex items-center justify-between gap-6">
