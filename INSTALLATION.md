@@ -43,7 +43,7 @@ Groceria-APSI/
 └── vite.config.ts       # Vite configuration
 ```
 
-> Catatan: Folder `vendor/` dan `node_modules/` tidak perlu di-upload ke GitHub karena dapat dibuat ulang melalui Composer dan NPM.
+> **Catatan:** Folder `vendor/` dan `node_modules/` tidak perlu di-upload ke GitHub karena dapat dibuat ulang melalui Composer dan NPM.
 
 ---
 
@@ -154,7 +154,7 @@ DB_PASSWORD=
 
 Sesuaikan `DB_USERNAME` dan `DB_PASSWORD` dengan konfigurasi MySQL di perangkat masing-masing.
 
-> Catatan: Nama database harus sesuai dengan database yang telah dibuat. Jika menggunakan password MySQL, masukkan password tersebut pada `DB_PASSWORD`.
+> **Catatan:** Nama database harus sesuai dengan database yang telah dibuat. Jika menggunakan password MySQL, masukkan password tersebut pada `DB_PASSWORD`.
 
 ## 7. Jalankan Migrasi Database
 
@@ -174,7 +174,7 @@ Jika project menyediakan seeder untuk data awal, jalankan:
 php artisan db:seed
 ```
 
-> Catatan: Jalankan seeder hanya jika tersedia dan memang diperlukan oleh aplikasi. Periksa terlebih dahulu isi folder `database/seeders/`.
+> **Catatan:** Jalankan seeder hanya jika tersedia dan memang diperlukan oleh aplikasi. Periksa terlebih dahulu isi folder `database/seeders/`.
 
 ## 8. Konfigurasi Storage
 
@@ -188,27 +188,47 @@ Perintah ini membuat symbolic link dari `public/storage` ke `storage/app/public`
 
 ## 9. Jalankan Project Groceria
 
-Setelah seluruh konfigurasi selesai, aplikasi dapat dijalankan menggunakan script development yang tersedia di `composer.json`:
+Setelah seluruh proses instalasi dan konfigurasi selesai, aplikasi dapat dijalankan menggunakan dua perintah yang dijalankan secara bersamaan melalui dua terminal berbeda.
+
+### Terminal 1 – Laravel Development Server
+
+Buka terminal pertama, pastikan berada di direktori root project, kemudian jalankan:
 
 ```bash
-composer run dev
+php artisan serve
 ```
 
-Script ini menjalankan kebutuhan development Laravel, termasuk server aplikasi, queue worker, log viewer, dan Vite.
+Perintah ini akan menjalankan server aplikasi Laravel.
 
-Jika berhasil, aplikasi biasanya dapat diakses melalui:
+Secara default, aplikasi dapat diakses melalui:
 
 ```text
-http://localhost:8000
+http://127.0.0.1:8000
 ```
 
-Buka alamat tersebut melalui browser untuk melihat halaman aplikasi Groceria.
+### Terminal 2 – Vite Development Server
+
+Buka terminal kedua, masuk ke direktori root project yang sama, kemudian jalankan:
+
+```bash
+npm run dev
+```
+
+Perintah ini akan menjalankan Vite untuk memproses dan menyajikan asset frontend, termasuk React, TypeScript, dan CSS selama proses development.
+
+Biarkan kedua terminal tetap berjalan selama aplikasi digunakan.
+
+Setelah kedua server berhasil dijalankan, buka browser dan akses:
+
+```text
+http://127.0.0.1:8000
+```
 
 ---
 
 ## Alur Instalasi Lengkap untuk Developer Baru
 
-Berikut ringkasan perintah instalasi dari awal hingga aplikasi dapat dijalankan di lingkungan lokal.
+Berikut ringkasan perintah instalasi dari awal hingga aplikasi siap dijalankan di lingkungan lokal.
 
 ### macOS / Linux
 
@@ -228,8 +248,6 @@ php artisan key:generate
 php artisan migrate
 
 php artisan storage:link
-
-composer run dev
 ```
 
 ### Windows
@@ -250,20 +268,48 @@ php artisan key:generate
 php artisan migrate
 
 php artisan storage:link
-
-composer run dev
 ```
 
 **Penting:** Sebelum menjalankan `php artisan migrate`, pastikan database MySQL sudah dibuat dan konfigurasi koneksi database pada `.env` sudah benar.
 
+Jika project menyediakan seeder yang diperlukan, jalankan juga:
+
+```bash
+php artisan db:seed
+```
+
+Setelah proses instalasi selesai, jalankan aplikasi menggunakan dua terminal berbeda:
+
+**Terminal 1:**
+
+```bash
+php artisan serve
+```
+
+**Terminal 2:**
+
+```bash
+npm run dev
+```
+
 ## Alur Menjalankan Project Setelah Instalasi
 
-Untuk menjalankan kembali project yang sudah pernah di-setup sebelumnya, cukup masuk ke direktori root project dan jalankan:
+Untuk menjalankan kembali project yang sudah pernah di-setup sebelumnya, cukup masuk ke direktori root project dan jalankan kedua perintah berikut melalui terminal yang berbeda.
+
+**Terminal 1:**
 
 ```bash
 cd Groceria-APSI
 
-composer run dev
+php artisan serve
+```
+
+**Terminal 2:**
+
+```bash
+cd Groceria-APSI
+
+npm run dev
 ```
 
 Tidak perlu mengulangi `composer install`, `npm install`, atau proses konfigurasi database selama dependency dan konfigurasi project tidak berubah.
@@ -346,7 +392,7 @@ npm install
 npm run build
 ```
 
-Jika sedang dalam mode development, kamu juga dapat menjalankan:
+Jika sedang dalam mode development, jalankan:
 
 ```bash
 npm run dev
@@ -384,6 +430,22 @@ Jika perubahan pada `.env` belum terbaca, bersihkan cache konfigurasi:
 php artisan optimize:clear
 ```
 
+### 8. Halaman aplikasi tidak dapat memuat asset frontend
+
+Pastikan Vite Development Server sudah berjalan pada terminal kedua:
+
+```bash
+npm run dev
+```
+
+Jika Vite belum berjalan, asset frontend seperti React, TypeScript, dan CSS mungkin tidak dapat dimuat dengan benar.
+
+Pastikan juga Laravel Development Server tetap berjalan pada terminal pertama:
+
+```bash
+php artisan serve
+```
+
 ---
 
 ## Catatan untuk GitHub
@@ -399,19 +461,20 @@ Pastikan file `.gitignore` memiliki konfigurasi berikut agar file hasil instalas
 /storage/*.key
 ```
 
-> Catatan: Jangan mengunggah file `.env` yang berisi kredensial database, application key, atau informasi sensitif lainnya ke repository publik.
+> **Catatan:** Jangan mengunggah file `.env` yang berisi kredensial database, application key, atau informasi sensitif lainnya ke repository publik.
 
 ---
 
 ## Verifikasi Instalasi
 
-Setelah seluruh langkah instalasi selesai, aplikasi Groceria dapat diakses melalui browser:
+Setelah seluruh langkah instalasi selesai, pastikan kedua development server berjalan tanpa error.
+
+Kemudian buka browser dan akses aplikasi Groceria melalui alamat berikut:
 
 ```text
-http://localhost:8000
+http://127.0.0.1:8000
 ```
 
 Jika halaman aplikasi berhasil dibuka dan fitur-fitur utama dapat digunakan, berarti proses instalasi telah berhasil.
 
 Untuk informasi mengenai deskripsi project, fitur aplikasi, screenshot, dan informasi lainnya, silakan lihat file **README.md** pada repository Groceria.
-
